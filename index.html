@@ -1,3 +1,11 @@
+
+turnero_index.txt
+
+Página
+1
+de
+1
+100%
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -21,7 +29,6 @@
     font-size:16px;}
   body{padding-bottom:88px;}
   .num{font-variant-numeric:tabular-nums; font-feature-settings:"tnum";}
-
   /* ---------- Header ---------- */
   header{background:var(--forest); color:#F3EFE4; padding:14px 16px 12px; position:sticky; top:0; z-index:40;
     box-shadow:0 2px 10px rgba(34,53,43,.25);}
@@ -40,7 +47,6 @@
   .budget-track{height:10px; border-radius:6px; background:rgba(255,255,255,.18); overflow:hidden;}
   .budget-fill{height:100%; border-radius:6px; background:var(--gold); width:0%; transition:width .4s ease;}
   .budget-fill.ok{background:#7FB98B;} .budget-fill.warn{background:#E0A75E;} .budget-fill.over{background:#E2745F;}
-
   /* ---------- Day navigator ---------- */
   .daynav{display:flex; align-items:center; gap:8px; padding:12px 16px 4px;}
   .daynav button{width:44px; height:44px; border-radius:12px; border:1px solid #DDD6C6; background:var(--card);
@@ -52,7 +58,6 @@
   .day-dots i{width:7px; height:7px; border-radius:50%; background:#D8D2C2; display:block;}
   .day-dots i.has{background:var(--gold);}
   .day-dots i.cur{outline:2px solid var(--forest); outline-offset:1px; background:var(--forest);}
-
   /* ---------- Sections ---------- */
   section{margin:14px 12px 0;}
   .sec-head{display:flex; align-items:center; gap:8px; padding:6px 6px; border-radius:10px;}
@@ -63,7 +68,6 @@
   .sec-P h2{color:var(--planta);} .sec-E h2{color:var(--eventual);} .sec-A h2{color:var(--agencia);}
   .sec-S h2{color:var(--sinclas);}
   .sec-note{font-size:11.5px; color:var(--muted); margin:0 8px 6px;}
-
   /* employee card */
   .emp{background:var(--card); border-radius:var(--radius); margin-bottom:8px; padding:10px 12px;
     border-left:5px solid var(--gold); box-shadow:0 1px 3px rgba(38,48,42,.07);}
@@ -88,17 +92,14 @@
   .clear-day.armed{color:#fff; background:var(--alert); border-radius:8px; font-size:12px; font-weight:700; padding:6px 8px;}
   .add-btn{width:100%; border:1.5px dashed #C9C2B0; background:none; color:var(--muted); border-radius:12px;
     padding:10px; font-size:14px; margin-bottom:4px;}
-
   /* ---------- Bottom bar ---------- */
   .tabbar{position:fixed; bottom:0; left:0; right:0; display:flex; background:var(--card);
     border-top:1px solid #E2DCCB; z-index:50; padding-bottom:env(safe-area-inset-bottom);}
   .tabbar button{flex:1; border:none; background:none; padding:10px 4px 12px; font-size:12px; color:var(--muted);}
   .tabbar button .ic{display:block; font-size:19px; margin-bottom:2px;}
   .tabbar button.active{color:var(--forest); font-weight:700;}
-
   /* ---------- Views ---------- */
   .view{display:none;} .view.active{display:block;}
-
   /* summary */
   .sum-card{background:var(--card); border-radius:var(--radius); margin:12px; padding:14px;
     box-shadow:0 1px 3px rgba(38,48,42,.07);}
@@ -116,7 +117,6 @@
   .grand .row b{font-size:15px;}
   .grand .row.hero{border-top:1px solid rgba(255,255,255,.2); margin-top:6px; padding-top:10px; font-size:16px;}
   .grand .row.hero b{color:var(--gold); font-size:19px;}
-
   /* export */
   .exp-card{background:var(--card); border-radius:var(--radius); margin:12px; padding:16px;
     box-shadow:0 1px 3px rgba(38,48,42,.07);}
@@ -127,7 +127,6 @@
   .btn.gold{background:var(--gold); color:#2A2115;}
   .btn.ghost{background:#F1EDE0; color:var(--ink); font-weight:600;}
   .btn + .btn{margin-top:8px;}
-
   /* modal */
   .overlay{position:fixed; inset:0; background:rgba(34,53,43,.45); z-index:90; display:none;
     align-items:flex-end; justify-content:center;}
@@ -169,7 +168,6 @@
 </style>
 </head>
 <body>
-
 <header>
   <div class="brand">
     <div class="brand-right">AYMOR HÔTE</div>
@@ -188,7 +186,6 @@
     <div class="budget-track"><div class="budget-fill" id="budgetFill"></div></div>
   </div>
 </header>
-
 <!-- ============ VISTA: CAPTURA ============ -->
 <div class="view active" id="view-capture">
   <div class="daynav">
@@ -200,13 +197,11 @@
   <div id="sections"></div>
   <p class="hint" data-i18n="hint">Regla de comida.</p>
 </div>
-
 <!-- ============ VISTA: RESUMEN ============ -->
 <div class="view" id="view-summary">
   <button class="backbar" onclick="window.__goBack()">← <span data-i18n="back">Regresar</span></button>
   <div id="summaryBody"></div>
 </div>
-
 <!-- ============ VISTA: ENVIAR ============ -->
 <div class="view" id="view-export">
   <button class="backbar" onclick="window.__goBack()">← <span data-i18n="back">Regresar</span></button>
@@ -220,6 +215,13 @@
     <p data-i18n="e2p">.</p>
     <button class="btn gold" id="btnXLS" data-i18n="e2b">Excel</button>
     <button class="btn ghost" id="btnShare" data-i18n="e2s">WhatsApp</button>
+  </div>
+  <div class="exp-card">
+    <h3 data-i18n="e2it">Importar horas desde Excel</h3>
+    <p data-i18n="e2ip">.</p>
+    <button class="btn ghost" id="btnTemplate" data-i18n="e2itpl">Descargar plantilla</button>
+    <button class="btn gold" id="btnImportXLS" data-i18n="e2ibtn">Importar archivo</button>
+    <input type="file" id="fileImportXLS" accept=".xlsx,.xls" style="display:none">
   </div>
   <div class="exp-card">
     <h3 data-i18n="e3t">Respaldo</h3>
@@ -246,14 +248,12 @@
     <button class="btn primary" id="btnSaveSettings" data-i18n="sSave">Guardar</button>
   </div>
 </div>
-
 <div class="tabbar">
   <button class="active" data-view="capture"><span class="ic">⏱</span><span data-i18n="capture">Captura</span></button>
   <button id="privBtn"><span class="ic">🔒</span><span id="privLabel">Privado</span></button>
   <button data-view="summary" class="priv-tab" hidden><span class="ic">Σ</span><span data-i18n="summary">Resumen</span></button>
   <button data-view="export" class="priv-tab" hidden><span class="ic">↗</span><span data-i18n="send">Enviar</span></button>
 </div>
-
 <!-- ============ MODAL EMPLEADO ============ -->
 <div class="overlay" id="empOverlay">
   <div class="sheet">
@@ -278,7 +278,6 @@
     <button class="danger-link" id="btnDeleteEmp" data-i18n="delEmp">Borrar de la base para siempre…</button>
   </div>
 </div>
-
 <!-- ============ PIN — DATOS PRIVADOS ============ -->
 <div class="overlay center" id="stOverlay">
   <div class="sheet">
@@ -299,19 +298,16 @@
     <button class="btn ghost" id="pinCancel" style="margin-top:8px" data-i18n="cancel">Cancelar</button>
   </div>
 </div>
-
 <div id="sessionWarn" style="display:none; position:fixed; top:0; left:0; right:0; z-index:200;
   background:#B3402E; color:#fff; font-size:13px; font-weight:700; text-align:center;
   padding:8px 12px;">⚠️ AQUÍ NO SE GUARDA SOLO — antes de salir: 🔒 Privado → Enviar → Descargar respaldo</div>
 <div class="toast" id="toast"></div>
-
 <script>
 (function(){
 "use strict";
 /* ================= ESTADO ================= */
 const SEED_EMPLOYEES = "[{\"id\":\"e00\",\"name\":\"Don Remo Alhambra\",\"cls\":\"P\",\"rate\":33.32,\"empNo\":\"001\",\"active\":true,\"times\":{\"2026-05-18\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-05-19\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-05-20\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-05-21\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-05-22\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-05-25\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-05-26\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-05-27\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-05-28\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-05-29\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-15\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-16\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-17\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-18\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-19\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-22\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-23\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-24\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-25\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-26\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-29\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-06-30\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-01\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-02\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-03\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-06\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-07\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-08\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-09\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-10\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-13\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-14\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-15\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-16\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-17\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-20\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-21\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-22\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-23\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-24\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-27\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-28\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-29\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-30\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-07-31\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-03\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-04\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-05\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-06\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-07\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-10\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-11\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-12\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-13\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-14\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-17\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-18\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-19\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-20\":{\"in\":\"16:00\",\"out\":\"00:00\"},\"2026-08-21\":{\"in\":\"16:00\",\"out\":\"00:00\"}}},{\"id\":\"e01\",\"name\":\"Malhi Baljeet Singh\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"008\",\"active\":false,\"times\":{\"2026-05-17\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-18\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-19\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-20\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-21\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-24\":{\"in\":\"08:00\",\"out\":\"17:00\"},\"2026-05-25\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-26\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-27\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-28\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-14\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-15\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-16\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-17\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-18\":{\"in\":\"08:00\",\"out\":\"15:00\"},\"2026-06-19\":{\"in\":\"08:00\",\"out\":\"15:15\"},\"2026-06-21\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-22\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-23\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-24\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-28\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-29\":{\"in\":\"08:00\",\"out\":\"13:00\"},\"2026-06-30\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-07-01\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-07-05\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-07-06\":{\"in\":\"08:00\",\"out\":\"13:00\"},\"2026-07-07\":{\"in\":\"08:00\",\"out\":\"13:00\"},\"2026-07-08\":{\"in\":\"08:00\",\"out\":\"14:00\"}}},{\"id\":\"e02\",\"name\":\"Harsh\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"009\",\"active\":false,\"times\":{\"2026-05-24\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-14\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-15\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-16\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-17\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-21\":{\"in\":\"08:00\",\"out\":\"14:00\"}}},{\"id\":\"e03\",\"name\":\"Jagtar Singh\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"015\",\"active\":false,\"times\":{\"2026-05-17\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-18\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-19\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-24\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-25\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-26\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-27\":{\"in\":\"08:00\",\"out\":\"13:45\"},\"2026-05-28\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-14\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-15\":{\"in\":\"08:00\",\"out\":\"13:15\"},\"2026-06-16\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-17\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-18\":{\"in\":\"08:00\",\"out\":\"15:00\"},\"2026-06-19\":{\"in\":\"08:00\",\"out\":\"15:15\"},\"2026-06-21\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-22\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-23\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-24\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-28\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-29\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-30\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-07-05\":{\"in\":\"08:00\",\"out\":\"13:00\"},\"2026-07-06\":{\"in\":\"08:00\",\"out\":\"13:00\"}}},{\"id\":\"e04\",\"name\":\"Jasbir Singh\",\"cls\":\"P\",\"rate\":20,\"empNo\":\"016\",\"active\":false,\"times\":{\"2026-05-17\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-18\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-19\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-20\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-21\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-24\":{\"in\":\"08:00\",\"out\":\"17:00\"},\"2026-05-25\":{\"in\":\"08:00\",\"out\":\"13:00\"},\"2026-05-26\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-27\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-28\":{\"in\":\"08:00\",\"out\":\"15:45\"},\"2026-05-29\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-14\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-15\":{\"in\":\"08:00\",\"out\":\"15:15\"},\"2026-06-16\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-17\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-18\":{\"in\":\"08:00\",\"out\":\"15:00\"},\"2026-06-19\":{\"in\":\"08:00\",\"out\":\"15:15\"},\"2026-06-21\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-22\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-23\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-24\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-28\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-29\":{\"in\":\"08:00\",\"out\":\"13:00\"},\"2026-06-30\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-07-01\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-07-02\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-07-05\":{\"in\":\"08:00\",\"out\":\"15:00\"},\"2026-07-06\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-07-07\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-07-08\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-07-09\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-07-10\":{\"in\":\"08:00\",\"out\":\"14:00\"}}},{\"id\":\"e05\",\"name\":\"Jodha Singh\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"017\",\"active\":false,\"times\":{}},{\"id\":\"e06\",\"name\":\"Kimti Lal\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"018\",\"active\":false,\"times\":{\"2026-05-17\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-18\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-19\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-20\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-21\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-24\":{\"in\":\"08:00\",\"out\":\"17:00\"},\"2026-05-25\":{\"in\":\"08:00\",\"out\":\"13:00\"},\"2026-05-26\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-27\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-28\":{\"in\":\"08:00\",\"out\":\"15:45\"},\"2026-05-29\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-14\":{\"in\":\"08:00\",\"out\":\"16:00\"}}},{\"id\":\"e07\",\"name\":\"Marvin Garcia\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"019\",\"active\":false,\"times\":{\"2026-05-17\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-18\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-19\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-20\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-24\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-25\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-26\":{\"in\":\"08:00\",\"out\":\"14:00\"}}},{\"id\":\"e08\",\"name\":\"Harpeet Singh\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"020\",\"active\":false,\"times\":{\"2026-06-14\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-15\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-16\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-17\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-18\":{\"in\":\"08:00\",\"out\":\"15:00\"},\"2026-06-19\":{\"in\":\"08:00\",\"out\":\"15:15\"},\"2026-06-21\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-22\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-23\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-24\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-28\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-29\":{\"in\":\"08:00\",\"out\":\"13:00\"},\"2026-06-30\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-07-01\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-07-02\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-07-05\":{\"in\":\"08:00\",\"out\":\"15:00\"},\"2026-07-06\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-07-07\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-07-08\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-07-09\":{\"in\":\"08:00\",\"out\":\"13:00\"}}},{\"id\":\"e09\",\"name\":\"Amit Sharma\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"021\",\"active\":false,\"times\":{\"2026-05-17\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-18\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-19\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-20\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-05-24\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-05-25\":{\"in\":\"08:00\",\"out\":\"14:00\"}}},{\"id\":\"e10\",\"name\":\"Ranjit Singh (Mani)\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"022\",\"active\":false,\"times\":{\"2026-06-21\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-22\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-23\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-06-28\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-29\":{\"in\":\"08:00\",\"out\":\"13:00\"},\"2026-06-30\":{\"in\":\"08:00\",\"out\":\"14:00\"}}},{\"id\":\"e11\",\"name\":\"Mohit Kumar\",\"cls\":\"P\",\"rate\":21,\"empNo\":\"023\",\"active\":false,\"times\":{\"2026-06-14\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-15\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-06-16\":{\"in\":\"08:00\",\"out\":\"15:00\"},\"2026-06-21\":{\"in\":\"08:00\",\"out\":\"16:00\"}}},{\"id\":\"e12\",\"name\":\"Taranpreet Singh\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"024\",\"active\":false,\"times\":{\"2026-07-03\":{\"in\":\"08:00\",\"out\":\"14:00\"},\"2026-07-04\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-07-05\":{\"in\":\"08:00\",\"out\":\"16:00\"}}},{\"id\":\"e13\",\"name\":\"Neha Sharma\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"\",\"active\":false,\"times\":{}},{\"id\":\"e14\",\"name\":\"Lovedeep Singh\",\"cls\":\"P\",\"rate\":19,\"empNo\":\"\",\"active\":false,\"times\":{}},{\"id\":\"e15\",\"name\":\"Gulshan\",\"cls\":\"A\",\"rate\":21,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-07-26\":{\"in\":\"10:00\",\"out\":\"18:30\"}}},{\"id\":\"e16\",\"name\":\"Honey Kakkar\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-08-10\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-11\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-12\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-13\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-14\":{\"in\":\"00:00\",\"out\":\"07:15\"},\"2026-08-04\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-05\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"08:00\"}}},{\"id\":\"e17\",\"name\":\"Arvind Saini\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-08-09\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-08-10\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-11\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-12\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-13\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-14\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-16\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-08-03\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-04\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-05\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-07\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"e18\",\"name\":\"Bhopinder\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-08-09\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-08-10\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-12\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-13\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-16\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-08-03\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-04\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-05\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"08:00\"}}},{\"id\":\"e19\",\"name\":\"Harsh Kumar\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-08-10\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-13\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"e20\",\"name\":\"Rajesh\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-08-13\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"e21\",\"name\":\"Gaurav\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-08-04\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"e22\",\"name\":\"Karndeep\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-08-03\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"e23\",\"name\":\"Sawan\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":false,\"times\":{}},{\"id\":\"e24\",\"name\":\"Rishi\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-08-05\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"e25\",\"name\":\"Manish\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-08-05\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-07\":{\"in\":\"00:00\",\"out\":\"07:00\"}}},{\"id\":\"e26\",\"name\":\"Manish Kumar\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"active\":true,\"times\":{\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"a27\",\"name\":\"Jagtar (agency)\",\"cls\":\"A\",\"rate\":21,\"empNo\":\"\",\"phone\":\"\",\"active\":true,\"times\":{\"2026-07-12\":{\"in\":\"07:30\",\"out\":\"14:00\"},\"2026-07-13\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-14\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-16\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-17\":{\"in\":\"00:00\",\"out\":\"06:45\"},\"2026-07-19\":{\"in\":\"08:15\",\"out\":\"16:45\"},\"2026-07-21\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-22\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-23\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-26\":{\"in\":\"10:00\",\"out\":\"18:30\"},\"2026-07-27\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-28\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-31\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-02\":{\"in\":\"08:00\",\"out\":\"16:00\"}}},{\"id\":\"a28\",\"name\":\"Baljeet (agency)\",\"cls\":\"A\",\"rate\":21,\"empNo\":\"\",\"phone\":\"\",\"active\":true,\"times\":{\"2026-08-02\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-07-26\":{\"in\":\"10:00\",\"out\":\"13:45\"},\"2026-07-29\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-30\":{\"in\":\"00:00\",\"out\":\"05:30\"},\"2026-07-31\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-12\":{\"in\":\"07:30\",\"out\":\"14:00\"},\"2026-07-13\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-14\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-15\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-16\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-17\":{\"in\":\"00:00\",\"out\":\"06:45\"}}},{\"id\":\"a29\",\"name\":\"Love (agency)\",\"cls\":\"A\",\"rate\":21,\"empNo\":\"\",\"phone\":\"\",\"active\":true,\"times\":{\"2026-07-27\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-28\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-29\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-30\":{\"in\":\"00:00\",\"out\":\"05:30\"},\"2026-07-31\":{\"in\":\"00:15\",\"out\":\"06:00\"},\"2026-08-03\":{\"in\":\"00:15\",\"out\":\"08:00\"},\"2026-08-04\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-05\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"a30\",\"name\":\"Harpreet (agency)\",\"cls\":\"A\",\"rate\":21,\"empNo\":\"\",\"phone\":\"\",\"active\":true,\"times\":{\"2026-07-26\":{\"in\":\"10:00\",\"out\":\"18:30\"},\"2026-07-27\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-28\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-29\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-30\":{\"in\":\"00:00\",\"out\":\"05:30\"},\"2026-08-04\":{\"in\":\"00:00\",\"out\":\"05:00\"},\"2026-08-05\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"a31\",\"name\":\"Jasbir (agency)\",\"cls\":\"A\",\"rate\":21,\"empNo\":\"\",\"phone\":\"\",\"active\":true,\"times\":{\"2026-07-26\":{\"in\":\"10:00\",\"out\":\"18:30\"},\"2026-07-27\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-07-28\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-07-29\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-07-30\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-07-31\":{\"in\":\"20:15\",\"out\":\"06:00\"},\"2026-08-02\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-08-03\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-04\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-05\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-08-07\":{\"in\":\"00:00\",\"out\":\"08:00\"}}},{\"id\":\"a32\",\"name\":\"Taranpreet (agency)\",\"cls\":\"A\",\"rate\":21,\"empNo\":\"\",\"phone\":\"\",\"active\":true,\"times\":{\"2026-07-26\":{\"in\":\"14:00\",\"out\":\"18:30\"},\"2026-07-27\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-07-28\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-07-29\":{\"in\":\"00:00\",\"out\":\"08:00\"},\"2026-07-30\":{\"in\":\"00:00\",\"out\":\"05:30\"},\"2026-07-31\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-02\":{\"in\":\"08:00\",\"out\":\"16:00\"},\"2026-08-03\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-04\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-05\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-07\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"a33\",\"name\":\"Harsh (agency)\",\"cls\":\"A\",\"rate\":21,\"empNo\":\"\",\"phone\":\"\",\"active\":true,\"times\":{\"2026-07-29\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-07-30\":{\"in\":\"00:00\",\"out\":\"05:30\"},\"2026-07-31\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-03\":{\"in\":\"00:00\",\"out\":\"06:00\"},\"2026-08-04\":{\"in\":\"00:00\",\"out\":\"06:00\"}}},{\"id\":\"a34\",\"name\":\"Kirati (agency)\",\"cls\":\"A\",\"rate\":21,\"empNo\":\"\",\"phone\":\"\",\"active\":true,\"times\":{\"2026-08-02\":{\"in\":\"08:00\",\"out\":\"16:00\"}}},{\"id\":\"a_tar\",\"name\":\"Taramdeep\",\"cls\":\"A\",\"rate\":0,\"empNo\":\"\",\"phone\":\"\",\"active\":true,\"times\":{\"2026-08-06\":{\"in\":\"00:00\",\"out\":\"06:00\"}}}]";
 const STORAGE_KEY = "deen-horas-v33";
-
 /* ================= IDIOMAS (ES / EN / Filipino) =================
    Se traduce todo lo que toca Don. La zona de Ricardo (Resumen/Enviar y los
    archivos Excel/CSV) queda en español hasta congelar el diseño. */
@@ -356,6 +352,10 @@ const I18N = {
     e2p:"Excel con fórmulas vivas: totales por persona separados por tipo y detalle diario. Cualquier corrección recalcula todo.",
     e2b:"Descargar Excel con fórmulas",
     e2s:"Texto rápido por Discord",
+    e2it:"Importar horas desde Excel",
+    e2ip:"Sube un Excel con las horas ya escritas y la app las acomoda sola, sin capturarlas una por una. Descarga primero la plantilla si no sabes cómo va el formato.",
+    e2itpl:"Descargar plantilla",
+    e2ibtn:"Importar archivo",
     e3t:"Respaldo completo",
     e3p:"Guarda TODO en un archivo. Súbelo a Drive o pásalo a otro teléfono y ábrelo con Restaurar.",
     e3b:"Descargar respaldo",
@@ -374,7 +374,7 @@ const I18N = {
     tBk:"Respaldo descargado. Guárdalo en Drive.",
     tRest:"Respaldo restaurado.",
     tBadFile:"Ese archivo no es un respaldo válido de esta app.",
-    tNoNet:"Sin internet no puedo armar el Excel con fórmulas: te di la versión simple.",
+    tNoNet:"Sin internet no puedo armar el Excel: revisa tu conexión e inténtalo otra vez.",
     tMissingNo:"Falta el No. de empleado de: {l}. Tócales el nombre y agrégalo.",
     tBizOpen:"Nombre desbloqueado: cámbialo y toca Guardar ajustes.",
     tSunday:"La quincena empieza en domingo: la ajusté al domingo {d}.",
@@ -429,6 +429,10 @@ const I18N = {
     e2p:"Excel with live formulas: totals per person by type, plus the daily detail. Any correction recalculates everything.",
     e2b:"Download Excel with formulas",
     e2s:"Quick Discord text",
+    e2it:"Import hours from Excel",
+    e2ip:"Upload an Excel file with the hours already written and the app fills them in on its own — no need to type each day. Download the template first if you're not sure of the format.",
+    e2itpl:"Download template",
+    e2ibtn:"Import file",
     e3t:"Full backup",
     e3p:"Saves EVERYTHING to one file. Upload it to Drive or move it to another phone and open it with Restore.",
     e3b:"Download backup",
@@ -447,7 +451,7 @@ const I18N = {
     tBk:"Backup downloaded. Keep it in Drive.",
     tRest:"Backup restored.",
     tBadFile:"That file is not a valid backup of this app.",
-    tNoNet:"No internet: could not build the formula Excel — you got the simple version.",
+    tNoNet:"No internet: could not build the Excel — check your connection and try again.",
     tMissingNo:"Missing employee No. for: {l}. Tap their name and add it.",
     tBizOpen:"Name unlocked: change it and tap Save settings.",
     tSunday:"Pay periods start on Sunday: adjusted to Sunday {d}.",
@@ -528,6 +532,10 @@ const I18N = {
     e2p:"Excel avec formules vivantes : totaux par personne selon le type, plus le détail quotidien. Toute correction recalcule tout.",
     e2b:"Télécharger l'Excel avec formules",
     e2s:"Texte rapide Discord",
+    e2it:"Importer les heures depuis Excel",
+    e2ip:"Téléversez un fichier Excel avec les heures déjà inscrites et l'application les remplit toute seule — pas besoin de tout retaper. Téléchargez d'abord le modèle si vous n'êtes pas sûr du format.",
+    e2itpl:"Télécharger le modèle",
+    e2ibtn:"Importer le fichier",
     e3t:"Sauvegarde complète",
     e3p:"Enregistre TOUT dans un fichier. Téléversez-le sur Drive ou transférez-le à un autre téléphone et ouvrez-le avec Restaurer.",
     e3b:"Télécharger la sauvegarde",
@@ -546,7 +554,7 @@ const I18N = {
     tBk:"Sauvegarde téléchargée. Gardez-la sur Drive.",
     tRest:"Sauvegarde restaurée.",
     tBadFile:"Ce fichier n'est pas une sauvegarde valide de cette application.",
-    tNoNet:"Sans internet : impossible de créer l'Excel avec formules — version simple fournie.",
+    tNoNet:"Sans internet : impossible de créer l'Excel — vérifiez votre connexion et réessayez.",
     tMissingNo:"No d'employé manquant pour : {l}. Touchez le nom et ajoutez-le.",
     tBizOpen:"Nom déverrouillé : changez-le puis Enregistrer les réglages.",
     tSunday:"La quinzaine commence le dimanche : ajustée au dimanche {d}.",
@@ -601,6 +609,10 @@ const I18N = {
     e2p:"Excel na may live formulas: kabuuan bawat tao ayon sa uri, at araw-araw na detalye. Awtomatikong nagre-recalculate.",
     e2b:"I-download ang Excel na may formulas",
     e2s:"Mabilis na Discord text",
+    e2it:"I-import ang oras mula sa Excel",
+    e2ip:"I-upload ang Excel file na may nakasulat nang oras at awtomatikong ilalagay ito ng app — hindi na kailangang i-type isa-isa. I-download muna ang template kung hindi sigurado sa format.",
+    e2itpl:"I-download ang template",
+    e2ibtn:"I-import ang file",
     e3t:"Buong backup",
     e3p:"Sine-save LAHAT sa isang file. I-upload sa Drive o ilipat sa ibang telepono at buksan gamit ang Restore.",
     e3b:"I-download ang backup",
@@ -619,7 +631,7 @@ const I18N = {
     tBk:"Na-download ang backup. Itago sa Drive.",
     tRest:"Na-restore ang backup.",
     tBadFile:"Hindi valid na backup ng app ang file na iyan.",
-    tNoNet:"Walang internet: hindi nabuo ang Excel na may formulas — simpleng bersyon ang naibigay.",
+    tNoNet:"Walang internet: hindi nagawa ang Excel — tingnan ang koneksyon at subukan ulit.",
     tMissingNo:"Walang employee No. sina: {l}. Pindutin ang pangalan at idagdag.",
     tBizOpen:"Bukas na ang pangalan: palitan at pindutin ang I-save.",
     tSunday:"Linggo ang simula ng pay period: inilipat sa Linggo {d}.",
@@ -655,13 +667,11 @@ function applyLang(){
 }
 const CLS_ORDER = ["P","E","A"];
 const CLS_NAME = {P:"Planta", E:"Eventual", A:"Agencia"};
-
 let state = defaultState();
 let currentDayIdx = 0;
 let editingEmpId = null;
 let pickedCls = "P";
 let saveTimer = null;
-
 function defaultState(){
   const emp = (name, cls, rate, empNo, act) => ({
     id: "e" + Math.random().toString(36).slice(2,10),
@@ -680,7 +690,6 @@ function defaultState(){
     employees: JSON.parse(SEED_EMPLOYEES)
   };
 }
-
 function lastSundayISO(){
   const d = new Date(); d.setHours(12,0,0,0);
   d.setDate(d.getDate() - d.getDay());
@@ -718,7 +727,6 @@ function fmtRange(){
   const ds = periodDates();
   return fmtDateW(ds[0]) + " – " + fmtDateW(ds[13]) + " · Q" + state.periodNum;
 }
-
 /* ================= CÁLCULOS ================= */
 /* Turno: horas crudas; si OUT <= IN cruza medianoche (+24h). */
 function rawShiftHours(tin, tout){
@@ -732,7 +740,6 @@ function rawShiftHours(tin, tout){
 /* Comida: media hora NO pagada por cada 5 horas de turno. 8h→0.5 · 10h→1.0 · 4h→0 */
 function lunchFor(raw){ return Math.floor(raw/5 + 1e-9) * 0.5; }
 function paidFor(raw){ const l = lunchFor(raw); return Math.max(0, raw - l); }
-
 function dayCalc(empObj, iso){
   const t = empObj.times[iso];
   if(!t || !t.in || !t.out) return {raw:0, lunch:0, paid:0, has:false};
@@ -760,7 +767,6 @@ function grandTotals(){
   });
   return {hours, pay, agHours};
 }
-
 /* ================= FORMATO ================= */
 function fh(n){ // horas
   const v = Math.round(n*100)/100;
@@ -769,14 +775,12 @@ function fh(n){ // horas
 function fmoney(n){
   return "$" + n.toLocaleString("en-CA",{minimumFractionDigits:2, maximumFractionDigits:2});
 }
-
 /* ================= PERSISTENCIA (3 niveles) =================
    1) window.storage (visor de Claude) → 2) localStorage (navegador: Safari/Chrome
    con el archivo guardado en el teléfono o Drive) → 3) solo esta sesión (aviso).
    El Respaldo en "Enviar" siempre funciona, sea cual sea el nivel. */
 let storageMode = null; // "nube" | "local" | "sesion"
 let warnedSession = false;
-
 async function saveNow(){
   const data = JSON.stringify(state);
   /* nivel 1 */
@@ -824,7 +828,6 @@ async function loadSaved(){
     }
   }catch(err){ /* sin localStorage */ }
 }
-
 /* ================= RENDER: HEADER ================= */
 function bizSlug(){ return (state.bizName||"DEEN").replace(/[^A-Za-z0-9]+/g,"").slice(0,14) || "APP"; }
 function renderHeader(){
@@ -855,7 +858,6 @@ function renderHeader(){
   }
   wrap.style.display = "";
 }
-
 /* ================= RENDER: CAPTURA ================= */
 function renderDayNav(){
   const ds = periodDates(); const iso = ds[currentDayIdx]; const d = parseISO(iso);
@@ -871,7 +873,6 @@ function renderDayNav(){
     dots.appendChild(i2);
   });
 }
-
 function renderSections(){
   /* UNA sola lista pareja con los empleados ACTIVOS. Los quitados siguen en la base
      y regresan desde la lista desplegable. El tipo no se ve aquí (capa privada). */
@@ -906,7 +907,6 @@ function renderSections(){
   sec.appendChild(add);
   host.appendChild(sec);
 }
-
 const ST_KEYS = ["VAC","SICK","LEAVE","ABS","NOSHOW"];
 let stTarget = null;
 function openStatus(empId, iso){
@@ -935,7 +935,6 @@ function empCard(e, iso){
   const card = document.createElement("div"); card.className = "emp"; /* neutra: el tipo no se ve aquí */
   const t = e.times[iso] || {};
   const c = dayCalc(e, iso);
-
   const top = document.createElement("div"); top.className = "emp-top";
   const nm = document.createElement("div"); nm.className = "emp-name";
   /* PRIVACIDAD: solo el nombre y el horario de ESTE día. Las horas acumuladas de la
@@ -944,7 +943,6 @@ function empCard(e, iso){
   nm.onclick = ()=> requirePIN(()=> openEmpModal(e.id));
   top.appendChild(nm);
   card.appendChild(top);
-
   const row = document.createElement("div"); row.className = "emp-times";
   const badge = document.createElement("div");
   badge.className = "shift-badge num" + (c.has ? " on" : "");
@@ -1009,7 +1007,6 @@ function empCard(e, iso){
   card.appendChild(row);
   return card;
 }
-
 function timeField(label, value, onChange){
   const w = document.createElement("div"); w.className = "tfield";
   const l = document.createElement("label"); l.textContent = label;
@@ -1017,7 +1014,6 @@ function timeField(label, value, onChange){
   i.onchange = ()=> onChange(i.value);
   w.appendChild(l); w.appendChild(i); return w;
 }
-
 /* ================= RENDER: RESUMEN ================= */
 function renderSummary(){
   const host = document.getElementById("summaryBody"); host.innerHTML = "";
@@ -1053,7 +1049,6 @@ function renderSummary(){
     "<div class='row hero'><span>" + T("gPay") + "</span><b>" + fmoney(g.pay) + "</b></div>";
   host.appendChild(grand);
 }
-
 /* ================= EXPORTAR ================= */
 function download(filename, text, mime){
   const blob = new Blob([text], {type: mime || "text/plain;charset=utf-8"});
@@ -1145,7 +1140,6 @@ async function excelResumen(){
   XLSX.writeFile(wb, bizSlug() + "_Q" + state.periodNum + "_" + ds[0] + ".xlsx");
   toast(T("tXLS"));
 }
-
 function xlsResumen(){
   /* Archivo .xls (tabla HTML) que Excel y Google Sheets abren como hoja de cálculo con formato. */
   const ds = periodDates();
@@ -1189,8 +1183,84 @@ function xlsResumen(){
     h += "</tr>";
   });
   h += "</table><p>Pago bruto = antes de retenciones (esas las calcula el sistema de nómina). Comida: 0.5 h por cada 5 h de turno. Generado con la app de horas · Aymor Hôte.</p></body></html>";
-  download(bizSlug() + "_Q" + state.periodNum + "_resumen_" + ds[0] + ".xls", "\ufeff" + h, "application/vnd.ms-excel");
+  download(bizSlug() + "_Q" + state.periodNum + "_resumen_" + ds[0] + ".xls", "﻿" + h, "application/vnd.ms-excel");
   toast("Excel descargado. Mándaselo a Ricardo por WhatsApp o súbelo a Drive.");
+}
+/* ============ IMPORTAR HORAS DESDE EXCEL ============
+   Formato esperado (primera hoja): Nombre | Fecha (AAAA-MM-DD) | Entrada (HH:MM) | Salida (HH:MM) | Tipo (P/E/A, opcional)
+   Si el nombre no existe todavía, se crea el empleado nuevo (tipo E por defecto, sin tarifa —
+   se completa después desde + Agregar empleado). Nunca se borra nada que ya exista: solo se
+   agrega o se sobreescribe el día exacto que trae el archivo. */
+function downloadImportTemplate(){
+  ensureXLSX().then(ok=>{
+    if(!ok){ toast(T("tNoNet")); return; }
+    const aoa = [
+      ["Nombre","Fecha (AAAA-MM-DD)","Entrada (HH:MM)","Salida (HH:MM)","Tipo (P/E/A, opcional)"],
+      ["Ejemplo Pérez","2026-08-24","08:00","16:00","E"]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws["!cols"] = [{wch:22},{wch:20},{wch:16},{wch:16},{wch:20}];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Horas");
+    XLSX.writeFile(wb, "plantilla_importar_horas.xlsx");
+  });
+}
+function excelSerialToISO(v){
+  if(typeof v === "number"){
+    const d = XLSX.SSF.parse_date_code(v);
+    return d.y + "-" + String(d.m).padStart(2,"0") + "-" + String(d.d).padStart(2,"0");
+  }
+  const s = String(v).trim();
+  const m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m) return m[1] + "-" + m[2].padStart(2,"0") + "-" + m[3].padStart(2,"0");
+  return s;
+}
+function excelTimeToHHMM(v){
+  if(typeof v === "number"){
+    let totalMin = Math.round(v*24*60);
+    const h = Math.floor(totalMin/60) % 24, m = totalMin%60;
+    return String(h).padStart(2,"0") + ":" + String(m).padStart(2,"0");
+  }
+  const s = String(v).trim();
+  const m = s.match(/^(\d{1,2}):(\d{2})/);
+  return m ? m[1].padStart(2,"0") + ":" + m[2] : "";
+}
+async function importFromExcel(file){
+  const ok = await ensureXLSX();
+  if(!ok){ toast(T("tNoNet")); return; }
+  let rows;
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, {type:"array"});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:""});
+  }catch(err){ toast(T("tBadFile")); return; }
+  let okCount = 0; const skipped = [];
+  for(let i=1;i<rows.length;i++){
+    const r = rows[i];
+    if(!r || !r.length) continue;
+    const name = String(r[0]||"").trim();
+    if(!name || r[1]==="" || r[1]==null) continue;
+    const iso = excelSerialToISO(r[1]);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)){ skipped.push(name + " (" + r[1] + ")"); continue; }
+    const tin = excelTimeToHHMM(r[2]), tout = excelTimeToHHMM(r[3]);
+    if(!tin || !tout){ skipped.push(name + " " + iso); continue; }
+    const rawCls = String(r[4]||"").trim().toUpperCase();
+    let emp = state.employees.find(e=> e.name.trim().toLowerCase() === name.toLowerCase());
+    if(!emp){
+      const cls = ["P","E","A"].includes(rawCls) ? rawCls : "E";
+      emp = {id:"e"+Math.random().toString(36).slice(2,10), name, cls, rate:0, empNo:"", phone:"", active:true, times:{}};
+      state.employees.push(emp);
+    }
+    emp.times[iso] = {in:tin, out:tout};
+    okCount++;
+  }
+  persist(); refresh();
+  let msg = okCount + " turno(s) importado(s).";
+  if(skipped.length){
+    msg += " " + skipped.length + " renglón(es) con error: " + skipped.slice(0,5).join(", ") + (skipped.length>5 ? "…" : "");
+  }
+  toast(msg);
 }
 function summaryText(){
   const ds = periodDates();
@@ -1234,10 +1304,8 @@ function restoreFile(file){
   };
   r.readAsText(file);
 }
-
 /* ================= MODAL EMPLEADO ================= */
 let selectedExistingId = null;
-
 function openEmpModal(id, presetCls){
   editingEmpId = id;
   selectedExistingId = null;
@@ -1328,7 +1396,6 @@ function deleteEmp(){
   closeModal(); persist(); refresh();
 }
 function closeModal(){ document.getElementById("empOverlay").classList.remove("open"); editingEmpId=null; }
-
 /* ================= UTILERÍA ================= */
 function escapeHTML(s){ return s.replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 let toastTimer=null, lastDeleted=null;
@@ -1357,7 +1424,6 @@ function undoToast(msg){
 }
 function refresh(){ renderHeader(); renderDayNav(); renderSections();
   if(document.getElementById("view-summary").classList.contains("active")) renderSummary(); }
-
 /* ================= EVENTOS ================= */
 document.getElementById("prevDay").onclick = ()=>{ currentDayIdx = Math.max(0, currentDayIdx-1); refresh(); };
 document.getElementById("nextDay").onclick = ()=>{ currentDayIdx = Math.min(13, currentDayIdx+1); refresh(); };
@@ -1370,7 +1436,6 @@ function shiftPeriod(days, dn){
   currentDayIdx = 0; persist(); syncSettings(); refresh();
 }
 document.getElementById("periodBtn").onclick = ()=>{ switchView("export"); window.scrollTo({top:document.body.scrollHeight, behavior:"smooth"}); };
-
 /* ================= PIN — DATOS PRIVADOS ================= */
 let unlocked = false, pinCb = null, pinMode = "user";
 const MASTER_PIN = "AYMOR26";
@@ -1421,7 +1486,6 @@ document.getElementById("btnBizUnlock").onclick = ()=> askMaster(()=>{
   i.readOnly = false; i.focus();
   toast(T("tBizOpen"));
 });
-
 document.querySelectorAll(".tabbar button[data-view]").forEach(b=>{
   b.onclick = ()=>{
     const v = b.dataset.view;
@@ -1454,10 +1518,12 @@ function switchView(name){
 document.getElementById("btnCSV").onclick = csvENET;
 document.getElementById("btnXLS").onclick = excelResumen;
 document.getElementById("btnShare").onclick = shareSummary;
+document.getElementById("btnTemplate").onclick = downloadImportTemplate;
+document.getElementById("btnImportXLS").onclick = ()=> document.getElementById("fileImportXLS").click();
+document.getElementById("fileImportXLS").onchange = ev=>{ if(ev.target.files[0]) importFromExcel(ev.target.files[0]); ev.target.value=""; };
 document.getElementById("btnBackup").onclick = backup;
 document.getElementById("btnRestore").onclick = ()=> document.getElementById("fileRestore").click();
 document.getElementById("fileRestore").onchange = ev=>{ if(ev.target.files[0]) restoreFile(ev.target.files[0]); ev.target.value=""; };
-
 function syncSettings(){
   document.getElementById("setStart").value = state.periodStart;
   document.getElementById("setPeriodNum").value = state.periodNum;
@@ -1487,7 +1553,6 @@ document.getElementById("btnSaveSettings").onclick = ()=>{
   toast(T("tSaved"));
   switchView("capture");
 };
-
 ["pickP","pickE","pickA"].forEach(id=>{
   document.getElementById(id).onclick = ()=>{ pickedCls = document.getElementById(id).dataset.cls; paintClsPick(); };
 });
@@ -1496,7 +1561,6 @@ document.getElementById("btnHideEmp").onclick = hideEmp;
 document.getElementById("btnCancelEmp").onclick = closeModal;
 document.getElementById("btnDeleteEmp").onclick = deleteEmp;
 document.getElementById("empOverlay").addEventListener("click", ev=>{ if(ev.target.id==="empOverlay") closeModal(); });
-
 /* ================= ARRANQUE ================= */
 (async function init(){
   await loadSaved();
@@ -1513,3 +1577,4 @@ document.getElementById("empOverlay").addEventListener("click", ev=>{ if(ev.targ
 </script>
 </body>
 </html>
+Mostrando turnero_index.txt
