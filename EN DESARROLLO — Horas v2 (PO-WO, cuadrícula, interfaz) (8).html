@@ -2,9 +2,10 @@
 <html lang="es">
 <head>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="emailjs.config.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DEEN · Control de horas</title>
+<title>Turnero · Control de horas</title>
 <style>
   :root{
     --forest:#2F4739; --forest-deep:#22352B; --cream:#F6F2E7; --card:#FFFFFF;
@@ -179,8 +180,7 @@
 
 <header>
   <div class="brand">
-    <div class="brand-right">AYMOR HÔTE</div>
-    <h1 id="bizTitle">DEEN <span>Entretien et Nettoyage</span></h1>
+    <h1 id="bizTitle">Turnero</h1>
   </div>
   <div class="period-line">
     <button class="icon-btn" id="prevPeriod">‹</button>
@@ -392,7 +392,7 @@ const I18N = {
     sNum:"Número de periodo",
     sBudget:"Presupuesto de horas (0 = sin presupuesto)",
     sPin:"PIN de datos privados",
-    sBiz:"Nombre del negocio (solo Aymor, con clave maestra)",
+    sBiz:"Nombre del negocio (solo Turnero, con clave maestra)",
     sBizBtn:"🔐 Cambiar nombre (clave maestra)",
     sSave:"Guardar ajustes",
     tSaved:"Ajustes guardados.",
@@ -478,7 +478,7 @@ const I18N = {
     sNum:"Period number",
     sBudget:"Hours budget (0 = none)",
     sPin:"Private data PIN",
-    sBiz:"Business name (Aymor only, master key)",
+    sBiz:"Business name (Turnero only, master key)",
     sBizBtn:"🔐 Change name (master key)",
     sSave:"Save settings",
     tSaved:"Settings saved.",
@@ -590,7 +590,7 @@ const I18N = {
     sNum:"Numéro de période",
     sBudget:"Budget d'heures (0 = aucun)",
     sPin:"NIP des données privées",
-    sBiz:"Nom de l'entreprise (Aymor seulement, clé maîtresse)",
+    sBiz:"Nom de l'entreprise (Turnero seulement, clé maîtresse)",
     sBizBtn:"🔐 Changer le nom (clé maîtresse)",
     sSave:"Enregistrer les réglages",
     tSaved:"Réglages enregistrés.",
@@ -676,7 +676,7 @@ const I18N = {
     sNum:"Numero ng period",
     sBudget:"Badyet ng oras (0 = wala)",
     sPin:"PIN ng pribadong datos",
-    sBiz:"Pangalan ng negosyo (Aymor lamang, master key)",
+    sBiz:"Pangalan ng negosyo (Turnero lamang, master key)",
     sBizBtn:"🔐 Palitan ang pangalan (master key)",
     sSave:"I-save ang mga setting",
     tSaved:"Na-save ang settings.",
@@ -748,7 +748,7 @@ function defaultState(){
     budgetHours: 0,
     pin: "2026",
     lang: "en",
-    bizName: "DEEN Entretien et Nettoyage",
+    bizName: "Turnero",
     /* BASE DE EMPLEADOS: SIETE en pantalla; el resto queda guardado en la base
        (nada se borra solo) y regresa desde la lista desplegable de "+ Agregar empleado"
        con su último salario, teléfono y tipo. */
@@ -1377,7 +1377,7 @@ function buildResumenHTML(){
   const g = grandTotals();
   h += "</table><p style='font-weight:bold; font-size:14px;'>GRAN TOTAL — Todos los empleados: " + fh(g.hours) + " h" +
        " · Agencia (solo control): " + fh(g.agHours) + " h · Pago bruto planta+eventuales: $" + g.pay.toFixed(2) + "</p>";
-  h += "<p>Pago bruto = antes de retenciones (esas las calcula el sistema de nómina). Comida: 0.5 h por cada 5 h de turno. Generado con la app de horas · Aymor Hôte.</p></body></html>";
+  h += "<p>Pago bruto = antes de retenciones (esas las calcula el sistema de nómina). Comida: 0.5 h por cada 5 h de turno. Generado con la app de horas · Turnero.</p></body></html>";
   return h;
 }
 function xlsResumen(){
@@ -1401,7 +1401,7 @@ function summaryText(){
     });
   });
   const g = grandTotals();
-  txt += "\nTOTAL: " + fh(g.hours) + " h · " + T("agShort") + ": " + fh(g.agHours) + " h · " + T("grossShort") + ": " + fmoney(g.pay) + "\n(Aymor Hôte)";
+  txt += "\nTOTAL: " + fh(g.hours) + " h · " + T("agShort") + ": " + fh(g.agHours) + " h · " + T("grossShort") + ": " + fmoney(g.pay) + "\n(Turnero)";
   return txt;
 }
 async function shareSummary(){
@@ -1667,11 +1667,14 @@ document.getElementById("btnRestore").onclick = ()=> document.getElementById("fi
 document.getElementById("fileRestore").onchange = ev=>{ if(ev.target.files[0]) restoreFile(ev.target.files[0]); ev.target.value=""; };
 // ==========================================
 // CONFIGURACIÓN DE TU CUENTA DE EMAILJS
+// Las 3 claves reales YA NO están aquí — viven en el archivo
+// emailjs.config.js (mismo folder), que NO se sube a GitHub.
+// Si ese archivo falta, esta línea de abajo falla a propósito
+// en vez de mandar un correo sin que nadie sepa a dónde.
 // ==========================================
-const EMAILJS_PUBLIC_KEY = "tBqrcMb3RknILk6jH";
-const EMAILJS_SERVICE_ID = "service_p7yzo9k";
-const EMAILJS_TEMPLATE_ID = "template_7jy1dn7";
-
+if(typeof EMAILJS_PUBLIC_KEY === "undefined"){
+  throw new Error("Falta emailjs.config.js — sin ese archivo la app no puede mandar correos.");
+}
 
 // Inicializar la herramienta de EmailJS
 emailjs.init(EMAILJS_PUBLIC_KEY);
@@ -1716,7 +1719,7 @@ function syncSettings(){
   document.getElementById("setPin").value = state.pin || "2026";
   document.getElementById("setLang").value = state.lang || "es";
   const bi = document.getElementById("setBiz");
-  bi.value = state.bizName || "DEEN Entretien et Nettoyage";
+  bi.value = state.bizName || "Turnero";
   bi.readOnly = true;
 }
 document.getElementById("btnSaveSettings").onclick = ()=>{

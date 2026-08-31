@@ -11,7 +11,7 @@ de
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DEEN · Control de horas</title>
+<title>Turnero · Control de horas</title>
 <style>
   :root{
     --forest:#2F4739; --forest-deep:#22352B; --cream:#F6F2E7; --card:#FFFFFF;
@@ -170,8 +170,7 @@ de
 <body>
 <header>
   <div class="brand">
-    <div class="brand-right">AYMOR HÔTE</div>
-    <h1 id="bizTitle">DEEN <span>Entretien et Nettoyage</span></h1>
+    <h1 id="bizTitle">Turnero</h1>
   </div>
   <div class="period-line">
     <button class="icon-btn" id="prevPeriod">‹</button>
@@ -229,6 +228,7 @@ de
     <button class="btn ghost" id="btnBackup" data-i18n="e3b">Backup</button>
     <button class="btn ghost" id="btnRestore" data-i18n="e3r">Restore</button>
     <input type="file" id="fileRestore" accept=".json,application/json" style="display:none">
+    <button class="btn ghost danger-link" id="btnWipeAll" style="margin-top:6px" data-i18n="wipeAllBtn">🔐 Borrar todo (clave maestra)</button>
   </div>
   <div class="exp-card">
     <h3 data-i18n="e4t">Ajustes</h3>
@@ -365,8 +365,11 @@ const I18N = {
     sNum:"Número de periodo",
     sBudget:"Presupuesto de horas (0 = sin presupuesto)",
     sPin:"PIN de datos privados",
-    sBiz:"Nombre del negocio (solo Aymor, con clave maestra)",
+    sBiz:"Nombre del negocio (solo Turnero, con clave maestra)",
     sBizBtn:"🔐 Cambiar nombre (clave maestra)",
+    wipeAllBtn:"🔐 Borrar todo (clave maestra)",
+    wipeConfirm1:"Esto borra TODOS los datos de esta app (empleados, horas, historial) y no se puede deshacer. ¿Seguro?",
+    wipeDone:"Datos borrados. La app quedó como recién instalada.",
     sSave:"Guardar ajustes",
     tSaved:"Ajustes guardados.",
     tCSV:"Archivo descargado. Súbelo a Drive o mándalo al contador.",
@@ -442,8 +445,11 @@ const I18N = {
     sNum:"Period number",
     sBudget:"Hours budget (0 = none)",
     sPin:"Private data PIN",
-    sBiz:"Business name (Aymor only, master key)",
+    sBiz:"Business name (Turnero only, master key)",
     sBizBtn:"🔐 Change name (master key)",
+    wipeAllBtn:"🔐 Erase everything (master key)",
+    wipeConfirm1:"This erases ALL data in this app (employees, hours, history) and cannot be undone. Are you sure?",
+    wipeDone:"Data erased. The app is back to a fresh install.",
     sSave:"Save settings",
     tSaved:"Settings saved.",
     tCSV:"File downloaded. Upload it to Drive or send it to the accountant.",
@@ -545,8 +551,11 @@ const I18N = {
     sNum:"Numéro de période",
     sBudget:"Budget d'heures (0 = aucun)",
     sPin:"NIP des données privées",
-    sBiz:"Nom de l'entreprise (Aymor seulement, clé maîtresse)",
+    sBiz:"Nom de l'entreprise (Turnero seulement, clé maîtresse)",
     sBizBtn:"🔐 Changer le nom (clé maîtresse)",
+    wipeAllBtn:"🔐 Tout effacer (clé maîtresse)",
+    wipeConfirm1:"Ceci efface TOUTES les données de cette application (employés, heures, historique) et ne peut pas être annulé. Êtes-vous sûr?",
+    wipeDone:"Données effacées. L'application est comme neuve.",
     sSave:"Enregistrer les réglages",
     tSaved:"Réglages enregistrés.",
     tCSV:"Fichier téléchargé. Téléversez-le sur Drive ou envoyez-le au comptable.",
@@ -622,8 +631,11 @@ const I18N = {
     sNum:"Numero ng period",
     sBudget:"Badyet ng oras (0 = wala)",
     sPin:"PIN ng pribadong datos",
-    sBiz:"Pangalan ng negosyo (Aymor lamang, master key)",
+    sBiz:"Pangalan ng negosyo (Turnero lamang, master key)",
     sBizBtn:"🔐 Palitan ang pangalan (master key)",
+    wipeAllBtn:"🔐 Burahin lahat (master key)",
+    wipeConfirm1:"Buburahin nito ANG LAHAT ng datos sa app na ito (empleyado, oras, kasaysayan) at hindi na maibabalik. Sigurado ka ba?",
+    wipeDone:"Nabura ang datos. Parang bagong install ang app.",
     sSave:"I-save ang mga setting",
     tSaved:"Na-save ang settings.",
     tCSV:"Na-download ang file. I-upload sa Drive o ipadala sa accountant.",
@@ -683,7 +695,7 @@ function defaultState(){
     budgetHours: 0,
     pin: "2026",
     lang: "en",
-    bizName: "DEEN Entretien et Nettoyage",
+    bizName: "Turnero",
     /* BASE DE EMPLEADOS: SIETE en pantalla; el resto queda guardado en la base
        (nada se borra solo) y regresa desde la lista desplegable de "+ Agregar empleado"
        con su último salario, teléfono y tipo. */
@@ -1182,7 +1194,7 @@ function xlsResumen(){
     });
     h += "</tr>";
   });
-  h += "</table><p>Pago bruto = antes de retenciones (esas las calcula el sistema de nómina). Comida: 0.5 h por cada 5 h de turno. Generado con la app de horas · Aymor Hôte.</p></body></html>";
+  h += "</table><p>Pago bruto = antes de retenciones (esas las calcula el sistema de nómina). Comida: 0.5 h por cada 5 h de turno. Generado con la app de horas · Turnero.</p></body></html>";
   download(bizSlug() + "_Q" + state.periodNum + "_resumen_" + ds[0] + ".xls", "﻿" + h, "application/vnd.ms-excel");
   toast("Excel descargado. Mándaselo a Ricardo por WhatsApp o súbelo a Drive.");
 }
@@ -1276,7 +1288,7 @@ function summaryText(){
     });
   });
   const g = grandTotals();
-  txt += "\nTOTAL: " + fh(g.hours) + " h · " + T("agShort") + ": " + fh(g.agHours) + " h · " + T("grossShort") + ": " + fmoney(g.pay) + "\n(Aymor Hôte)";
+  txt += "\nTOTAL: " + fh(g.hours) + " h · " + T("agShort") + ": " + fh(g.agHours) + " h · " + T("grossShort") + ": " + fmoney(g.pay) + "\n(Turnero)";
   return txt;
 }
 async function shareSummary(){
@@ -1303,6 +1315,12 @@ function restoreFile(file){
     }catch(e){ toast(T("tBadFile")); }
   };
   r.readAsText(file);
+}
+function wipeAll(){
+  if(!confirm(T("wipeConfirm1"))) return;
+  state = defaultState();
+  persist(); refresh(); syncSettings();
+  toast(T("wipeDone"));
 }
 /* ================= MODAL EMPLEADO ================= */
 let selectedExistingId = null;
@@ -1522,8 +1540,9 @@ document.getElementById("btnTemplate").onclick = downloadImportTemplate;
 document.getElementById("btnImportXLS").onclick = ()=> document.getElementById("fileImportXLS").click();
 document.getElementById("fileImportXLS").onchange = ev=>{ if(ev.target.files[0]) importFromExcel(ev.target.files[0]); ev.target.value=""; };
 document.getElementById("btnBackup").onclick = backup;
-document.getElementById("btnRestore").onclick = ()=> document.getElementById("fileRestore").click();
+document.getElementById("btnRestore").onclick = ()=> askMaster(()=> document.getElementById("fileRestore").click());
 document.getElementById("fileRestore").onchange = ev=>{ if(ev.target.files[0]) restoreFile(ev.target.files[0]); ev.target.value=""; };
+document.getElementById("btnWipeAll").onclick = ()=> askMaster(wipeAll);
 function syncSettings(){
   document.getElementById("setStart").value = state.periodStart;
   document.getElementById("setPeriodNum").value = state.periodNum;
@@ -1531,7 +1550,7 @@ function syncSettings(){
   document.getElementById("setPin").value = state.pin || "2026";
   document.getElementById("setLang").value = state.lang || "es";
   const bi = document.getElementById("setBiz");
-  bi.value = state.bizName || "DEEN Entretien et Nettoyage";
+  bi.value = state.bizName || "Turnero";
   bi.readOnly = true;
 }
 document.getElementById("btnSaveSettings").onclick = ()=>{
