@@ -353,9 +353,9 @@ const I18N = {
     rate:"Salario por hora ($)", empNo:"No. de empleado en el sistema de nómina (exacto, ej. 001)",
     phone:"Teléfono", save:"Guardar",
     hideEmp:"Quitar de la lista (queda guardado en la base)", delEmp:"Borrar de la base para siempre…",
+    delEmpMaster:"🔐 Borrar de la base para siempre (llave maestra)…",
     missingName:"Falta el nombre.",
     minWage:"El salario por hora no puede ser menor a $16.00.",
-    noDeleteWorked:"No se puede borrar: ya tiene horas registradas. Usa \"Quitar de la lista\" si quieres sacarlo.",
     removedToast:"{n} salió de la lista. Sigue en la base y regresa desde + Agregar empleado.",
     langName:"Idioma / Language / Wika",
     confirmDel:"¿Borrar?", deletedDay:"Se borró el horario de {n}.", undo:"DESHACER", back:"Regresar", noRecent:"Sin turno reciente", stTitle:"Estado del día", stVAC:"Vacaciones", stSICK:"Incapacidad", stLEAVE:"Permiso", stABS:"Falta justificada", stNOSHOW:"No se presentó", stNote:"Nota (opcional)", stClear:"Quitar estado", stBtn:"Estado",
@@ -439,9 +439,9 @@ const I18N = {
     rate:"Pay per hour ($)", empNo:"Employee No. in the payroll system (exact, e.g. 001)",
     phone:"Phone", save:"Save",
     hideEmp:"Remove from the list (stays saved in the database)", delEmp:"Delete from the database forever…",
+    delEmpMaster:"🔐 Delete from the database forever (master key)…",
     missingName:"The name is missing.",
     minWage:"The hourly pay can't be less than $16.00.",
-    noDeleteWorked:"Can't delete: this person already has hours on record. Use \"Remove from the list\" instead.",
     removedToast:"{n} was removed from the list. Still in the database — bring them back with + Add employee.",
     langName:"Language",
     confirmDel:"Delete?", deletedDay:"{n}'s times were deleted.", undo:"UNDO", back:"Back", noRecent:"No recent shifts", stTitle:"Day status", stVAC:"Vacation", stSICK:"Sick leave", stLEAVE:"Leave", stABS:"Justified absence", stNOSHOW:"No-show", stNote:"Note (optional)", stClear:"Clear status", stBtn:"Status",
@@ -546,9 +546,9 @@ const I18N = {
     save:"Enregistrer",
     hideEmp:"Retirer de la liste (reste dans la base)",
     delEmp:"Supprimer de la base pour toujours…",
+    delEmpMaster:"🔐 Supprimer de la base pour toujours (clé maîtresse)…",
     missingName:"Le nom manque.",
     minWage:"Le salaire horaire ne peut pas être inférieur à 16,00 $.",
-    noDeleteWorked:"Impossible à supprimer : des heures sont déjà enregistrées. Utilisez « Retirer de la liste » à la place.",
     removedToast:"{n} a été retiré de la liste. Toujours dans la base — le ramener avec + Ajouter un employé.",
     langName:"Langue",
     stTitle:"Statut du jour", stVAC:"Vacances", stSICK:"Maladie", stLEAVE:"Congé", stABS:"Absence justifiée", stNOSHOW:"Absent sans avis", stNote:"Note (facultative)", stClear:"Retirer le statut", stBtn:"Statut",
@@ -637,9 +637,9 @@ const I18N = {
     rate:"Sahod kada oras ($)", empNo:"Employee No. sa payroll system (eksakto, hal. 001)",
     phone:"Telepono", save:"I-save",
     hideEmp:"Tanggalin sa listahan (mananatili sa database)", delEmp:"Burahin sa database nang tuluyan…",
+    delEmpMaster:"🔐 Burahin sa database nang tuluyan (master key)…",
     missingName:"Walang pangalan.",
     minWage:"Hindi puwedeng mas mababa sa $16.00 kada oras ang sahod.",
-    noDeleteWorked:"Hindi puwedeng burahin: may naitalang oras na siya. Gamitin na lang ang \"Tanggalin sa listahan\".",
     removedToast:"Tinanggal si {n} sa listahan. Nasa database pa rin — ibalik gamit ang + Magdagdag ng empleyado.",
     langName:"Wika",
     confirmDel:"Burahin?", deletedDay:"Nabura ang oras ni {n}.", undo:"IBALIK", back:"Bumalik", noRecent:"Walang kamakailang shift", stTitle:"Katayuan ng araw", stVAC:"Bakasyon", stSICK:"May sakit", stLEAVE:"Leave", stABS:"May-dahilang liban", stNOSHOW:"Hindi sumipot", stNote:"Tala (opsyonal)", stClear:"Alisin ang katayuan", stBtn:"Katayuan",
@@ -1411,7 +1411,8 @@ function openEmpModal(id, presetCls){
   document.getElementById("fRate").value = e && e.rate ? e.rate : "";
   document.getElementById("fEmpNo").value = e ? (e.empNo||"") : "";
   document.getElementById("fPhone").value = e ? (e.phone||"") : "";
-  document.getElementById("btnDeleteEmp").style.display = (e && Object.keys(e.times).length===0) ? "" : "none";
+  document.getElementById("btnDeleteEmp").style.display = e ? "" : "none";
+  document.getElementById("btnDeleteEmp").textContent = (e && Object.keys(e.times).length>0) ? T("delEmpMaster") : T("delEmp");
   document.getElementById("btnHideEmp").style.display = e ? "" : "none";
   /* la lista desplegable de la base: solo al AGREGAR */
   const rowEx = document.getElementById("rowExisting");
@@ -1498,14 +1499,17 @@ function hideEmp(){
 }
 function deleteEmp(){
   const e = state.employees.find(x=>x.id===editingEmpId); if(!e) return;
-  /* Nadie puede borrar dentro de la app a un empleado que ya tiene horas
-     registradas — ni un gerente, ni con la llave maestra. Es un candado sin
-     excepción: lo único que se puede hacer es "Quitar de la lista". */
-  if(Object.keys(e.times).length > 0){ toast(T("noDeleteWorked")); return; }
-  if(!confirm("¿Borrar a " + e.name + " de la base para siempre? Si solo quieres sacarlo de la lista, usa \"Quitar de la lista\".")) return;
-  if(!confirm("Confirmación final: esta acción no se puede deshacer. ¿Seguro?")) return;
-  state.employees = state.employees.filter(x=>x.id!==editingEmpId);
-  closeModal(); persist(); refresh();
+  const doDelete = ()=>{
+    if(!confirm("¿Borrar a " + e.name + " de la base para siempre? Si solo quieres sacarlo de la lista, usa \"Quitar de la lista\".")) return;
+    if(!confirm("Confirmación final: esta acción no se puede deshacer. ¿Seguro?")) return;
+    state.employees = state.employees.filter(x=>x.id!==editingEmpId);
+    closeModal(); persist(); refresh();
+  };
+  /* Con horas registradas, un gerente con la clave normal NO puede borrar —
+     solo la llave maestra puede, y solo para emergencias reales (ej. alta
+     duplicada) que el dueño reporta directamente. Sin horas, cualquier
+     gerente puede corregir un alta hecha por error sin pedir la llave. */
+  if(Object.keys(e.times).length > 0) askMaster(doDelete); else doDelete();
 }
 function closeModal(){ document.getElementById("empOverlay").classList.remove("open"); editingEmpId=null; }
 /* ================= UTILERÍA ================= */
