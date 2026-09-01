@@ -60,10 +60,11 @@ de
   .daynav .day-label{flex:1; text-align:center;}
   .day-label b{display:block; font-size:21px;}
   .day-label small{color:var(--muted); font-size:14.5px;}
-  .day-dots{display:flex; justify-content:center; gap:4px; padding:6px 0 2px;}
-  .day-dots i{width:7px; height:7px; border-radius:50%; background:#D8D2C2; display:block;}
-  .day-dots i.has{background:var(--gold);}
-  .day-dots i.cur{outline:2px solid var(--forest); outline-offset:1px; background:var(--forest);}
+  .day-dots{display:flex; justify-content:center; gap:3px; padding:6px 4px 2px;}
+  .day-dots i{width:21px; height:21px; border-radius:50%; background:#EAE5D8; color:var(--muted);
+    display:flex; align-items:center; justify-content:center; font-style:normal; font-size:10.5px; font-weight:700;}
+  .day-dots i.has{background:var(--gold); color:#3A2E14;}
+  .day-dots i.cur{outline:2px solid var(--forest); outline-offset:1px; background:var(--forest); color:#F3EFE4;}
   /* ---------- Sections ---------- */
   section{margin:14px 12px 0;}
   .sec-head{display:flex; align-items:center; gap:8px; padding:6px 6px; border-radius:10px;}
@@ -895,6 +896,7 @@ function renderDayNav(){
   const dots = document.getElementById("dayDots"); dots.innerHTML = "";
   ds.forEach((dISO,i)=>{
     const i2 = document.createElement("i");
+    i2.textContent = parseISO(dISO).getDate();
     const any = state.employees.some(e=>{ const t=e.times[dISO]; return t && t.in && t.out; });
     if(any) i2.classList.add("has");
     if(i===currentDayIdx) i2.classList.add("cur");
