@@ -61,8 +61,8 @@ de
   .day-label b{display:block; font-size:21px;}
   .day-label small{color:var(--muted); font-size:14.5px;}
   .day-dots{display:flex; justify-content:center; gap:3px; padding:6px 4px 2px;}
-  .day-dots i{width:21px; height:21px; border-radius:50%; background:#EAE5D8; color:var(--muted);
-    display:flex; align-items:center; justify-content:center; font-style:normal; font-size:10.5px; font-weight:700;}
+  .day-dots i{width:23px; height:23px; border-radius:50%; background:#EAE5D8; color:var(--muted);
+    display:flex; align-items:center; justify-content:center; font-style:normal; font-size:11.5px; font-weight:700;}
   .day-dots i.has{background:var(--gold); color:#3A2E14;}
   .day-dots i.cur{outline:2px solid var(--forest); outline-offset:1px; background:var(--forest); color:#F3EFE4;}
   /* ---------- Sections ---------- */
@@ -239,6 +239,13 @@ de
       <button class="btn ghost" id="btnBizUnlock" style="margin-top:6px" data-i18n="sBizBtn">🔐</button></div>
     <div class="frow"><label data-i18n="sEmails">Correos autorizados (máx. 2, clave maestra)</label><input id="setEmails" autocomplete="off" readonly placeholder="correo1@ejemplo.com, correo2@ejemplo.com">
       <button class="btn ghost" id="btnEmailsUnlock" style="margin-top:6px" data-i18n="sEmailsBtn">🔐 Cambiar correos (clave maestra)</button></div>
+    <div class="frow"><label data-i18n="sEmpFmt">Formato del número de empleado (clave maestra)</label>
+      <select id="setEmpFmt" disabled>
+        <option value="3">3 dígitos (001)</option>
+        <option value="4">4 dígitos (0001)</option>
+        <option value="5">5 dígitos (00001)</option>
+      </select>
+      <button class="btn ghost" id="btnEmpFmtUnlock" style="margin-top:6px" data-i18n="sEmpFmtBtn">🔐 Cambiar formato (clave maestra)</button></div>
     <div class="frow"><label data-i18n="sStart">Inicio</label><input type="date" id="setStart"></div>
     <div class="frow"><label data-i18n="sNum">Número</label><input type="number" id="setPeriodNum" min="1" inputmode="numeric"></div>
     <div class="frow"><label data-i18n="sBudget">Presupuesto</label><input type="number" id="setBudget" min="0" step="1" inputmode="numeric"></div>
@@ -369,6 +376,8 @@ const I18N = {
     sBizBtn:"🔐 Cambiar nombre (clave maestra)",
     sEmails:"Correos autorizados (máx. 2, clave maestra)",
     sEmailsBtn:"🔐 Cambiar correos (clave maestra)",
+    sEmpFmt:"Formato del número de empleado (clave maestra)",
+    sEmpFmtBtn:"🔐 Cambiar formato (clave maestra)",
     wipeAllBtn:"🔐 Borrar todo (clave maestra)",
     wipeConfirm1:"Esto borra TODOS los datos de esta app (empleados, horas, historial) y no se puede deshacer. ¿Seguro?",
     wipeDone:"Datos borrados. La app quedó como recién instalada.",
@@ -384,6 +393,7 @@ const I18N = {
     tEmailOk:"Correo enviado a: {l}",
     tEmailErr:"No se pudo enviar el correo. Revisa tu internet e inténtalo otra vez.",
     tEmailsOpen:"Correos desbloqueados: cámbialos y toca Guardar ajustes.",
+    tEmpFmtOpen:"Formato desbloqueado: cámbialo y toca Guardar ajustes.",
     tBizOpen:"Nombre desbloqueado: cámbialo y toca Guardar ajustes.",
     tSunday:"La quincena empieza en domingo: la ajusté al domingo {d}.",
     periodWord:"Quincena",
@@ -450,6 +460,8 @@ const I18N = {
     sBizBtn:"🔐 Change name (master key)",
     sEmails:"Authorized emails (max. 2, master key)",
     sEmailsBtn:"🔐 Change emails (master key)",
+    sEmpFmt:"Employee number format (master key)",
+    sEmpFmtBtn:"🔐 Change format (master key)",
     wipeAllBtn:"🔐 Erase everything (master key)",
     wipeConfirm1:"This erases ALL data in this app (employees, hours, history) and cannot be undone. Are you sure?",
     wipeDone:"Data erased. The app is back to a fresh install.",
@@ -465,6 +477,7 @@ const I18N = {
     tEmailOk:"Email sent to: {l}",
     tEmailErr:"Could not send the email. Check your internet and try again.",
     tEmailsOpen:"Emails unlocked: change them and tap Save settings.",
+    tEmpFmtOpen:"Format unlocked: change it and tap Save settings.",
     tBizOpen:"Name unlocked: change it and tap Save settings.",
     tSunday:"Pay periods start on Sunday: adjusted to Sunday {d}.",
     periodWord:"Pay period",
@@ -557,6 +570,8 @@ const I18N = {
     sBizBtn:"🔐 Changer le nom (clé maîtresse)",
     sEmails:"Courriels autorisés (max. 2, clé maîtresse)",
     sEmailsBtn:"🔐 Changer les courriels (clé maîtresse)",
+    sEmpFmt:"Format du numéro d'employé (clé maîtresse)",
+    sEmpFmtBtn:"🔐 Changer le format (clé maîtresse)",
     wipeAllBtn:"🔐 Tout effacer (clé maîtresse)",
     wipeConfirm1:"Ceci efface TOUTES les données de cette application (employés, heures, historique) et ne peut pas être annulé. Êtes-vous sûr?",
     wipeDone:"Données effacées. L'application est comme neuve.",
@@ -568,6 +583,7 @@ const I18N = {
     tEmailOk:"Courriel envoyé à : {l}",
     tEmailErr:"Impossible d'envoyer le courriel. Vérifiez votre connexion et réessayez.",
     tEmailsOpen:"Courriels déverrouillés : changez-les puis Enregistrer les réglages.",
+    tEmpFmtOpen:"Format déverrouillé : changez-le puis Enregistrer les réglages.",
     tBk:"Sauvegarde téléchargée. Gardez-la sur Drive.",
     tRest:"Sauvegarde restaurée.",
     tBadFile:"Ce fichier n'est pas une sauvegarde valide de cette application.",
@@ -638,6 +654,8 @@ const I18N = {
     sBizBtn:"🔐 Palitan ang pangalan (master key)",
     sEmails:"Awtorisadong email (max. 2, master key)",
     sEmailsBtn:"🔐 Palitan ang email (master key)",
+    sEmpFmt:"Format ng employee number (master key)",
+    sEmpFmtBtn:"🔐 Palitan ang format (master key)",
     wipeAllBtn:"🔐 Burahin lahat (master key)",
     wipeConfirm1:"Buburahin nito ANG LAHAT ng datos sa app na ito (empleyado, oras, kasaysayan) at hindi na maibabalik. Sigurado ka ba?",
     wipeDone:"Nabura ang datos. Parang bagong install ang app.",
@@ -649,6 +667,7 @@ const I18N = {
     tEmailOk:"Naipadala ang email sa: {l}",
     tEmailErr:"Hindi naipadala ang email. Tingnan ang internet at subukan ulit.",
     tEmailsOpen:"Bukas na ang email: palitan at pindutin ang I-save.",
+    tEmpFmtOpen:"Bukas na ang format: palitan at pindutin ang I-save.",
     tBk:"Na-download ang backup. Itago sa Drive.",
     tRest:"Na-restore ang backup.",
     tBadFile:"Hindi valid na backup ng app ang file na iyan.",
@@ -705,6 +724,7 @@ function defaultState(){
     lang: "en",
     bizName: "Turnero",
     reportEmails: [],
+    empNoDigits: 3,
     /* BASE DE EMPLEADOS: SIETE en pantalla; el resto queda guardado en la base
        (nada se borra solo) y regresa desde la lista desplegable de "+ Agregar empleado"
        con su último salario, teléfono y tipo. */
@@ -1376,13 +1396,29 @@ function openEmpModal(id, presetCls){
   paintClsPick();
   document.getElementById("empOverlay").classList.add("open");
 }
+function nextEmpNo(){
+  /* Siguiente número consecutivo = el más alto que ya existe + 1. Si no hay
+     ninguno, empieza en 1. El formato (3/4/5 dígitos) lo decide la clave maestra. */
+  const digits = state.empNoDigits || 3;
+  let max = 0;
+  state.employees.forEach(e=>{
+    const n = parseInt((e.empNo||"").replace(/\D/g,""), 10);
+    if(!isNaN(n) && n > max) max = n;
+  });
+  return String(max + 1).padStart(digits, "0");
+}
 function paintClsPick(){
   ["P","E","A"].forEach(c=>{
     const b = document.getElementById("pick"+c);
     b.className = (pickedCls===c) ? "sel-"+c : "";
   });
   /* El salario se ve y se llena SIEMPRE, sea planta, eventual o agencia. */
-  document.getElementById("rowEmpNo").style.display = (pickedCls==="P") ? "" : "none";
+  const rowEmpNo = document.getElementById("rowEmpNo");
+  rowEmpNo.style.display = (pickedCls==="P") ? "" : "none";
+  const fEmpNo = document.getElementById("fEmpNo");
+  if(pickedCls==="P" && !editingEmpId && !selectedExistingId && !fEmpNo.value){
+    fEmpNo.value = nextEmpNo();
+  }
 }
 function saveEmp(){
   const name = document.getElementById("fName").value.trim();
@@ -1525,6 +1561,10 @@ document.getElementById("btnEmailsUnlock").onclick = ()=> askMaster(()=>{
   setTimeout(()=> i.focus(), 60);
   toast(T("tEmailsOpen"));
 });
+document.getElementById("btnEmpFmtUnlock").onclick = ()=> askMaster(()=>{
+  document.getElementById("setEmpFmt").disabled = false;
+  toast(T("tEmpFmtOpen"));
+});
 document.querySelectorAll(".tabbar button[data-view]").forEach(b=>{
   b.onclick = ()=>{
     const v = b.dataset.view;
@@ -1574,6 +1614,9 @@ function syncSettings(){
   const ei = document.getElementById("setEmails");
   ei.value = (state.reportEmails||[]).join(", ");
   ei.readOnly = true;
+  const efi = document.getElementById("setEmpFmt");
+  efi.value = String(state.empNoDigits || 3);
+  efi.disabled = true;
 }
 document.getElementById("btnSaveSettings").onclick = ()=>{
   const raw = document.getElementById("setStart").value;
@@ -1594,6 +1637,8 @@ document.getElementById("btnSaveSettings").onclick = ()=>{
     const list = emailsRaw.split(",").map(s=>s.trim()).filter(s=>s.includes("@")).slice(0,2);
     state.reportEmails = list;
   }
+  const empFmtEl = document.getElementById("setEmpFmt");
+  if(!empFmtEl.disabled) state.empNoDigits = parseInt(empFmtEl.value, 10) || 3;
   applyLang();
   currentDayIdx = 0; persist(); syncSettings(); refresh();
   toast(T("tSaved"));
