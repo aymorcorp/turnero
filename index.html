@@ -89,22 +89,27 @@ de
   .emp-name small{display:block; font-weight:400; font-size:11.5px; color:var(--muted);}
   .emp-total{text-align:right;}
   .emp-total b{font-size:15px;} .emp-total small{display:block; font-size:10.5px; color:var(--muted); letter-spacing:.05em;}
-  .emp-times{display:flex; gap:8px; margin-top:8px; align-items:center;}
-  .tfield{flex:1; display:flex; flex-direction:column;}
+  .emp-times{display:flex; gap:6px; margin-top:8px; align-items:flex-end;}
+  .tfield{flex:0 1 92px; display:flex; flex-direction:column;}
   .tfield label{font-size:10.5px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin-bottom:2px;}
-  .tfield input[type=time]{border:1px solid #DDD6C6; border-radius:10px; padding:9px 8px; font-size:16px;
+  .tfield input[type=time]{border:1px solid #DDD6C6; border-radius:10px; padding:9px 6px; font-size:15px;
     background:#FDFCF8; color:var(--ink); width:100%; font-variant-numeric:tabular-nums;}
   .tfield input[type=time]:focus{outline:2px solid var(--gold); border-color:var(--gold);}
+  .lunch-box{flex:0 0 auto; min-width:44px; text-align:center; align-self:flex-end; padding:6px 6px;
+    border:1.5px dashed #D9CFB0; border-radius:8px; background:#FBF8EF; color:var(--eventual);
+    font-size:10.5px; font-weight:700; line-height:1.25;}
+  .lunch-box small{display:block; font-weight:400; font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;}
   /* Tarjetas vacías de ejemplo: solo aparecen cuando no hay ningún empleado
-     todavía, para que se vea cómo va quedando la lista. Sin nombre ni horas
-     de mentira — nada de esto se guarda, es puro espacio en blanco. */
-  .emp-ghost{border-left-style:dashed; opacity:.55; pointer-events:none;}
-  .emp-ghost .emp-name{height:15.5px; border-bottom:1.5px dashed #C9C4B4; margin-right:60px;}
+     todavía, para que se vea cómo va quedando la lista. El nombre trae el
+     número de renglón (1 a 5) como guía visual; no es un empleado real,
+     nada de esto se guarda hasta que el gerente lo edite de verdad. */
+  .emp-ghost{border-left-style:dashed; opacity:.6; pointer-events:none;}
+  .emp-ghost .emp-name{color:var(--muted); font-weight:600;}
   .emp-ghost .tfield input[type=time]{background:transparent;}
-  .shift-badge{min-width:74px; text-align:center; font-size:12px; padding:6px 4px; border-radius:10px;
+  .emp-ghost .lunch-box{opacity:.7;}
+  .shift-badge{min-width:64px; text-align:center; font-size:12px; padding:6px 4px; border-radius:10px;
     background:#F1EDE0; color:var(--ink); align-self:flex-end;}
   .shift-badge.on{background:var(--planta-bg); color:var(--planta); font-weight:650;}
-  .shift-badge .lunch{display:block; font-size:10px; color:var(--eventual);}
   .clear-day{border:none; background:none; color:var(--muted); font-size:17px; padding:4px 2px; align-self:flex-end;}
   .clear-day.armed{color:#fff; background:var(--alert); border-radius:8px; font-size:12px; font-weight:700; padding:6px 8px;}
   .add-btn{width:100%; border:1.5px dashed #C9C2B0; background:none; color:var(--muted); border-radius:12px;
@@ -950,7 +955,7 @@ function renderSections(){
     a.e.name.localeCompare(b.e.name)
   );
   if(list.length===0){
-    for(let i=0;i<5;i++) sec.appendChild(ghostEmpCard());
+    for(let i=1;i<=5;i++) sec.appendChild(ghostEmpCard(i));
   }
   let divided = false;
   list.forEach(x=>{
@@ -995,15 +1000,19 @@ function applyStatus(k){
   document.getElementById("stOverlay").classList.remove("open");
   refresh();
 }
-function ghostEmpCard(){
-  /* Tarjeta de ejemplo, vacía: nada aquí se guarda ni se puede tocar. */
+function ghostEmpCard(n){
+  /* Tarjeta de ejemplo, vacía: nada aquí se guarda ni se puede tocar.
+     El "1".."5" es solo un número de renglón guía, no un nombre real. */
   const card = document.createElement("div"); card.className = "emp emp-ghost";
   const top = document.createElement("div"); top.className = "emp-top";
-  const nm = document.createElement("div"); nm.className = "emp-name";
+  const nm = document.createElement("div"); nm.className = "emp-name"; nm.textContent = String(n);
   top.appendChild(nm); card.appendChild(top);
   const row = document.createElement("div"); row.className = "emp-times";
   row.appendChild(timeField(T("tin"), "", ()=>{}));
   row.appendChild(timeField(T("tout"), "", ()=>{}));
+  const lb = document.createElement("div"); lb.className = "lunch-box";
+  lb.innerHTML = "—<small>" + T("lunch") + "</small>";
+  row.appendChild(lb);
   const badge = document.createElement("div"); badge.className = "shift-badge num"; badge.textContent = "— h";
   row.appendChild(badge);
   card.appendChild(row);
@@ -1023,19 +1032,21 @@ function empCard(e, iso){
   top.appendChild(nm);
   card.appendChild(top);
   const row = document.createElement("div"); row.className = "emp-times";
+  const lb = document.createElement("div"); lb.className = "lunch-box";
+  function paintLunch(cc){
+    lb.innerHTML = (cc.has && cc.lunch ? "−" + fh(cc.lunch) : "—") + "<small>" + T("lunch") + "</small>";
+  }
   const badge = document.createElement("div");
   badge.className = "shift-badge num" + (c.has ? " on" : "");
-  badge.innerHTML = c.has
-    ? fh(c.paid) + " h" + (c.lunch ? "<span class='lunch'>−" + fh(c.lunch) + " " + T("lunch") + "</span>" : "")
-    : "— h";
+  badge.innerHTML = c.has ? fh(c.paid) + " h" : "— h";
+  paintLunch(c);
   /* Al cambiar la hora NO se redibuja la pantalla (eso cerraba la ruedita de iPhone):
      solo se actualizan los números de esta tarjeta y los totales de arriba. */
   function paintCalc(){
     const c2 = dayCalc(e, iso);
     badge.className = "shift-badge num" + (c2.has ? " on" : "");
-    badge.innerHTML = c2.has
-      ? fh(c2.paid) + " h" + (c2.lunch ? "<span class='lunch'>−" + fh(c2.lunch) + " " + T("lunch") + "</span>" : "")
-      : "— h";
+    badge.innerHTML = c2.has ? fh(c2.paid) + " h" : "— h";
+    paintLunch(c2);
     renderHeader(); renderDayNav();
   }
   function setT(which, val){
@@ -1058,6 +1069,7 @@ function empCard(e, iso){
     row.appendChild(timeField(T("tin"), t.in || "", v=>setT("in", v)));
     row.appendChild(timeField(T("tout"), t.out || "", v=>setT("out", v)));
     row.appendChild(badge);
+    row.appendChild(lb);
     if(unlocked && !t.in && !t.out){
       const sb = document.createElement("button"); sb.className = "st-btn";
       sb.textContent = T("stBtn");
