@@ -212,11 +212,6 @@ de
 <div class="view" id="view-export">
   <button class="backbar" onclick="window.__goBack()">← <span data-i18n="back">Regresar</span></button>
   <div class="exp-card">
-    <h3 data-i18n="e1t">Enviar quincena al contador</h3>
-    <p data-i18n="e1p">.</p>
-    <button class="btn primary" id="btnCSV" data-i18n="e1b">CSV</button>
-  </div>
-  <div class="exp-card">
     <h3 data-i18n="e2t">Excel</h3>
     <p data-i18n="e2p">.</p>
     <button class="btn gold" id="btnXLS" data-i18n="e2b">Excel</button>
@@ -351,9 +346,6 @@ const I18N = {
     gHours:"Horas totales de la quincena",
     gAgency:"· de agencia (solo control)",
     gPay:"Pago bruto planta + eventuales",
-    e1t:"Enviar quincena al contador",
-    e1p:"Genera el archivo de horas listo para importarse al sistema de nómina (solo planta, con su número de empleado exacto). Se importa sin teclear nada.",
-    e1b:"Descargar archivo de horas (CSV)",
     e2t:"Excel de la quincena",
     e2p:"Excel con fórmulas vivas: totales por persona separados por tipo y detalle diario. Cualquier corrección recalcula todo.",
     e2b:"Descargar Excel con fórmulas",
@@ -378,13 +370,11 @@ const I18N = {
     wipeDone:"Datos borrados. La app quedó como recién instalada.",
     sSave:"Guardar ajustes",
     tSaved:"Ajustes guardados.",
-    tCSV:"Archivo descargado. Súbelo a Drive o mándalo al contador.",
     tXLS:"Excel descargado.",
     tBk:"Respaldo descargado. Guárdalo en Drive.",
     tRest:"Respaldo restaurado.",
     tBadFile:"Ese archivo no es un respaldo válido de esta app.",
     tNoNet:"Sin internet no puedo armar el Excel: revisa tu conexión e inténtalo otra vez.",
-    tMissingNo:"Falta el No. de empleado de: {l}. Tócales el nombre y agrégalo.",
     tBizOpen:"Nombre desbloqueado: cámbialo y toca Guardar ajustes.",
     tSunday:"La quincena empieza en domingo: la ajusté al domingo {d}.",
     periodWord:"Quincena",
@@ -431,9 +421,6 @@ const I18N = {
     gHours:"Total hours this pay period",
     gAgency:"· agency (tracking only)",
     gPay:"Gross pay permanent + casual",
-    e1t:"Send pay period to the accountant",
-    e1p:"Creates the hours file ready to import into the payroll system (permanent staff only, with exact employee numbers). Imported without retyping.",
-    e1b:"Download hours file (CSV)",
     e2t:"Pay period Excel",
     e2p:"Excel with live formulas: totals per person by type, plus the daily detail. Any correction recalculates everything.",
     e2b:"Download Excel with formulas",
@@ -458,13 +445,11 @@ const I18N = {
     wipeDone:"Data erased. The app is back to a fresh install.",
     sSave:"Save settings",
     tSaved:"Settings saved.",
-    tCSV:"File downloaded. Upload it to Drive or send it to the accountant.",
     tXLS:"Excel downloaded.",
     tBk:"Backup downloaded. Keep it in Drive.",
     tRest:"Backup restored.",
     tBadFile:"That file is not a valid backup of this app.",
     tNoNet:"No internet: could not build the Excel — check your connection and try again.",
-    tMissingNo:"Missing employee No. for: {l}. Tap their name and add it.",
     tBizOpen:"Name unlocked: change it and tap Save settings.",
     tSunday:"Pay periods start on Sunday: adjusted to Sunday {d}.",
     periodWord:"Pay period",
@@ -537,9 +522,6 @@ const I18N = {
     gHours:"Heures totales de la quinzaine",
     gAgency:"· agence (suivi seulement)",
     gPay:"Paie brute permanents + occasionnels",
-    e1t:"Envoyer la quinzaine au comptable",
-    e1p:"Crée le fichier d'heures prêt à importer dans le système de paie (permanents seulement, avec le numéro exact). Importé sans rien retaper.",
-    e1b:"Télécharger le fichier d'heures (CSV)",
     e2t:"Excel de la quinzaine",
     e2p:"Excel avec formules vivantes : totaux par personne selon le type, plus le détail quotidien. Toute correction recalcule tout.",
     e2b:"Télécharger l'Excel avec formules",
@@ -564,13 +546,11 @@ const I18N = {
     wipeDone:"Données effacées. L'application est comme neuve.",
     sSave:"Enregistrer les réglages",
     tSaved:"Réglages enregistrés.",
-    tCSV:"Fichier téléchargé. Téléversez-le sur Drive ou envoyez-le au comptable.",
     tXLS:"Excel téléchargé.",
     tBk:"Sauvegarde téléchargée. Gardez-la sur Drive.",
     tRest:"Sauvegarde restaurée.",
     tBadFile:"Ce fichier n'est pas une sauvegarde valide de cette application.",
     tNoNet:"Sans internet : impossible de créer l'Excel — vérifiez votre connexion et réessayez.",
-    tMissingNo:"No d'employé manquant pour : {l}. Touchez le nom et ajoutez-le.",
     tBizOpen:"Nom déverrouillé : changez-le puis Enregistrer les réglages.",
     tSunday:"La quinzaine commence le dimanche : ajustée au dimanche {d}.",
     periodWord:"Quinzaine",
@@ -617,9 +597,6 @@ const I18N = {
     gHours:"Kabuuang oras ng pay period",
     gAgency:"· ahensya (oras lamang)",
     gPay:"Gross pay: regular + pansamantala",
-    e1t:"Ipadala ang pay period sa accountant",
-    e1p:"Gumagawa ng hours file na handang i-import sa payroll system (regular lamang, may eksaktong employee number). Walang kailangang i-type ulit.",
-    e1b:"I-download ang hours file (CSV)",
     e2t:"Excel ng pay period",
     e2p:"Excel na may live formulas: kabuuan bawat tao ayon sa uri, at araw-araw na detalye. Awtomatikong nagre-recalculate.",
     e2b:"I-download ang Excel na may formulas",
@@ -644,13 +621,11 @@ const I18N = {
     wipeDone:"Nabura ang datos. Parang bagong install ang app.",
     sSave:"I-save ang mga setting",
     tSaved:"Na-save ang settings.",
-    tCSV:"Na-download ang file. I-upload sa Drive o ipadala sa accountant.",
     tXLS:"Na-download ang Excel.",
     tBk:"Na-download ang backup. Itago sa Drive.",
     tRest:"Na-restore ang backup.",
     tBadFile:"Hindi valid na backup ng app ang file na iyan.",
     tNoNet:"Walang internet: hindi nagawa ang Excel — tingnan ang koneksyon at subukan ulit.",
-    tMissingNo:"Walang employee No. sina: {l}. Pindutin ang pangalan at idagdag.",
     tBizOpen:"Bukas na ang pangalan: palitan at pindutin ang I-save.",
     tSunday:"Linggo ang simula ng pay period: inilipat sa Linggo {d}.",
     periodWord:"Pay period",
@@ -1082,24 +1057,6 @@ function download(filename, text, mime){
   a.href = URL.createObjectURL(blob); a.download = filename;
   document.body.appendChild(a); a.click();
   setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 400);
-}
-function csvENET(){
-  /* Formato de importación de horas del sistema de nómina:
-     No. de empleado EXACTO + código de earning + horas. Ricardo confirma el mapeo de columnas al importar (Tools). */
-  const missing = [];
-  let out = "Employee No.,Earning,Hours\n";
-  state.employees.filter(e=>e.cls==="P").forEach(e=>{
-    const p = empPeriod(e);
-    if(p.total<=0) return;
-    if(!e.empNo){ missing.push(e.name); return; }
-    if(p.total>0) out += e.empNo + ",Regular," + fh(p.total) + "\n";
-  });
-  if(missing.length){
-    toast(T("tMissingNo").replace("{l}", missing.join(", ")));
-  }
-  const ds = periodDates();
-  download(bizSlug() + "_horas_Q" + state.periodNum + "_" + ds[0] + ".csv", out, "text/csv;charset=utf-8");
-  toast(T("tCSV"));
 }
 /* ============ EXCEL REAL (.xlsx) CON FÓRMULAS ============ */
 function ensureXLSX(){
@@ -1548,7 +1505,6 @@ function switchView(name){
   if(name==="export") syncSettings();
   window.scrollTo(0,0);
 }
-document.getElementById("btnCSV").onclick = csvENET;
 document.getElementById("btnXLS").onclick = excelResumen;
 document.getElementById("btnShare").onclick = shareSummary;
 document.getElementById("btnTemplate").onclick = downloadImportTemplate;
