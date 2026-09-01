@@ -47,7 +47,12 @@ de
   .budget-track{height:10px; border-radius:6px; background:rgba(255,255,255,.18); overflow:hidden;}
   .budget-fill{height:100%; border-radius:6px; background:var(--gold); width:0%; transition:width .4s ease;}
   .budget-fill.ok{background:#7FB98B;} .budget-fill.warn{background:#E0A75E;} .budget-fill.over{background:#E2745F;}
-  /* ---------- Day navigator ---------- */
+  /* ---------- Day navigator ----------
+     Va pegado justo debajo del header (que también es sticky) para que
+     no se pierda de vista al hacer scroll para ver empleados de abajo.
+     El "top" exacto lo calcula JS (ver syncDayBarTop) porque la altura
+     del header cambia según si el presupuesto está visible o no. */
+  .daybar{position:sticky; z-index:35; background:var(--cream);}
   .daynav{display:flex; align-items:center; gap:8px; padding:12px 16px 4px;}
   .daynav button{width:44px; height:44px; border-radius:12px; border:1px solid #DDD6C6; background:var(--card);
     font-size:18px; color:var(--forest); font-weight:700;}
@@ -187,12 +192,14 @@ de
 </header>
 <!-- ============ VISTA: CAPTURA ============ -->
 <div class="view active" id="view-capture">
-  <div class="daynav">
-    <button id="prevDay">‹</button>
-    <div class="day-label"><b id="dayName">—</b><small id="dayDate">—</small></div>
-    <button id="nextDay">›</button>
+  <div class="daybar" id="dayBar">
+    <div class="daynav">
+      <button id="prevDay">‹</button>
+      <div class="day-label"><b id="dayName">—</b><small id="dayDate">—</small></div>
+      <button id="nextDay">›</button>
+    </div>
+    <div class="day-dots" id="dayDots"></div>
   </div>
-  <div class="day-dots" id="dayDots"></div>
   <div id="sections"></div>
   <p class="hint" data-i18n="hint">Regla de comida.</p>
 </div>
@@ -869,6 +876,14 @@ function renderHeader(){
   }
   wrap.style.display = "";
 }
+/* La altura del header cambia (aparece/desaparece la barra de presupuesto),
+   así que la franja de fecha se pega justo debajo, recalculando cada vez. */
+function syncDayBarTop(){
+  const h = document.querySelector("header");
+  const bar = document.getElementById("dayBar");
+  if(h && bar) bar.style.top = h.offsetHeight + "px";
+}
+window.addEventListener("resize", syncDayBarTop);
 /* ================= RENDER: CAPTURA ================= */
 function renderDayNav(){
   const ds = periodDates(); const iso = ds[currentDayIdx]; const d = parseISO(iso);
@@ -1439,7 +1454,7 @@ function undoToast(msg){
   t.classList.add("show");
   clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("show"), 8000);
 }
-function refresh(){ renderHeader(); renderDayNav(); renderSections();
+function refresh(){ renderHeader(); renderDayNav(); renderSections(); syncDayBarTop();
   if(document.getElementById("view-summary").classList.contains("active")) renderSummary(); }
 /* ================= EVENTOS ================= */
 document.getElementById("prevDay").onclick = ()=>{ currentDayIdx = Math.max(0, currentDayIdx-1); refresh(); };
