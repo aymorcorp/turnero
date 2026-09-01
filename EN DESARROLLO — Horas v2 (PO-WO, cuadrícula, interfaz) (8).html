@@ -1,15 +1,22 @@
+
+turnero_index.txt
+
+Página
+1
+de
+1
+100%
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="emailjs.config.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Turnero · Control de horas</title>
 <style>
   :root{
-    --forest:#2F4739; --forest-deep:#22352B; --cream:#F6F2E7; --card:#FFFFFF;
-    --gold:#C9A05C; --brown:#6B4F3B; --ink:#26302A; --muted:#7A8078;
+    --forest:#1C3A5E; --forest-deep:#13283F; --cream:#F0F3F6; --card:#FFFFFF;
+    --gold:#D9A84E; --brown:#6B4F3B; --ink:#1C2530; --muted:#6B7280;
     --planta:#3E7A4E; --planta-bg:#EAF3EC;
     --eventual:#C77B2E; --eventual-bg:#F9EFE2;
     --agencia:#3A6EA5; --agencia-bg:#E8EFF7;
@@ -21,41 +28,47 @@
   html,body{margin:0; padding:0; background:var(--cream); color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     font-size:16px;}
-  body{padding-bottom:88px;}
+  /* En pantallas anchas (computadora) la app se queda compacta y centrada,
+     como una tarjeta, en vez de estirarse de lado a lado. En celular
+     (ancho menor a 560px) no cambia nada, ocupa toda la pantalla igual. */
+  body{padding-bottom:88px; max-width:560px; margin:0 auto; box-shadow:0 0 0 1px rgba(0,0,0,.04);}
+  @media (min-width:560px){ html{background:#E3E7EC;} }
   .num{font-variant-numeric:tabular-nums; font-feature-settings:"tnum";}
-
   /* ---------- Header ---------- */
   header{background:var(--forest); color:#F3EFE4; padding:14px 16px 12px; position:sticky; top:0; z-index:40;
     box-shadow:0 2px 10px rgba(34,53,43,.25);}
   .brand{display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center;}
-  .brand h1{margin:0; font-size:19px; font-weight:800; letter-spacing:.03em;}
+  .brand h1{margin:0; font-size:27px; font-weight:800; letter-spacing:.03em;}
   .brand h1 span{color:var(--gold); font-weight:500;}
   .brand-right{font-size:19px; font-weight:800; letter-spacing:.14em; color:var(--gold);}
-  .period-line{display:flex; align-items:center; justify-content:space-between; margin-top:10px; gap:14px;}
+  .period-line{display:flex; align-items:center; justify-content:space-between; margin-top:8px; gap:8px;}
   .period-btn{background:var(--forest-deep); border:1px solid rgba(201,160,92,.5); color:#F3EFE4;
-    border-radius:10px; padding:7px 12px; font-size:13.5px; font-weight:600; flex:1; text-align:center;}
+    border-radius:10px; padding:9px 12px; font-size:16.5px; font-weight:700; flex:1; text-align:center;}
   .icon-btn{background:var(--forest-deep); border:1px solid rgba(255,255,255,.15); color:#F3EFE4;
-    border-radius:10px; width:46px; height:40px; font-size:19px; font-weight:700; flex-shrink:0;}
+    border-radius:10px; width:40px; height:36px; font-size:16px; font-weight:700;}
   /* budget bar */
   .budget{margin-top:10px;}
   .budget-top{display:flex; justify-content:space-between; font-size:12px; color:#DCE3D8; margin-bottom:4px;}
   .budget-track{height:10px; border-radius:6px; background:rgba(255,255,255,.18); overflow:hidden;}
   .budget-fill{height:100%; border-radius:6px; background:var(--gold); width:0%; transition:width .4s ease;}
   .budget-fill.ok{background:#7FB98B;} .budget-fill.warn{background:#E0A75E;} .budget-fill.over{background:#E2745F;}
-
-  /* ---------- Day navigator ---------- */
-  #dayNavWrap{position:sticky; z-index:35; background:var(--cream); padding-top:2px;}
-  .daynav{display:flex; align-items:center; gap:16px; padding:14px 16px 6px;}
-  .daynav button{width:48px; height:48px; border-radius:12px; border:1px solid #DDD6C6; background:var(--card);
-    font-size:20px; color:var(--forest); font-weight:700; flex-shrink:0;}
+  /* ---------- Day navigator ----------
+     Va pegado justo debajo del header (que también es sticky) para que
+     no se pierda de vista al hacer scroll para ver empleados de abajo.
+     El "top" exacto lo calcula JS (ver syncDayBarTop) porque la altura
+     del header cambia según si el presupuesto está visible o no. */
+  .daybar{position:sticky; z-index:35; background:var(--cream);}
+  .daynav{display:flex; align-items:center; gap:8px; padding:12px 16px 4px;}
+  .daynav button{width:44px; height:44px; border-radius:12px; border:1px solid #DDD6C6; background:var(--card);
+    font-size:18px; color:var(--forest); font-weight:700;}
   .daynav .day-label{flex:1; text-align:center;}
-  .day-label b{display:block; font-size:19px;}
-  .day-label small{color:var(--muted); font-size:13.5px;}
-  .day-dots{display:flex; justify-content:center; gap:4px; padding:6px 0 2px;}
-  .day-dots i{width:7px; height:7px; border-radius:50%; background:#D8D2C2; display:block;}
-  .day-dots i.has{background:var(--gold);}
-  .day-dots i.cur{outline:2px solid var(--forest); outline-offset:1px; background:var(--forest);}
-
+  .day-label b{display:block; font-size:21px;}
+  .day-label small{color:var(--muted); font-size:14.5px;}
+  .day-dots{display:flex; justify-content:center; gap:3px; padding:6px 4px 2px;}
+  .day-dots i{width:23px; height:23px; border-radius:50%; background:#EAE5D8; color:var(--muted);
+    display:flex; align-items:center; justify-content:center; font-style:normal; font-size:11.5px; font-weight:700;}
+  .day-dots i.has{background:var(--gold); color:#3A2E14;}
+  .day-dots i.cur{outline:2px solid var(--forest); outline-offset:1px; background:var(--forest); color:#F3EFE4;}
   /* ---------- Sections ---------- */
   section{margin:14px 12px 0;}
   .sec-head{display:flex; align-items:center; gap:8px; padding:6px 6px; border-radius:10px;}
@@ -66,7 +79,6 @@
   .sec-P h2{color:var(--planta);} .sec-E h2{color:var(--eventual);} .sec-A h2{color:var(--agencia);}
   .sec-S h2{color:var(--sinclas);}
   .sec-note{font-size:11.5px; color:var(--muted); margin:0 8px 6px;}
-
   /* employee card */
   .emp{background:var(--card); border-radius:var(--radius); margin-bottom:8px; padding:10px 12px;
     border-left:5px solid var(--gold); box-shadow:0 1px 3px rgba(38,48,42,.07);}
@@ -77,36 +89,40 @@
   .emp-name small{display:block; font-weight:400; font-size:11.5px; color:var(--muted);}
   .emp-total{text-align:right;}
   .emp-total b{font-size:15px;} .emp-total small{display:block; font-size:10.5px; color:var(--muted); letter-spacing:.05em;}
-  .emp-times{display:flex; gap:8px; margin-top:8px; align-items:center;}
-  .tfield{flex:1; display:flex; flex-direction:column;}
+  .emp-times{display:flex; gap:6px; margin-top:8px; align-items:flex-end;}
+  .tfield{flex:0 1 92px; display:flex; flex-direction:column;}
   .tfield label{font-size:10.5px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin-bottom:2px;}
-  .tfield input[type=time]{border:1px solid #DDD6C6; border-radius:10px; padding:9px 8px; font-size:16px;
+  .tfield input[type=time]{border:1px solid #DDD6C6; border-radius:10px; padding:9px 6px; font-size:15px;
     background:#FDFCF8; color:var(--ink); width:100%; font-variant-numeric:tabular-nums;}
   .tfield input[type=time]:focus{outline:2px solid var(--gold); border-color:var(--gold);}
-  .shift-badge{min-width:74px; text-align:center; font-size:12px; padding:6px 4px; border-radius:10px;
+  .lunch-box{flex:0 0 auto; min-width:44px; text-align:center; align-self:flex-end; padding:6px 6px;
+    border:1.5px dashed #D9CFB0; border-radius:8px; background:#FBF8EF; color:var(--eventual);
+    font-size:10.5px; font-weight:700; line-height:1.25;}
+  .lunch-box small{display:block; font-weight:400; font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em;}
+  /* Tarjetas vacías de ejemplo: solo aparecen cuando no hay ningún empleado
+     todavía, para que se vea cómo va quedando la lista. El nombre trae el
+     número de renglón (1 a 5) como guía visual; no es un empleado real,
+     nada de esto se guarda hasta que el gerente lo edite de verdad. */
+  .emp-ghost{border-left-style:dashed; opacity:.6; pointer-events:none;}
+  .emp-ghost .emp-name{color:var(--muted); font-weight:600;}
+  .emp-ghost .tfield input[type=time]{background:transparent;}
+  .emp-ghost .lunch-box{opacity:.7;}
+  .shift-badge{min-width:64px; text-align:center; font-size:12px; padding:6px 4px; border-radius:10px;
     background:#F1EDE0; color:var(--ink); align-self:flex-end;}
   .shift-badge.on{background:var(--planta-bg); color:var(--planta); font-weight:650;}
-  .shift-badge .lunch{display:block; font-size:10px; color:var(--eventual);}
-  .po-row{margin-top:6px;}
-  .po-row input{width:100%; border:1px solid #E2DCCB; border-radius:9px; padding:7px 9px; font-size:13.5px;
-    background:#FBF9F3; color:var(--ink);}
-  .po-row input::placeholder{color:#B7B0A0;}
-  .po-row input:focus{outline:2px solid var(--gold); border-color:var(--gold);}
   .clear-day{border:none; background:none; color:var(--muted); font-size:17px; padding:4px 2px; align-self:flex-end;}
   .clear-day.armed{color:#fff; background:var(--alert); border-radius:8px; font-size:12px; font-weight:700; padding:6px 8px;}
   .add-btn{width:100%; border:1.5px dashed #C9C2B0; background:none; color:var(--muted); border-radius:12px;
     padding:10px; font-size:14px; margin-bottom:4px;}
-
   /* ---------- Bottom bar ---------- */
-  .tabbar{position:fixed; bottom:0; left:0; right:0; display:flex; background:var(--card);
+  .tabbar{position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:560px;
+    display:flex; background:var(--card);
     border-top:1px solid #E2DCCB; z-index:50; padding-bottom:env(safe-area-inset-bottom);}
   .tabbar button{flex:1; border:none; background:none; padding:10px 4px 12px; font-size:12px; color:var(--muted);}
   .tabbar button .ic{display:block; font-size:19px; margin-bottom:2px;}
   .tabbar button.active{color:var(--forest); font-weight:700;}
-
   /* ---------- Views ---------- */
   .view{display:none;} .view.active{display:block;}
-
   /* summary */
   .sum-card{background:var(--card); border-radius:var(--radius); margin:12px; padding:14px;
     box-shadow:0 1px 3px rgba(38,48,42,.07);}
@@ -124,7 +140,6 @@
   .grand .row b{font-size:15px;}
   .grand .row.hero{border-top:1px solid rgba(255,255,255,.2); margin-top:6px; padding-top:10px; font-size:16px;}
   .grand .row.hero b{color:var(--gold); font-size:19px;}
-
   /* export */
   .exp-card{background:var(--card); border-radius:var(--radius); margin:12px; padding:16px;
     box-shadow:0 1px 3px rgba(38,48,42,.07);}
@@ -135,7 +150,6 @@
   .btn.gold{background:var(--gold); color:#2A2115;}
   .btn.ghost{background:#F1EDE0; color:var(--ink); font-weight:600;}
   .btn + .btn{margin-top:8px;}
-
   /* modal */
   .overlay{position:fixed; inset:0; background:rgba(34,53,43,.45); z-index:90; display:none;
     align-items:flex-end; justify-content:center;}
@@ -177,7 +191,6 @@
 </style>
 </head>
 <body>
-
 <header>
   <div class="brand">
     <h1 id="bizTitle">Turnero</h1>
@@ -195,10 +208,9 @@
     <div class="budget-track"><div class="budget-fill" id="budgetFill"></div></div>
   </div>
 </header>
-
 <!-- ============ VISTA: CAPTURA ============ -->
 <div class="view active" id="view-capture">
-  <div id="dayNavWrap">
+  <div class="daybar" id="dayBar">
     <div class="daynav">
       <button id="prevDay">‹</button>
       <div class="day-label"><b id="dayName">—</b><small id="dayDate">—</small></div>
@@ -209,57 +221,63 @@
   <div id="sections"></div>
   <p class="hint" data-i18n="hint">Regla de comida.</p>
 </div>
-
 <!-- ============ VISTA: RESUMEN ============ -->
 <div class="view" id="view-summary">
   <button class="backbar" onclick="window.__goBack()">← <span data-i18n="back">Regresar</span></button>
   <div id="summaryBody"></div>
 </div>
-
 <!-- ============ VISTA: ENVIAR ============ -->
 <div class="view" id="view-export">
   <button class="backbar" onclick="window.__goBack()">← <span data-i18n="back">Regresar</span></button>
   <div class="exp-card">
-    <h3 data-i18n="e1t">Enviar quincena al contador</h3>
-    <p data-i18n="e1p">.</p>
-    <button class="btn primary" id="btnCSV" data-i18n="e1b">CSV</button>
-  </div>
-  <div class="exp-card">
     <h3 data-i18n="e2t">Excel</h3>
     <p data-i18n="e2p">.</p>
-    <button class="btn gold" id="btnXLS" data-i18n="e2b">Excel</button>
+    <button class="btn gold" id="btnEmailSend" data-i18n="e2b">Enviar por correo</button>
   </div>
   <div class="exp-card">
-    <h3 data-i18n="e2at">Cuadrícula de agencia</h3>
-    <p data-i18n="e2ap">.</p>
-    <button class="btn gold" id="btnGrid" data-i18n="e2ab">Descargar cuadrícula</button>
+    <h3 data-i18n="e2it">Importar horas desde Excel</h3>
+    <p data-i18n="e2ip">.</p>
+    <button class="btn ghost" id="btnTemplate" data-i18n="e2itpl">Descargar plantilla</button>
+    <button class="btn gold" id="btnImportXLS" data-i18n="e2ibtn">Importar archivo</button>
+    <input type="file" id="fileImportXLS" accept=".xlsx,.xls" style="display:none">
   </div>
-  <!-- Nueva tarjeta visual para el botón de Correo -->
   <div class="exp-card">
-    <h3 data-i18n="emailCardTitle">Reporte por Correo</h3>
-    <p data-i18n="emailCardDesc">.</p>
-    <button id="btnEnviarEmail" data-i18n="emailBtn" style="background-color: #2F4739; color: #C9A05C; padding: 14px; border: 2px solid #C9A05C; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; font-size: 14px;">
-       📧 Enviar Reporte por Correo
-    </button>
-</div>
+    <h3 data-i18n="vacT">Planear vacaciones</h3>
+    <p data-i18n="vacP">Aparta un día de vacaciones para un empleado en cualquier fecha del año. Mientras no se haya tomado, cualquier gerente lo puede cambiar o quitar.</p>
+    <div class="frow"><label data-i18n="vacEmp">Empleado</label><select id="vacEmp"></select></div>
+    <div class="frow"><label data-i18n="vacDate">Fecha</label><input type="date" id="vacDate"></div>
+    <p class="hint" id="vacStatusHint"></p>
+    <button class="btn gold" id="btnVacSave" data-i18n="vacSave">Guardar vacación</button>
+    <button class="btn ghost" id="btnVacClear" style="margin-top:8px" data-i18n="vacClear">Quitar vacación de ese día</button>
+  </div>
   <div class="exp-card">
     <h3 data-i18n="e3t">Respaldo</h3>
     <p data-i18n="e3p">.</p>
     <button class="btn ghost" id="btnBackup" data-i18n="e3b">Backup</button>
     <button class="btn ghost" id="btnRestore" data-i18n="e3r">Restore</button>
     <input type="file" id="fileRestore" accept=".json,application/json" style="display:none">
+    <button class="btn ghost danger-link" id="btnWipeAll" style="margin-top:6px" data-i18n="wipeAllBtn">🔐 Borrar todo (clave maestra)</button>
   </div>
   <div class="exp-card">
     <h3 data-i18n="e4t">Ajustes</h3>
     <div class="frow"><label data-i18n="sBiz">Nombre del negocio</label><input id="setBiz" autocomplete="off" readonly>
       <button class="btn ghost" id="btnBizUnlock" style="margin-top:6px" data-i18n="sBizBtn">🔐</button></div>
+    <div class="frow"><label data-i18n="sEmails">Correos autorizados (máx. 2, clave maestra)</label><input id="setEmails" autocomplete="off" readonly placeholder="correo1@ejemplo.com, correo2@ejemplo.com">
+      <button class="btn ghost" id="btnEmailsUnlock" style="margin-top:6px" data-i18n="sEmailsBtn">🔐 Cambiar correos (clave maestra)</button></div>
+    <div class="frow"><label data-i18n="sEmpFmt">Formato del número de empleado (clave maestra)</label>
+      <select id="setEmpFmt" disabled>
+        <option value="3">3 dígitos (001)</option>
+        <option value="4">4 dígitos (0001)</option>
+        <option value="5">5 dígitos (00001)</option>
+      </select>
+      <button class="btn ghost" id="btnEmpFmtUnlock" style="margin-top:6px" data-i18n="sEmpFmtBtn">🔐 Cambiar formato (clave maestra)</button></div>
     <div class="frow"><label data-i18n="sStart">Inicio</label><input type="date" id="setStart"></div>
     <div class="frow"><label data-i18n="sNum">Número</label><input type="number" id="setPeriodNum" min="1" inputmode="numeric"></div>
     <div class="frow"><label data-i18n="sBudget">Presupuesto</label><input type="number" id="setBudget" min="0" step="1" inputmode="numeric"></div>
+    <div class="frow"><label data-i18n="sWO">Work Order (WO) — cliente, dirección o número de contrato</label><input id="setWO" autocomplete="off"></div>
     <div class="frow"><label data-i18n="sPin">PIN</label><input id="setPin" inputmode="numeric" maxlength="8" autocomplete="off"></div>
     <div class="frow"><label data-i18n="langName">Idioma / Language / Wika</label>
       <select id="setLang">
-        <option value="es">Español</option>
         <option value="en">English</option>
         <option value="fr">Français</option>
         <option value="tl">Filipino (Tagalog)</option>
@@ -268,14 +286,12 @@
     <button class="btn primary" id="btnSaveSettings" data-i18n="sSave">Guardar</button>
   </div>
 </div>
-
 <div class="tabbar">
   <button class="active" data-view="capture"><span class="ic">⏱</span><span data-i18n="capture">Captura</span></button>
   <button id="privBtn"><span class="ic">🔒</span><span id="privLabel">Privado</span></button>
   <button data-view="summary" class="priv-tab" hidden><span class="ic">Σ</span><span data-i18n="summary">Resumen</span></button>
   <button data-view="export" class="priv-tab" hidden><span class="ic">↗</span><span data-i18n="send">Enviar</span></button>
 </div>
-
 <!-- ============ MODAL EMPLEADO ============ -->
 <div class="overlay" id="empOverlay">
   <div class="sheet">
@@ -300,7 +316,6 @@
     <button class="danger-link" id="btnDeleteEmp" data-i18n="delEmp">Borrar de la base para siempre…</button>
   </div>
 </div>
-
 <!-- ============ PIN — DATOS PRIVADOS ============ -->
 <div class="overlay center" id="stOverlay">
   <div class="sheet">
@@ -321,18 +336,15 @@
     <button class="btn ghost" id="pinCancel" style="margin-top:8px" data-i18n="cancel">Cancelar</button>
   </div>
 </div>
-
-<div id="sessionWarn" style="display:none; position:fixed; top:0; left:0; right:0; z-index:200;
+<div id="sessionWarn" style="display:none; position:fixed; top:0; left:50%; transform:translateX(-50%); width:100%; max-width:560px; z-index:200;
   background:#B3402E; color:#fff; font-size:13px; font-weight:700; text-align:center;
   padding:8px 12px;">⚠️ AQUÍ NO SE GUARDA SOLO — antes de salir: 🔒 Privado → Enviar → Descargar respaldo</div>
 <div class="toast" id="toast"></div>
-
 <script>
 (function(){
 "use strict";
 /* ================= ESTADO ================= */
 const STORAGE_KEY = "deen-horas-v33";
-
 /* ================= IDIOMAS (ES / EN / Filipino) =================
    Se traduce todo lo que toca Don. La zona de Ricardo (Resumen/Enviar y los
    archivos Excel/CSV) queda en español hasta congelar el diseño. */
@@ -341,7 +353,6 @@ const I18N = {
     capture:"Captura", private:"Privado", hide:"Ocultar", summary:"Resumen", send:"Enviar",
     addEmp:"+ Agregar empleado", tin:"Entrada", tout:"Salida", lunch:"comida", week:"Semana",
     hint:"Regla de comida: por cada 5 horas de turno se descuenta media hora no pagada (automático). Turnos que cruzan medianoche (ej. 22:00 → 06:00) se calculan bien.",
-    poPlaceholder:"Cliente / Orden de trabajo (opcional)",
     budgetAll:"Horas de la quincena (todos)", budget:"Presupuesto de horas",
     pinTitle:"Datos privados", pinMsg:"Salarios, teléfonos, tipos y reportes están protegidos. Escribe el PIN.",
     enter:"Entrar", cancel:"Cancelar", wrongPin:"PIN incorrecto.",
@@ -352,15 +363,21 @@ const I18N = {
     rate:"Salario por hora ($)", empNo:"No. de empleado en el sistema de nómina (exacto, ej. 001)",
     phone:"Teléfono", save:"Guardar",
     hideEmp:"Quitar de la lista (queda guardado en la base)", delEmp:"Borrar de la base para siempre…",
+    delEmpMaster:"🔐 Borrar de la base para siempre (llave maestra)…",
     missingName:"Falta el nombre.",
+    minWage:"El salario por hora no puede ser menor a $16.00.",
     removedToast:"{n} salió de la lista. Sigue en la base y regresa desde + Agregar empleado.",
     langName:"Idioma / Language / Wika",
     confirmDel:"¿Borrar?", deletedDay:"Se borró el horario de {n}.", undo:"DESHACER", back:"Regresar", noRecent:"Sin turno reciente", stTitle:"Estado del día", stVAC:"Vacaciones", stSICK:"Incapacidad", stLEAVE:"Permiso", stABS:"Falta justificada", stNOSHOW:"No se presentó", stNote:"Nota (opcional)", stClear:"Quitar estado", stBtn:"Estado",
+    vacT:"Planear vacaciones", vacP:"Aparta un día de vacaciones para un empleado en cualquier fecha del año. Mientras no se haya tomado, cualquier gerente lo puede cambiar o quitar.",
+    vacEmp:"Empleado", vacDate:"Fecha", vacSave:"Guardar vacación", vacClear:"Quitar vacación de ese día",
+    vacFree:"Ese día está libre — se puede apartar.", vacHasHours:"OJO: ese día ya tiene horas capturadas.",
+    vacAlready:"Ese día ya tiene: {s}.", vacHasHoursBlock:"Ese día ya se trabajó — no se puede volver vacaciones. Corrige el horario desde Captura si hace falta.",
+    vacSaved:"Vacación guardada para {n}.", vacCleared:"Se quitó la vacación de {n} en ese día.",
     cls_P:"Empleados de planta",
     cls_E:"Empleados a prueba / temporales",
     cls_A:"Empleados de la agencia (solo control de horas)",
     thName:"Nombre",
-    thEmpNo:"No. emp.",
     thTotal:"Total",
     thExtra:"Extra",
     thPay:"Pago bruto",
@@ -372,15 +389,13 @@ const I18N = {
     gHours:"Horas totales de la quincena",
     gAgency:"· de agencia (solo control)",
     gPay:"Pago bruto planta + eventuales",
-    e1t:"Enviar quincena al contador",
-    e1p:"Genera el archivo de horas listo para importarse al sistema de nómina (solo planta, con su número de empleado exacto). Se importa sin teclear nada.",
-    e1b:"Descargar archivo de horas (CSV)",
-    e2t:"Excel de la quincena",
-    e2p:"Excel con fórmulas vivas: totales por persona separados por tipo y detalle diario. Cualquier corrección recalcula todo.",
-    e2b:"Descargar Excel con fórmulas",
-    e2at:"Cuadrícula de agencia",
-    e2ap:"Excel con una fila por trabajador de agencia y sus horas de entrada/salida día por día — para cotejar con lo que factura la agencia.",
-    e2ab:"Descargar cuadrícula",
+    e2t:"Enviar reporte al contador",
+    e2p:"Manda el Excel de la quincena (con fórmulas vivas: totales por persona por tipo y detalle diario) directo a los correos autorizados.",
+    e2b:"Enviar por correo",
+    e2it:"Importar horas desde Excel",
+    e2ip:"Sube un Excel con las horas ya escritas y la app las acomoda sola, sin capturarlas una por una. Descarga primero la plantilla si no sabes cómo va el formato.",
+    e2itpl:"Descargar plantilla",
+    e2ibtn:"Importar archivo",
     e3t:"Respaldo completo",
     e3p:"Guarda TODO en un archivo. Súbelo a Drive o pásalo a otro teléfono y ábrelo con Restaurar.",
     e3b:"Descargar respaldo",
@@ -389,18 +404,30 @@ const I18N = {
     sStart:"Inicio de la quincena (domingo)",
     sNum:"Número de periodo",
     sBudget:"Presupuesto de horas (0 = sin presupuesto)",
+    sWO:"Work Order (WO) — cliente, dirección o número de contrato",
     sPin:"PIN de datos privados",
     sBiz:"Nombre del negocio (solo Turnero, con clave maestra)",
     sBizBtn:"🔐 Cambiar nombre (clave maestra)",
+    sEmails:"Correos autorizados (máx. 2, clave maestra)",
+    sEmailsBtn:"🔐 Cambiar correos (clave maestra)",
+    sEmpFmt:"Formato del número de empleado (clave maestra)",
+    sEmpFmtBtn:"🔐 Cambiar formato (clave maestra)",
+    wipeAllBtn:"🔐 Borrar todo (clave maestra)",
+    wipeConfirm1:"Esto borra TODOS los datos de esta app (empleados, horas, historial) y no se puede deshacer. ¿Seguro?",
+    wipeDone:"Datos borrados. La app quedó como recién instalada.",
     sSave:"Guardar ajustes",
     tSaved:"Ajustes guardados.",
-    tCSV:"Archivo descargado. Súbelo a Drive o mándalo al contador.",
-    tXLS:"Excel descargado.",
     tBk:"Respaldo descargado. Guárdalo en Drive.",
     tRest:"Respaldo restaurado.",
     tBadFile:"Ese archivo no es un respaldo válido de esta app.",
-    tNoNet:"Sin internet no puedo armar el Excel con fórmulas: te di la versión simple.",
-    tMissingNo:"Falta el No. de empleado de: {l}. Tócales el nombre y agrégalo.",
+    tNoNet:"Sin internet no puedo armar el Excel con fórmulas — mandé una versión simple en su lugar.",
+    tNoEmails:"Primero pon los correos autorizados en Ajustes (con la clave maestra).",
+    tSending:"⏳ Enviando…",
+    tEmailMsg:"Adjunto va el reporte de horas de esta quincena.",
+    tEmailOk:"Correo enviado a: {l}",
+    tEmailErr:"No se pudo enviar el correo. Revisa tu internet e inténtalo otra vez.",
+    tEmailsOpen:"Correos desbloqueados: cámbialos y toca Guardar ajustes.",
+    tEmpFmtOpen:"Formato desbloqueado: cámbialo y toca Guardar ajustes.",
     tBizOpen:"Nombre desbloqueado: cámbialo y toca Guardar ajustes.",
     tSunday:"La quincena empieza en domingo: la ajusté al domingo {d}.",
     periodWord:"Quincena",
@@ -412,21 +439,12 @@ const I18N = {
     grossShort:"Bruto",
     noteFormulas:"Fórmulas vivas: Total = Sem1+Sem2 · Pago bruto = (Total−Extra)×Tarifa + Extra×Tarifa×1.5. Cualquier corrección recalcula todo.",
     noteLunchRule:"Comida ya descontada: 0.5 h por cada 5 h de turno.",
-    sessWarn:"⚠️ AQUÍ NO SE GUARDA SOLO — antes de salir: 🔒 Privado → Enviar → Descargar respaldo",
-    emailCardTitle:"Reporte por Correo",
-    emailCardDesc:"Envía el archivo automáticamente a tu bandeja de entrada.",
-    emailBtn:"📧 Enviar Reporte por Correo",
-    emailSending:"⏳ Enviando correo...",
-    emailMsgTest:"Adjunto va el reporte completo de horas: por día, por semana, por quincena y el total general.",
-    emailSuccess:"¡Correo enviado con éxito!",
-    emailError:"Hubo un error al enviar el correo: ",
-    emailErrorGeneric:"revisa las claves de EmailJS."
+    sessWarn:"⚠️ AQUÍ NO SE GUARDA SOLO — antes de salir: 🔒 Privado → Enviar → Descargar respaldo"
   },
   en: {
     capture:"Time entry", private:"Private", hide:"Hide", summary:"Summary", send:"Send",
     addEmp:"+ Add employee", tin:"Time in", tout:"Time out", lunch:"lunch", week:"Week",
     hint:"Lunch rule: half an hour unpaid is deducted for every 5 hours worked (automatic). Overnight shifts (e.g. 22:00 → 06:00) are calculated correctly.",
-    poPlaceholder:"Client / Work order (optional)",
     budgetAll:"Hours this pay period (all)", budget:"Hours budget",
     pinTitle:"Private data", pinMsg:"Pay rates, phone numbers, employee types and reports are protected. Enter the PIN.",
     enter:"Enter", cancel:"Cancel", wrongPin:"Wrong PIN.",
@@ -437,15 +455,21 @@ const I18N = {
     rate:"Pay per hour ($)", empNo:"Employee No. in the payroll system (exact, e.g. 001)",
     phone:"Phone", save:"Save",
     hideEmp:"Remove from the list (stays saved in the database)", delEmp:"Delete from the database forever…",
+    delEmpMaster:"🔐 Delete from the database forever (master key)…",
     missingName:"The name is missing.",
+    minWage:"The hourly pay can't be less than $16.00.",
     removedToast:"{n} was removed from the list. Still in the database — bring them back with + Add employee.",
     langName:"Language",
     confirmDel:"Delete?", deletedDay:"{n}'s times were deleted.", undo:"UNDO", back:"Back", noRecent:"No recent shifts", stTitle:"Day status", stVAC:"Vacation", stSICK:"Sick leave", stLEAVE:"Leave", stABS:"Justified absence", stNOSHOW:"No-show", stNote:"Note (optional)", stClear:"Clear status", stBtn:"Status",
+    vacT:"Plan vacation", vacP:"Set aside a vacation day for an employee, any date in the year. As long as it hasn't happened yet, any manager can change or remove it.",
+    vacEmp:"Employee", vacDate:"Date", vacSave:"Save vacation", vacClear:"Remove vacation for that day",
+    vacFree:"That day is free — it can be booked.", vacHasHours:"Heads up: that day already has hours logged.",
+    vacAlready:"That day already has: {s}.", vacHasHoursBlock:"That day was already worked — it can't become vacation. Correct the times in Time entry if needed.",
+    vacSaved:"Vacation saved for {n}.", vacCleared:"Removed {n}'s vacation for that day.",
     cls_P:"Permanent employees",
     cls_E:"Casual / trial employees",
     cls_A:"Agency workers (hours tracking only)",
     thName:"Name",
-    thEmpNo:"Emp. No.",
     thTotal:"Total",
     thExtra:"Overtime",
     thPay:"Gross pay",
@@ -457,15 +481,13 @@ const I18N = {
     gHours:"Total hours this pay period",
     gAgency:"· agency (tracking only)",
     gPay:"Gross pay permanent + casual",
-    e1t:"Send pay period to the accountant",
-    e1p:"Creates the hours file ready to import into the payroll system (permanent staff only, with exact employee numbers). Imported without retyping.",
-    e1b:"Download hours file (CSV)",
-    e2t:"Pay period Excel",
-    e2p:"Excel with live formulas: totals per person by type, plus the daily detail. Any correction recalculates everything.",
-    e2b:"Download Excel with formulas",
-    e2at:"Agency grid",
-    e2ap:"Excel with one row per agency worker and their day-by-day time in/out — to check against what the agency invoices.",
-    e2ab:"Download grid",
+    e2t:"Send report to the accountant",
+    e2p:"Sends the pay period Excel (live formulas: totals per person by type, plus the daily detail) straight to the authorized emails.",
+    e2b:"Send by email",
+    e2it:"Import hours from Excel",
+    e2ip:"Upload an Excel file with the hours already written and the app fills them in on its own — no need to type each day. Download the template first if you're not sure of the format.",
+    e2itpl:"Download template",
+    e2ibtn:"Import file",
     e3t:"Full backup",
     e3p:"Saves EVERYTHING to one file. Upload it to Drive or move it to another phone and open it with Restore.",
     e3b:"Download backup",
@@ -474,18 +496,30 @@ const I18N = {
     sStart:"Pay period start (Sunday)",
     sNum:"Period number",
     sBudget:"Hours budget (0 = none)",
+    sWO:"Work Order (WO) — client name, address, or contract number",
     sPin:"Private data PIN",
     sBiz:"Business name (Turnero only, master key)",
     sBizBtn:"🔐 Change name (master key)",
+    sEmails:"Authorized emails (max. 2, master key)",
+    sEmailsBtn:"🔐 Change emails (master key)",
+    sEmpFmt:"Employee number format (master key)",
+    sEmpFmtBtn:"🔐 Change format (master key)",
+    wipeAllBtn:"🔐 Erase everything (master key)",
+    wipeConfirm1:"This erases ALL data in this app (employees, hours, history) and cannot be undone. Are you sure?",
+    wipeDone:"Data erased. The app is back to a fresh install.",
     sSave:"Save settings",
     tSaved:"Settings saved.",
-    tCSV:"File downloaded. Upload it to Drive or send it to the accountant.",
-    tXLS:"Excel downloaded.",
     tBk:"Backup downloaded. Keep it in Drive.",
     tRest:"Backup restored.",
     tBadFile:"That file is not a valid backup of this app.",
-    tNoNet:"No internet: could not build the formula Excel — you got the simple version.",
-    tMissingNo:"Missing employee No. for: {l}. Tap their name and add it.",
+    tNoNet:"No internet: could not build the Excel with formulas — sent a simple version instead.",
+    tNoEmails:"Set the authorized emails in Settings first (master key).",
+    tSending:"⏳ Sending…",
+    tEmailMsg:"Attached is the hours report for this pay period.",
+    tEmailOk:"Email sent to: {l}",
+    tEmailErr:"Could not send the email. Check your internet and try again.",
+    tEmailsOpen:"Emails unlocked: change them and tap Save settings.",
+    tEmpFmtOpen:"Format unlocked: change it and tap Save settings.",
     tBizOpen:"Name unlocked: change it and tap Save settings.",
     tSunday:"Pay periods start on Sunday: adjusted to Sunday {d}.",
     periodWord:"Pay period",
@@ -497,15 +531,7 @@ const I18N = {
     grossShort:"Gross",
     noteFormulas:"Live formulas: Total = Wk1+Wk2 · Gross = (Total−OT)×Rate + OT×Rate×1.5. Any correction recalculates everything.",
     noteLunchRule:"Lunch already deducted: 0.5 h for every 5 h worked.",
-    sessWarn:"⚠️ NO AUTO-SAVE HERE — before leaving: 🔒 Private → Send → Download backup",
-    emailCardTitle:"Email Report",
-    emailCardDesc:"Send the file automatically to your inbox.",
-    emailBtn:"📧 Send Report by Email",
-    emailSending:"⏳ Sending email...",
-    emailMsgTest:"Attached is the full hours report: daily, weekly, biweekly, and grand total.",
-    emailSuccess:"Email sent successfully!",
-    emailError:"There was an error sending the email: ",
-    emailErrorGeneric:"check your EmailJS keys."
+    sessWarn:"⚠️ NO AUTO-SAVE HERE — before leaving: 🔒 Private → Send → Download backup"
   },
   fr: {
     capture:"Saisie",
@@ -519,7 +545,6 @@ const I18N = {
     lunch:"repas",
     week:"Semaine",
     hint:"Règle du repas : une demi-heure non payée est déduite pour chaque 5 heures travaillées (automatique). Les quarts qui passent minuit (ex. 22:00 → 06:00) sont bien calculés.",
-    poPlaceholder:"Client / Bon de travail (optionnel)",
     budgetAll:"Heures de la quinzaine (tous)",
     budget:"Budget d'heures",
     pinTitle:"Données privées",
@@ -543,10 +568,17 @@ const I18N = {
     save:"Enregistrer",
     hideEmp:"Retirer de la liste (reste dans la base)",
     delEmp:"Supprimer de la base pour toujours…",
+    delEmpMaster:"🔐 Supprimer de la base pour toujours (clé maîtresse)…",
     missingName:"Le nom manque.",
+    minWage:"Le salaire horaire ne peut pas être inférieur à 16,00 $.",
     removedToast:"{n} a été retiré de la liste. Toujours dans la base — le ramener avec + Ajouter un employé.",
     langName:"Langue",
     stTitle:"Statut du jour", stVAC:"Vacances", stSICK:"Maladie", stLEAVE:"Congé", stABS:"Absence justifiée", stNOSHOW:"Absent sans avis", stNote:"Note (facultative)", stClear:"Retirer le statut", stBtn:"Statut",
+    vacT:"Planifier des vacances", vacP:"Réservez un jour de vacances pour un employé, n'importe quelle date de l'année. Tant que ce n'est pas encore pris, n'importe quel gérant peut le changer ou le retirer.",
+    vacEmp:"Employé", vacDate:"Date", vacSave:"Enregistrer les vacances", vacClear:"Retirer les vacances de ce jour",
+    vacFree:"Ce jour est libre — on peut le réserver.", vacHasHours:"Attention : ce jour a déjà des heures enregistrées.",
+    vacAlready:"Ce jour a déjà : {s}.", vacHasHoursBlock:"Ce jour a déjà été travaillé — impossible de le transformer en vacances. Corrigez l'horaire depuis Saisie si besoin.",
+    vacSaved:"Vacances enregistrées pour {n}.", vacCleared:"Vacances retirées pour {n} ce jour-là.",
     confirmDel:"Supprimer ?",
     deletedDay:"Les heures de {n} ont été supprimées.",
     undo:"ANNULER",
@@ -556,7 +588,6 @@ const I18N = {
     cls_E:"Employés occasionnels / à l'essai",
     cls_A:"Travailleurs d'agence (suivi des heures seulement)",
     thName:"Nom",
-    thEmpNo:"No empl.",
     thTotal:"Total",
     thExtra:"Suppl.",
     thPay:"Paie brute",
@@ -568,15 +599,13 @@ const I18N = {
     gHours:"Heures totales de la quinzaine",
     gAgency:"· agence (suivi seulement)",
     gPay:"Paie brute permanents + occasionnels",
-    e1t:"Envoyer la quinzaine au comptable",
-    e1p:"Crée le fichier d'heures prêt à importer dans le système de paie (permanents seulement, avec le numéro exact). Importé sans rien retaper.",
-    e1b:"Télécharger le fichier d'heures (CSV)",
-    e2t:"Excel de la quinzaine",
-    e2p:"Excel avec formules vivantes : totaux par personne selon le type, plus le détail quotidien. Toute correction recalcule tout.",
-    e2b:"Télécharger l'Excel avec formules",
-    e2at:"Grille de l'agence",
-    e2ap:"Excel avec une ligne par travailleur d'agence et ses heures d'entrée/sortie jour par jour — pour vérifier avec ce que l'agence facture.",
-    e2ab:"Télécharger la grille",
+    e2t:"Envoyer le rapport au comptable",
+    e2p:"Envoie l'Excel de la quinzaine (formules vivantes : totaux par personne selon le type, plus le détail quotidien) directement aux courriels autorisés.",
+    e2b:"Envoyer par courriel",
+    e2it:"Importer les heures depuis Excel",
+    e2ip:"Téléversez un fichier Excel avec les heures déjà inscrites et l'application les remplit toute seule — pas besoin de tout retaper. Téléchargez d'abord le modèle si vous n'êtes pas sûr du format.",
+    e2itpl:"Télécharger le modèle",
+    e2ibtn:"Importer le fichier",
     e3t:"Sauvegarde complète",
     e3p:"Enregistre TOUT dans un fichier. Téléversez-le sur Drive ou transférez-le à un autre téléphone et ouvrez-le avec Restaurer.",
     e3b:"Télécharger la sauvegarde",
@@ -585,18 +614,30 @@ const I18N = {
     sStart:"Début de la quinzaine (dimanche)",
     sNum:"Numéro de période",
     sBudget:"Budget d'heures (0 = aucun)",
+    sWO:"Work Order (WO) — nom du client, adresse ou numéro de contrat",
     sPin:"NIP des données privées",
     sBiz:"Nom de l'entreprise (Turnero seulement, clé maîtresse)",
     sBizBtn:"🔐 Changer le nom (clé maîtresse)",
+    sEmails:"Courriels autorisés (max. 2, clé maîtresse)",
+    sEmailsBtn:"🔐 Changer les courriels (clé maîtresse)",
+    sEmpFmt:"Format du numéro d'employé (clé maîtresse)",
+    sEmpFmtBtn:"🔐 Changer le format (clé maîtresse)",
+    wipeAllBtn:"🔐 Tout effacer (clé maîtresse)",
+    wipeConfirm1:"Ceci efface TOUTES les données de cette application (employés, heures, historique) et ne peut pas être annulé. Êtes-vous sûr?",
+    wipeDone:"Données effacées. L'application est comme neuve.",
     sSave:"Enregistrer les réglages",
     tSaved:"Réglages enregistrés.",
-    tCSV:"Fichier téléchargé. Téléversez-le sur Drive ou envoyez-le au comptable.",
-    tXLS:"Excel téléchargé.",
+    tNoEmails:"Mets d'abord les courriels autorisés dans Réglages (clé maîtresse).",
+    tSending:"⏳ Envoi…",
+    tEmailMsg:"Ci-joint le rapport d'heures de cette quinzaine.",
+    tEmailOk:"Courriel envoyé à : {l}",
+    tEmailErr:"Impossible d'envoyer le courriel. Vérifiez votre connexion et réessayez.",
+    tEmailsOpen:"Courriels déverrouillés : changez-les puis Enregistrer les réglages.",
+    tEmpFmtOpen:"Format déverrouillé : changez-le puis Enregistrer les réglages.",
     tBk:"Sauvegarde téléchargée. Gardez-la sur Drive.",
     tRest:"Sauvegarde restaurée.",
     tBadFile:"Ce fichier n'est pas une sauvegarde valide de cette application.",
-    tNoNet:"Sans internet : impossible de créer l'Excel avec formules — version simple fournie.",
-    tMissingNo:"No d'employé manquant pour : {l}. Touchez le nom et ajoutez-le.",
+    tNoNet:"Sans internet, impossible de créer l'Excel avec formules — version simple envoyée à la place.",
     tBizOpen:"Nom déverrouillé : changez-le puis Enregistrer les réglages.",
     tSunday:"La quinzaine commence le dimanche : ajustée au dimanche {d}.",
     periodWord:"Quinzaine",
@@ -608,21 +649,12 @@ const I18N = {
     grossShort:"Brut",
     noteFormulas:"Formules vivantes : Total = S1+S2 · Paie brute = (Total−Suppl.)×Taux + Suppl.×Taux×1,5.",
     noteLunchRule:"Repas déjà déduit : 0,5 h par tranche de 5 h travaillées.",
-    sessWarn:"⚠️ PAS D'ENREGISTREMENT AUTOMATIQUE ICI — avant de quitter : 🔒 Privé → Envoyer → Télécharger la sauvegarde",
-    emailCardTitle:"Rapport par courriel",
-    emailCardDesc:"Envoie le fichier automatiquement dans ta boîte de réception.",
-    emailBtn:"📧 Envoyer le rapport par courriel",
-    emailSending:"⏳ Envoi du courriel...",
-    emailMsgTest:"Ci-joint le rapport complet des heures : par jour, par semaine, par quinzaine et le total général.",
-    emailSuccess:"Courriel envoyé avec succès !",
-    emailError:"Une erreur est survenue lors de l'envoi du courriel : ",
-    emailErrorGeneric:"vérifiez vos clés EmailJS."
+    sessWarn:"⚠️ PAS D'ENREGISTREMENT AUTOMATIQUE ICI — avant de quitter : 🔒 Privé → Envoyer → Télécharger la sauvegarde"
   },
   tl: {
     capture:"Oras", private:"Pribado", hide:"Itago", summary:"Buod", send:"Ipadala",
     addEmp:"+ Magdagdag ng empleyado", tin:"Pasok", tout:"Labas", lunch:"tanghalian", week:"Linggo",
     hint:"Patakaran sa tanghalian: bawat 5 oras ng trabaho, awtomatikong ibinabawas ang kalahating oras na hindi bayad. Tama ang kalkulo ng mga shift na lampas hatinggabi (hal. 22:00 → 06:00).",
-    poPlaceholder:"Kliyente / Work order (opsyonal)",
     budgetAll:"Oras ngayong pay period (lahat)", budget:"Badyet ng oras",
     pinTitle:"Pribadong datos", pinMsg:"Protektado ang sahod, telepono, uri ng empleyado at mga report. Ilagay ang PIN.",
     enter:"Pasok", cancel:"Kanselahin", wrongPin:"Maling PIN.",
@@ -633,15 +665,21 @@ const I18N = {
     rate:"Sahod kada oras ($)", empNo:"Employee No. sa payroll system (eksakto, hal. 001)",
     phone:"Telepono", save:"I-save",
     hideEmp:"Tanggalin sa listahan (mananatili sa database)", delEmp:"Burahin sa database nang tuluyan…",
+    delEmpMaster:"🔐 Burahin sa database nang tuluyan (master key)…",
     missingName:"Walang pangalan.",
+    minWage:"Hindi puwedeng mas mababa sa $16.00 kada oras ang sahod.",
     removedToast:"Tinanggal si {n} sa listahan. Nasa database pa rin — ibalik gamit ang + Magdagdag ng empleyado.",
     langName:"Wika",
     confirmDel:"Burahin?", deletedDay:"Nabura ang oras ni {n}.", undo:"IBALIK", back:"Bumalik", noRecent:"Walang kamakailang shift", stTitle:"Katayuan ng araw", stVAC:"Bakasyon", stSICK:"May sakit", stLEAVE:"Leave", stABS:"May-dahilang liban", stNOSHOW:"Hindi sumipot", stNote:"Tala (opsyonal)", stClear:"Alisin ang katayuan", stBtn:"Katayuan",
+    vacT:"Magplano ng bakasyon", vacP:"Maglaan ng araw ng bakasyon para sa isang empleyado, kahit anong petsa sa taon. Hangga't hindi pa natatapos, kahit sinong gerente ang puwedeng magbago o mag-alis nito.",
+    vacEmp:"Empleyado", vacDate:"Petsa", vacSave:"I-save ang bakasyon", vacClear:"Alisin ang bakasyon sa araw na iyon",
+    vacFree:"Bukas ang araw na iyon — puwede nang ilaan.", vacHasHours:"Paalala: may naitalang oras na sa araw na iyon.",
+    vacAlready:"May meron na sa araw na iyon: {s}.", vacHasHoursBlock:"May trabaho na sa araw na iyon — hindi puwedeng gawing bakasyon. Ayusin na lang ang oras sa Captura kung kailangan.",
+    vacSaved:"Na-save ang bakasyon ni {n}.", vacCleared:"Naalis ang bakasyon ni {n} sa araw na iyon.",
     cls_P:"Mga regular na empleyado",
     cls_E:"Mga pansamantalang empleyado",
     cls_A:"Mga tauhan ng ahensya (oras lamang)",
     thName:"Pangalan",
-    thEmpNo:"No. emp.",
     thTotal:"Kabuuan",
     thExtra:"Overtime",
     thPay:"Gross pay",
@@ -653,15 +691,13 @@ const I18N = {
     gHours:"Kabuuang oras ng pay period",
     gAgency:"· ahensya (oras lamang)",
     gPay:"Gross pay: regular + pansamantala",
-    e1t:"Ipadala ang pay period sa accountant",
-    e1p:"Gumagawa ng hours file na handang i-import sa payroll system (regular lamang, may eksaktong employee number). Walang kailangang i-type ulit.",
-    e1b:"I-download ang hours file (CSV)",
-    e2t:"Excel ng pay period",
-    e2p:"Excel na may live formulas: kabuuan bawat tao ayon sa uri, at araw-araw na detalye. Awtomatikong nagre-recalculate.",
-    e2b:"I-download ang Excel na may formulas",
-    e2at:"Grid ng ahensya",
-    e2ap:"Excel na may isang hilera bawat manggagawa ng ahensya at ang oras nila ng pasok/labas araw-araw — para itugma sa binibill ng ahensya.",
-    e2ab:"I-download ang grid",
+    e2t:"Ipadala ang ulat sa accountant",
+    e2p:"Ipinapadala ang Excel ng pay period (may live formulas: kabuuan bawat tao ayon sa uri, at araw-araw na detalye) diretso sa mga awtorisadong email.",
+    e2b:"Ipadala sa email",
+    e2it:"I-import ang oras mula sa Excel",
+    e2ip:"I-upload ang Excel file na may nakasulat nang oras at awtomatikong ilalagay ito ng app — hindi na kailangang i-type isa-isa. I-download muna ang template kung hindi sigurado sa format.",
+    e2itpl:"I-download ang template",
+    e2ibtn:"I-import ang file",
     e3t:"Buong backup",
     e3p:"Sine-save LAHAT sa isang file. I-upload sa Drive o ilipat sa ibang telepono at buksan gamit ang Restore.",
     e3b:"I-download ang backup",
@@ -670,18 +706,30 @@ const I18N = {
     sStart:"Simula ng pay period (Linggo)",
     sNum:"Numero ng period",
     sBudget:"Badyet ng oras (0 = wala)",
+    sWO:"Work Order (WO) — pangalan ng kliyente, address, o numero ng kontrata",
     sPin:"PIN ng pribadong datos",
     sBiz:"Pangalan ng negosyo (Turnero lamang, master key)",
     sBizBtn:"🔐 Palitan ang pangalan (master key)",
+    sEmails:"Awtorisadong email (max. 2, master key)",
+    sEmailsBtn:"🔐 Palitan ang email (master key)",
+    sEmpFmt:"Format ng employee number (master key)",
+    sEmpFmtBtn:"🔐 Palitan ang format (master key)",
+    wipeAllBtn:"🔐 Burahin lahat (master key)",
+    wipeConfirm1:"Buburahin nito ANG LAHAT ng datos sa app na ito (empleyado, oras, kasaysayan) at hindi na maibabalik. Sigurado ka ba?",
+    wipeDone:"Nabura ang datos. Parang bagong install ang app.",
     sSave:"I-save ang mga setting",
     tSaved:"Na-save ang settings.",
-    tCSV:"Na-download ang file. I-upload sa Drive o ipadala sa accountant.",
-    tXLS:"Na-download ang Excel.",
+    tNoEmails:"Ilagay muna ang mga awtorisadong email sa Settings (gamit ang master key).",
+    tSending:"⏳ Ipinapadala…",
+    tEmailMsg:"Nakalakip ang ulat ng oras para sa pay period na ito.",
+    tEmailOk:"Naipadala ang email sa: {l}",
+    tEmailErr:"Hindi naipadala ang email. Tingnan ang internet at subukan ulit.",
+    tEmailsOpen:"Bukas na ang email: palitan at pindutin ang I-save.",
+    tEmpFmtOpen:"Bukas na ang format: palitan at pindutin ang I-save.",
     tBk:"Na-download ang backup. Itago sa Drive.",
     tRest:"Na-restore ang backup.",
     tBadFile:"Hindi valid na backup ng app ang file na iyan.",
-    tNoNet:"Walang internet: hindi nabuo ang Excel na may formulas — simpleng bersyon ang naibigay.",
-    tMissingNo:"Walang employee No. sina: {l}. Pindutin ang pangalan at idagdag.",
+    tNoNet:"Walang internet: hindi nagawa ang Excel — tingnan ang koneksyon at subukan ulit.",
     tBizOpen:"Bukas na ang pangalan: palitan at pindutin ang I-save.",
     tSunday:"Linggo ang simula ng pay period: inilipat sa Linggo {d}.",
     periodWord:"Pay period",
@@ -693,15 +741,7 @@ const I18N = {
     grossShort:"Gross",
     noteFormulas:"Live formulas: Kabuuan = Lg1+Lg2 · Gross = (Kabuuan−OT)×Rate + OT×Rate×1.5.",
     noteLunchRule:"Bawas na ang tanghalian: 0.5 h bawat 5 h ng trabaho.",
-    sessWarn:"⚠️ WALANG AUTO-SAVE DITO — bago umalis: 🔒 Pribado → Ipadala → I-download ang backup",
-    emailCardTitle:"Ulat sa Email",
-    emailCardDesc:"Awtomatikong ipinapadala ang file sa iyong inbox.",
-    emailBtn:"📧 Ipadala ang Ulat sa Email",
-    emailSending:"⏳ Nagpapadala ng email...",
-    emailMsgTest:"Nakalakip ang buong ulat ng oras: araw-araw, lingguhan, kada-quincena, at kabuuang total.",
-    emailSuccess:"Matagumpay na naipadala ang email!",
-    emailError:"May error sa pagpapadala ng email: ",
-    emailErrorGeneric:"suriin ang iyong mga EmailJS keys."
+    sessWarn:"⚠️ WALANG AUTO-SAVE DITO — bago umalis: 🔒 Pribado → Ipadala → I-download ang backup"
   }
 };
 const I18N_DAYS = {
@@ -724,13 +764,11 @@ function applyLang(){
 }
 const CLS_ORDER = ["P","E","A"];
 const CLS_NAME = {P:"Planta", E:"Eventual", A:"Agencia"};
-
 let state = defaultState();
 let currentDayIdx = 0;
 let editingEmpId = null;
 let pickedCls = "P";
 let saveTimer = null;
-
 function defaultState(){
   const emp = (name, cls, rate, empNo, act) => ({
     id: "e" + Math.random().toString(36).slice(2,10),
@@ -740,17 +778,18 @@ function defaultState(){
     periodStart: "2026-08-09",
     periodNum: 16,
     budgetHours: 0,
+    workOrder: "",
     pin: "2026",
     lang: "en",
     bizName: "Turnero",
+    reportEmails: [],
+    empNoDigits: 3,
     /* BASE DE EMPLEADOS: SIETE en pantalla; el resto queda guardado en la base
        (nada se borra solo) y regresa desde la lista desplegable de "+ Agregar empleado"
        con su último salario, teléfono y tipo. */
-    employees: [],
-    empCounters: nextEmpCounters([])
+    employees: []
   };
 }
-
 function lastSundayISO(){
   const d = new Date(); d.setHours(12,0,0,0);
   d.setDate(d.getDate() - d.getDay());
@@ -788,7 +827,6 @@ function fmtRange(){
   const ds = periodDates();
   return fmtDateW(ds[0]) + " – " + fmtDateW(ds[13]) + " · Q" + state.periodNum;
 }
-
 /* ================= CÁLCULOS ================= */
 /* Turno: horas crudas; si OUT <= IN cruza medianoche (+24h). */
 function rawShiftHours(tin, tout){
@@ -802,7 +840,6 @@ function rawShiftHours(tin, tout){
 /* Comida: media hora NO pagada por cada 5 horas de turno. 8h→0.5 · 10h→1.0 · 4h→0 */
 function lunchFor(raw){ return Math.floor(raw/5 + 1e-9) * 0.5; }
 function paidFor(raw){ const l = lunchFor(raw); return Math.max(0, raw - l); }
-
 function dayCalc(empObj, iso){
   const t = empObj.times[iso];
   if(!t || !t.in || !t.out) return {raw:0, lunch:0, paid:0, has:false};
@@ -830,7 +867,6 @@ function grandTotals(){
   });
   return {hours, pay, agHours};
 }
-
 /* ================= FORMATO ================= */
 function fh(n){ // horas
   const v = Math.round(n*100)/100;
@@ -839,28 +875,12 @@ function fh(n){ // horas
 function fmoney(n){
   return "$" + n.toLocaleString("en-CA",{minimumFractionDigits:2, maximumFractionDigits:2});
 }
-function formatEmpNo(n){ return String(n).padStart(3,"0"); }
-function nextEmpCounters(employees){
-  /* Revisa TODOS los empleados que hayan existido alguna vez (incluso los borrados
-     de la lista) y calcula, por tipo P/E/A, el siguiente número libre. Los números
-     usados nunca se repiten aunque el empleado se vaya. */
-  const counters = {P:1, E:1, A:1};
-  employees.forEach(e=>{
-    const digits = parseInt((e.empNo||"").replace(/\D/g,""),10);
-    if(!isNaN(digits) && counters[e.cls] !== undefined && digits+1 > counters[e.cls]){
-      counters[e.cls] = digits+1;
-    }
-  });
-  return counters;
-}
-
 /* ================= PERSISTENCIA (3 niveles) =================
    1) window.storage (visor de Claude) → 2) localStorage (navegador: Safari/Chrome
    con el archivo guardado en el teléfono o Drive) → 3) solo esta sesión (aviso).
    El Respaldo en "Enviar" siempre funciona, sea cual sea el nivel. */
 let storageMode = null; // "nube" | "local" | "sesion"
 let warnedSession = false;
-
 async function saveNow(){
   const data = JSON.stringify(state);
   /* nivel 1 */
@@ -908,7 +928,6 @@ async function loadSaved(){
     }
   }catch(err){ /* sin localStorage */ }
 }
-
 /* ================= RENDER: HEADER ================= */
 function bizSlug(){ return (state.bizName||"DEEN").replace(/[^A-Za-z0-9]+/g,"").slice(0,14) || "APP"; }
 function renderHeader(){
@@ -921,33 +940,33 @@ function renderHeader(){
   /* El total de horas y el presupuesto son información acumulada:
      solo se ven con el candado Privado abierto. */
   document.getElementById("budgetWrap").style.display = unlocked ? "" : "none";
-  if(!unlocked){ positionDayNav(); return; }
+  if(!unlocked) return;
   const g = grandTotals();
   const wrap = document.getElementById("budgetWrap");
+  const woSuffix = state.workOrder ? " · WO: " + state.workOrder : "";
   if(!state.budgetHours){
-    document.getElementById("budgetLabel").textContent = T("budgetAll");
+    document.getElementById("budgetLabel").textContent = T("budgetAll") + woSuffix;
     document.getElementById("budgetNums").textContent = fh(g.hours) + " h";
     const fill = document.getElementById("budgetFill");
     fill.style.width = "100%"; fill.className = "budget-fill";
   }else{
     const pct = g.hours / state.budgetHours * 100;
-    document.getElementById("budgetLabel").textContent = T("budget");
+    document.getElementById("budgetLabel").textContent = T("budget") + woSuffix;
     document.getElementById("budgetNums").textContent = fh(g.hours) + " / " + fh(state.budgetHours) + " h";
     const fill = document.getElementById("budgetFill");
     fill.style.width = Math.min(100, pct) + "%";
     fill.className = "budget-fill " + (pct>100 ? "over" : pct>=80 ? "warn" : "ok");
   }
   wrap.style.display = "";
-  positionDayNav();
 }
-function positionDayNav(){
-  /* La barra de fecha/días se pega justo debajo del encabezado — cuya altura
-     cambia según si el presupuesto está visible (candado abierto/cerrado). */
-  const header = document.querySelector("header");
-  const wrap = document.getElementById("dayNavWrap");
-  if(header && wrap) wrap.style.top = header.offsetHeight + "px";
+/* La altura del header cambia (aparece/desaparece la barra de presupuesto),
+   así que la franja de fecha se pega justo debajo, recalculando cada vez. */
+function syncDayBarTop(){
+  const h = document.querySelector("header");
+  const bar = document.getElementById("dayBar");
+  if(h && bar) bar.style.top = h.offsetHeight + "px";
 }
-
+window.addEventListener("resize", syncDayBarTop);
 /* ================= RENDER: CAPTURA ================= */
 function renderDayNav(){
   const ds = periodDates(); const iso = ds[currentDayIdx]; const d = parseISO(iso);
@@ -957,13 +976,13 @@ function renderDayNav(){
   const dots = document.getElementById("dayDots"); dots.innerHTML = "";
   ds.forEach((dISO,i)=>{
     const i2 = document.createElement("i");
+    i2.textContent = parseISO(dISO).getDate();
     const any = state.employees.some(e=>{ const t=e.times[dISO]; return t && t.in && t.out; });
     if(any) i2.classList.add("has");
     if(i===currentDayIdx) i2.classList.add("cur");
     dots.appendChild(i2);
   });
 }
-
 function renderSections(){
   /* UNA sola lista pareja con los empleados ACTIVOS. Los quitados siguen en la base
      y regresan desde la lista desplegable. El tipo no se ve aquí (capa privada). */
@@ -979,6 +998,9 @@ function renderSections(){
     (b.today - a.today) || (b.per - a.per) || (b.last > a.last ? 1 : b.last < a.last ? -1 : 0) ||
     a.e.name.localeCompare(b.e.name)
   );
+  if(list.length===0){
+    for(let i=1;i<=5;i++) sec.appendChild(ghostEmpCard(i));
+  }
   let divided = false;
   list.forEach(x=>{
     if(!divided && !x.today && !x.per){
@@ -998,7 +1020,6 @@ function renderSections(){
   sec.appendChild(add);
   host.appendChild(sec);
 }
-
 const ST_KEYS = ["VAC","SICK","LEAVE","ABS","NOSHOW"];
 let stTarget = null;
 function openStatus(empId, iso){
@@ -1023,34 +1044,54 @@ function applyStatus(k){
   document.getElementById("stOverlay").classList.remove("open");
   refresh();
 }
+function ghostEmpCard(n){
+  /* Tarjeta de ejemplo, vacía: nada aquí se guarda ni se puede tocar.
+     El "1".."5" es solo un número de renglón guía, no un nombre real. */
+  const card = document.createElement("div"); card.className = "emp emp-ghost";
+  const top = document.createElement("div"); top.className = "emp-top";
+  const nm = document.createElement("div"); nm.className = "emp-name"; nm.textContent = String(n);
+  top.appendChild(nm); card.appendChild(top);
+  const row = document.createElement("div"); row.className = "emp-times";
+  row.appendChild(timeField(T("tin"), "", ()=>{}));
+  row.appendChild(timeField(T("tout"), "", ()=>{}));
+  const lb = document.createElement("div"); lb.className = "lunch-box";
+  lb.innerHTML = "—<small>" + T("lunch") + "</small>";
+  row.appendChild(lb);
+  const badge = document.createElement("div"); badge.className = "shift-badge num"; badge.textContent = "— h";
+  row.appendChild(badge);
+  card.appendChild(row);
+  card.querySelectorAll("input").forEach(i=> i.disabled = true);
+  return card;
+}
 function empCard(e, iso){
   const card = document.createElement("div"); card.className = "emp"; /* neutra: el tipo no se ve aquí */
   const t = e.times[iso] || {};
   const c = dayCalc(e, iso);
-
   const top = document.createElement("div"); top.className = "emp-top";
   const nm = document.createElement("div"); nm.className = "emp-name";
   /* PRIVACIDAD: solo el nombre y el horario de ESTE día. Las horas acumuladas de la
-     semana o la quincena viven en el Resumen, detrás del PIN. */
-  nm.innerHTML = escapeHTML(e.name);
+     semana o la quincena viven en el Resumen, detrás del PIN. El sueldo por hora
+     solo se ve junto al nombre cuando la pantalla ya está desbloqueada (PIN). */
+  nm.innerHTML = escapeHTML(e.name) + (unlocked && e.rate ? "<small>$" + Number(e.rate).toFixed(2) + "/h</small>" : "");
   nm.onclick = ()=> requirePIN(()=> openEmpModal(e.id));
   top.appendChild(nm);
   card.appendChild(top);
-
   const row = document.createElement("div"); row.className = "emp-times";
+  const lb = document.createElement("div"); lb.className = "lunch-box";
+  function paintLunch(cc){
+    lb.innerHTML = (cc.has && cc.lunch ? "−" + fh(cc.lunch) : "—") + "<small>" + T("lunch") + "</small>";
+  }
   const badge = document.createElement("div");
   badge.className = "shift-badge num" + (c.has ? " on" : "");
-  badge.innerHTML = c.has
-    ? fh(c.paid) + " h" + (c.lunch ? "<span class='lunch'>−" + fh(c.lunch) + " " + T("lunch") + "</span>" : "")
-    : "— h";
+  badge.innerHTML = c.has ? fh(c.paid) + " h" : "— h";
+  paintLunch(c);
   /* Al cambiar la hora NO se redibuja la pantalla (eso cerraba la ruedita de iPhone):
      solo se actualizan los números de esta tarjeta y los totales de arriba. */
   function paintCalc(){
     const c2 = dayCalc(e, iso);
     badge.className = "shift-badge num" + (c2.has ? " on" : "");
-    badge.innerHTML = c2.has
-      ? fh(c2.paid) + " h" + (c2.lunch ? "<span class='lunch'>−" + fh(c2.lunch) + " " + T("lunch") + "</span>" : "")
-      : "— h";
+    badge.innerHTML = c2.has ? fh(c2.paid) + " h" : "— h";
+    paintLunch(c2);
     renderHeader(); renderDayNav();
   }
   function setT(which, val){
@@ -1073,6 +1114,7 @@ function empCard(e, iso){
     row.appendChild(timeField(T("tin"), t.in || "", v=>setT("in", v)));
     row.appendChild(timeField(T("tout"), t.out || "", v=>setT("out", v)));
     row.appendChild(badge);
+    row.appendChild(lb);
     if(unlocked && !t.in && !t.out){
       const sb = document.createElement("button"); sb.className = "st-btn";
       sb.textContent = T("stBtn");
@@ -1099,30 +1141,8 @@ function empCard(e, iso){
     row.appendChild(x);
   }
   card.appendChild(row);
-
-  /* Cliente / PO (Work Order): opcional, por turno. Solo se muestra cuando ya
-     hay horario capturado y no es un día con estado (vacaciones, etc). Sirve
-     para negocios con varios contratos a la vez; si el negocio tiene uno solo,
-     simplemente se deja vacío y no aparece en ningún reporte. */
-  if(!t.status){
-    const poWrap = document.createElement("div"); poWrap.className = "po-row";
-    const poInput = document.createElement("input");
-    poInput.type = "text";
-    poInput.placeholder = T("poPlaceholder");
-    poInput.value = t.po || "";
-    poInput.maxLength = 60;
-    poInput.onchange = ()=>{
-      if(!e.times[iso]) return; /* sin horas capturadas, no hay dónde guardar el PO */
-      if(poInput.value.trim()) e.times[iso].po = poInput.value.trim();
-      else delete e.times[iso].po;
-      persist();
-    };
-    poWrap.appendChild(poInput);
-    card.appendChild(poWrap);
-  }
   return card;
 }
-
 function timeField(label, value, onChange){
   const w = document.createElement("div"); w.className = "tfield";
   const l = document.createElement("label"); l.textContent = label;
@@ -1130,7 +1150,6 @@ function timeField(label, value, onChange){
   i.onchange = ()=> onChange(i.value);
   w.appendChild(l); w.appendChild(i); return w;
 }
-
 /* ================= RENDER: RESUMEN ================= */
 function renderSummary(){
   const host = document.getElementById("summaryBody"); host.innerHTML = "";
@@ -1144,15 +1163,15 @@ function renderSummary(){
     list.forEach(e=>{
       const p = empPeriod(e);
       tW1+=p.w1; tW2+=p.w2; tT+=p.total; tL+=p.lunch; tPay+=p.pay;
-      rows += "<tr><td>" + escapeHTML(e.name) + "</td><td class='num'>" + escapeHTML((e.cls==="P" ? (e.empNo||"—") : ((e.empNo||"")+e.cls))) + "</td>" +
+      rows += "<tr><td>" + escapeHTML(e.name) + "</td>" +
         "<td class='num'>" + fh(p.w1) + "</td><td class='num'>" + fh(p.w2) + "</td>" +
         "<td class='num'>" + fh(p.total) + "</td>" +
         (showPay ? "<td class='num'>" + (p.pay?fmoney(p.pay):"—") + "</td>" : "") + "</tr>";
     });
     card.innerHTML = "<h3>" + T("cls_"+cls) + "</h3>" +
-      "<table><thead><tr><th>" + T("thName") + "</th><th>" + T("thEmpNo") + "</th><th>" + T("wkAbbr") + wk[0] + "</th><th>" + T("wkAbbr") + wk[1] + "</th><th>" + T("thTotal") + "</th>" +
+      "<table><thead><tr><th>" + T("thName") + "</th><th>" + T("wkAbbr") + wk[0] + "</th><th>" + T("wkAbbr") + wk[1] + "</th><th>" + T("thTotal") + "</th>" +
       (showPay ? "<th>" + T("thPay") + "</th>" : "") + "</tr></thead><tbody>" + rows +
-      "<tr class='tot'><td>" + T("rowTotal") + "</td><td></td><td class='num'>" + fh(tW1) + "</td><td class='num'>" + fh(tW2) + "</td>" +
+      "<tr class='tot'><td>" + T("rowTotal") + "</td><td class='num'>" + fh(tW1) + "</td><td class='num'>" + fh(tW2) + "</td>" +
       "<td class='num'>" + fh(tT) + "</td>" +
       (showPay ? "<td class='num'>" + fmoney(tPay) + "</td>" : "") + "</tr></tbody></table>" +
       "<p class='sec-note' style='margin:8px 0 0'>" + T("noteLunch") + " " + fh(tL) + " h. " + (cls==="A" ? T("noteAgency") : T("noteExtra")) + "</p>";
@@ -1166,7 +1185,6 @@ function renderSummary(){
     "<div class='row hero'><span>" + T("gPay") + "</span><b>" + fmoney(g.pay) + "</b></div>";
   host.appendChild(grand);
 }
-
 /* ================= EXPORTAR ================= */
 function download(filename, text, mime){
   const blob = new Blob([text], {type: mime || "text/plain;charset=utf-8"});
@@ -1174,20 +1192,6 @@ function download(filename, text, mime){
   a.href = URL.createObjectURL(blob); a.download = filename;
   document.body.appendChild(a); a.click();
   setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 400);
-}
-function csvENET(){
-  /* Planta: número SIN letra (pendiente confirmar con Ricardo desde qué número seguir).
-     Eventual y Agencia: número CON letra pegada (E/A), empezando desde 001 a partir de ahora. */
-  let out = "Employee No.,Earning,Hours\n";
-  state.employees.forEach(e=>{
-    const p = empPeriod(e);
-    if(p.total<=0) return;
-    const numero = (e.cls==="P") ? (e.empNo||"") : ((e.empNo||"") + e.cls);
-    out += numero + ",Regular," + fh(p.total) + "\n";
-  });
-  const ds = periodDates();
-  download(bizSlug() + "_horas_Q" + state.periodNum + "_" + ds[0] + ".csv", out, "text/csv;charset=utf-8");
-  toast(T("tCSV"));
 }
 /* ============ EXCEL REAL (.xlsx) CON FÓRMULAS ============ */
 function ensureXLSX(){
@@ -1199,9 +1203,7 @@ function ensureXLSX(){
     document.head.appendChild(s);
   });
 }
-async function excelResumen(){
-  const ok = await ensureXLSX();
-  if(!ok){ xlsResumen(); toast(T("tNoNet")); return; }
+async function buildWorkbookBase64(){
   const ds = periodDates(); const yr = parseISO(ds[13]).getFullYear();
   const wk = weekPair();
   const r2 = n => Math.round(n*100)/100;
@@ -1251,82 +1253,15 @@ async function excelResumen(){
   const ws2 = XLSX.utils.aoa_to_sheet(det);
   ws2["!cols"] = [{wch:24}, ...ds.map(()=>({wch:12})), {wch:10}];
   XLSX.utils.book_append_sheet(wb, ws2, T("detTitle"));
-  XLSX.writeFile(wb, bizSlug() + "_Q" + state.periodNum + "_" + ds[0] + ".xlsx");
-  toast(T("tXLS"));
+  return {
+    base64: XLSX.write(wb, {type:"base64", bookType:"xlsx"}),
+    filename: bizSlug() + "_Q" + state.periodNum + "_" + ds[0] + ".xlsx",
+    mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  };
 }
-/* ============ CUADRÍCULA DE AGENCIA (formato "DEEN Biweekly Timesheet") ============
-   Una fila por empleado de Agencia, columnas de entrada/salida por cada uno de los
-   14 días de la quincena, y un total al final. Esto es ADICIONAL al Excel/CSV de
-   nómina de arriba — no reemplaza nada, y no incluye a Planta ni Eventual. */
-async function excelCuadricula(){
-  const ok = await ensureXLSX();
-  if(!ok){ toast(T("tNoNet")); return; }
-  const dsDon = periodDates();
-  /* La agencia paga a SU gente de lunes a domingo, dos semanas completas — un día
-     desfasado del periodo de Don (que es domingo a sábado). No se recortan ni se
-     mezclan: la agencia entrega su reporte hasta el lunes noche/martes mañana,
-     y a ella nunca se le hace payroll aquí, solo se coteja contra su factura. */
-  const agStart = dsDon[1]; /* el lunes justo después de que empieza la quincena de Don */
-  const agDates = [];
-  { const d0 = parseISO(agStart); for(let i=0;i<14;i++){ const d=new Date(d0); d.setDate(d0.getDate()+i); agDates.push(toISO(d)); } }
-  const agWk1 = agDates.slice(0,7);
-  const agWk2 = agDates.slice(7,14);
-  const yr = parseISO(agWk2[6]).getFullYear();
-  const list = state.employees.filter(e=>e.cls==="A");
-  function r2(n){ return Math.round(n*100)/100; }
-  function sumDays(e, days){ return days.reduce((s,iso)=> s + dayCalc(e, iso).paid, 0); }
-  const listWithHours = list.filter(e=> sumDays(e, agDates) > 0);
-  const aoa = [[(state.bizName||"DEEN") + " — " + T("agShort") + " (semanas propias, lunes–domingo)"],[]];
-  aoa.push(["Semana 1: " + fmtDateW(agWk1[0]) + " – " + fmtDateW(agWk1[6]) + " " + yr + "   ·   Semana 2: " + fmtDateW(agWk2[0]) + " – " + fmtDateW(agWk2[6]) + " " + yr]);
-  aoa.push(["No coincide con la quincena de Don (domingo–sábado) — son dos cuentas distintas, solo se cotejan, no se mezclan."]);
-  aoa.push([]);
-  const head = [T("thName")];
-  agDates.forEach(d=>{ head.push(fmtDateW(d)+" "+T("tin")); head.push(fmtDateW(d)+" "+T("tout")); });
-  head.push("Sem.1 Lun–Dom (h)", "Sem.2 Lun–Dom (h)", T("rowTotal")+" (h)");
-  aoa.push(head);
-  const startRow = aoa.length;
-  let gW1=0, gW2=0, gT=0;
-  listWithHours.forEach(e=>{
-    const row = [e.name];
-    let poNote = [];
-    agDates.forEach(iso=>{
-      const t = e.times[iso] || {};
-      row.push(t.in || ""); row.push(t.out || "");
-      if(t.po) poNote.push(fmtDateW(iso)+": "+t.po);
-    });
-    const w1 = sumDays(e, agWk1), w2 = sumDays(e, agWk2);
-    gW1+=w1; gW2+=w2; gT+=(w1+w2);
-    row.push(r2(w1), r2(w2), r2(w1+w2));
-    aoa.push(row);
-    if(poNote.length) aoa.push(["  · Cliente/PO — " + poNote.join("  |  ")]);
-  });
-  const endRow = aoa.length; /* aproximado, incluye posibles filas de nota */
-  aoa.push([]);
-  aoa.push(["TOTAL AGENCIA", ...agDates.flatMap(()=>["",""]), r2(gW1), r2(gW2), r2(gT)]);
-  aoa.push([]);
-  aoa.push([T("noteAgency")]);
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(aoa);
-  ws["!cols"] = [{wch:22}, ...agDates.flatMap(()=>[{wch:8},{wch:8}]), {wch:12},{wch:12},{wch:10}];
-  /* El último día (agDates[13], domingo) queda fuera de la quincena de payroll de Don:
-     se pinta en gris para que se vea claro que ese día vuela a la siguiente quincena
-     y no cuenta en este cotejo. En el siguiente reporte ya sale en negro normal. */
-  const lastDayInCol = 1 + 13*2, lastDayOutCol = lastDayInCol + 1;
-  for(let r=0; r<aoa.length; r++){
-    [lastDayInCol, lastDayOutCol].forEach(c=>{
-      const ref = XLSX.utils.encode_cell({r, c});
-      if(ws[ref]) ws[ref].s = { font: { strike: true, color: { rgb: "999999" } } };
-    });
-  }
-  XLSX.utils.book_append_sheet(wb, ws, T("agShort"));
-  XLSX.writeFile(wb, bizSlug() + "_Agencia_" + agWk1[0] + ".xlsx");
-  toast(T("tXLS"));
-}
-
-function buildResumenHTML(){
-  /* Construye el reporte completo: por día, por semana, por quincena, por empleado
-     y el gran total — el mismo que arma el botón Excel. Se reutiliza tanto para
-     el botón de descarga como para el archivo que se manda por correo. */
+function buildResumenHTMLFallback(){
+  /* Sin internet no se puede cargar SheetJS — este HTML (tabla) es el respaldo,
+     Excel y Google Sheets también lo abren, solo que sin fórmulas en vivo. */
   const ds = periodDates();
   const CLS_HEX = {P:"#3E7A4E", E:"#C77B2E", A:"#3A6EA5", S:"#8A8578"};
   const yr = parseISO(ds[13]).getFullYear();
@@ -1356,7 +1291,7 @@ function buildResumenHTML(){
   });
   /* Detalle diario para que Ricardo pueda verificar renglón por renglón */
   h += "<h3>" + T("detTitle") + "</h3><table border='1' cellspacing='0' cellpadding='3'>" +
-       "<tr style='background:#2F4739;color:#FFFFFF'><th>Nombre</th>";
+       "<tr style='background:#1C3A5E;color:#FFFFFF'><th>Nombre</th>";
   ds.forEach(d=>{ h += "<th>" + fmtDateW(d) + "</th>"; });
   h += "</tr>";
   state.employees.filter(e=>empPeriod(e).total>0).forEach(e=>{
@@ -1367,19 +1302,115 @@ function buildResumenHTML(){
     });
     h += "</tr>";
   });
-  /* Gran total de todos, al final */
-  const g = grandTotals();
-  h += "</table><p style='font-weight:bold; font-size:14px;'>GRAN TOTAL — Todos los empleados: " + fh(g.hours) + " h" +
-       " · Agencia (solo control): " + fh(g.agHours) + " h · Pago bruto planta+eventuales: $" + g.pay.toFixed(2) + "</p>";
-  h += "<p>Pago bruto = antes de retenciones (esas las calcula el sistema de nómina). Comida: 0.5 h por cada 5 h de turno. Generado con la app de horas · Turnero.</p></body></html>";
-  return h;
+  h += "</table><p>Pago bruto = antes de retenciones (esas las calcula el sistema de nómina). Comida: 0.5 h por cada 5 h de turno. Generado con la app de horas · Turnero.</p></body></html>";
+  return {
+    base64: btoa(unescape(encodeURIComponent("﻿" + h))),
+    filename: bizSlug() + "_Q" + state.periodNum + "_resumen_" + ds[0] + ".xls",
+    mime: "application/vnd.ms-excel"
+  };
 }
-function xlsResumen(){
-  /* Archivo .xls (tabla HTML) que Excel y Google Sheets abren como hoja de cálculo con formato. */
-  const ds = periodDates();
-  const h = buildResumenHTML();
-  download(bizSlug() + "_Q" + state.periodNum + "_resumen_" + ds[0] + ".xls", "\ufeff" + h, "application/vnd.ms-excel");
-  toast("Excel descargado. Súbelo a Drive o mándalo al contador.");
+async function sendReportByEmail(){
+  const emails = (state.reportEmails||[]).filter(Boolean);
+  if(!emails.length){ toast(T("tNoEmails")); return; }
+  const btn = document.getElementById("btnEmailSend");
+  btn.disabled = true;
+  const prevLabel = btn.textContent;
+  btn.textContent = T("tSending");
+  try{
+    const ok = await ensureXLSX();
+    const file = ok ? await buildWorkbookBase64() : buildResumenHTMLFallback();
+    if(!ok) toast(T("tNoNet"));
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: emails.join(","),
+      business_name: state.bizName || "Turnero",
+      report_title: "Q" + state.periodNum,
+      message: T("tEmailMsg"),
+      attachment_name: file.filename,
+      attachment_data: "data:" + file.mime + ";base64," + file.base64
+    });
+    toast(T("tEmailOk").replace("{l}", emails.join(", ")));
+  }catch(err){
+    toast(T("tEmailErr"));
+  }finally{
+    btn.disabled = false;
+    btn.textContent = prevLabel;
+  }
+}
+/* ============ IMPORTAR HORAS DESDE EXCEL ============
+   Formato esperado (primera hoja): Nombre | Fecha (AAAA-MM-DD) | Entrada (HH:MM) | Salida (HH:MM) | Tipo (P/E/A, opcional)
+   Si el nombre no existe todavía, se crea el empleado nuevo (tipo E por defecto, sin tarifa —
+   se completa después desde + Agregar empleado). Nunca se borra nada que ya exista: solo se
+   agrega o se sobreescribe el día exacto que trae el archivo. */
+function downloadImportTemplate(){
+  ensureXLSX().then(ok=>{
+    if(!ok){ toast(T("tNoNet")); return; }
+    const aoa = [
+      ["Nombre","Fecha (AAAA-MM-DD)","Entrada (HH:MM)","Salida (HH:MM)","Tipo (P/E/A, opcional)"],
+      ["Ejemplo Pérez","2026-08-24","08:00","16:00","E"]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws["!cols"] = [{wch:22},{wch:20},{wch:16},{wch:16},{wch:20}];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Horas");
+    XLSX.writeFile(wb, "plantilla_importar_horas.xlsx");
+  });
+}
+function excelSerialToISO(v){
+  if(typeof v === "number"){
+    const d = XLSX.SSF.parse_date_code(v);
+    return d.y + "-" + String(d.m).padStart(2,"0") + "-" + String(d.d).padStart(2,"0");
+  }
+  const s = String(v).trim();
+  const m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m) return m[1] + "-" + m[2].padStart(2,"0") + "-" + m[3].padStart(2,"0");
+  return s;
+}
+function excelTimeToHHMM(v){
+  if(typeof v === "number"){
+    let totalMin = Math.round(v*24*60);
+    const h = Math.floor(totalMin/60) % 24, m = totalMin%60;
+    return String(h).padStart(2,"0") + ":" + String(m).padStart(2,"0");
+  }
+  const s = String(v).trim();
+  const m = s.match(/^(\d{1,2}):(\d{2})/);
+  return m ? m[1].padStart(2,"0") + ":" + m[2] : "";
+}
+async function importFromExcel(file){
+  const ok = await ensureXLSX();
+  if(!ok){ toast(T("tNoNet")); return; }
+  let rows;
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf, {type:"array"});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:""});
+  }catch(err){ toast(T("tBadFile")); return; }
+  let okCount = 0; const skipped = [];
+  for(let i=1;i<rows.length;i++){
+    const r = rows[i];
+    if(!r || !r.length) continue;
+    const name = String(r[0]||"").trim();
+    if(!name || r[1]==="" || r[1]==null) continue;
+    const iso = excelSerialToISO(r[1]);
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)){ skipped.push(name + " (" + r[1] + ")"); continue; }
+    const tin = excelTimeToHHMM(r[2]), tout = excelTimeToHHMM(r[3]);
+    if(!tin || !tout){ skipped.push(name + " " + iso); continue; }
+    const rawCls = String(r[4]||"").trim().toUpperCase();
+    let emp = state.employees.find(e=> e.name.trim().toLowerCase() === name.toLowerCase());
+    if(!emp){
+      const cls = ["P","E","A"].includes(rawCls) ? rawCls : "E";
+      emp = {id:"e"+Math.random().toString(36).slice(2,10), name, cls, rate:0, empNo:"", phone:"", active:true, times:{}};
+      state.employees.push(emp);
+    }
+    emp.times[iso] = {in:tin, out:tout};
+    okCount++;
+  }
+  persist(); refresh();
+  let msg = okCount + " turno(s) importado(s).";
+  if(skipped.length){
+    msg += " " + skipped.length + " renglón(es) con error: " + skipped.slice(0,5).join(", ") + (skipped.length>5 ? "…" : "");
+  }
+  toast(msg);
 }
 function backup(){
   download(bizSlug() + "_respaldo_" + toISO(new Date()) + ".json", JSON.stringify(state, null, 1), "application/json");
@@ -1398,10 +1429,14 @@ function restoreFile(file){
   };
   r.readAsText(file);
 }
-
+function wipeAll(){
+  if(!confirm(T("wipeConfirm1"))) return;
+  state = defaultState();
+  persist(); refresh(); syncSettings();
+  toast(T("wipeDone"));
+}
 /* ================= MODAL EMPLEADO ================= */
 let selectedExistingId = null;
-
 function openEmpModal(id, presetCls){
   editingEmpId = id;
   selectedExistingId = null;
@@ -1410,9 +1445,10 @@ function openEmpModal(id, presetCls){
   document.getElementById("empSheetTitle").textContent = e ? T("editEmp") : T("addEmpTitle");
   document.getElementById("fName").value = e ? e.name : "";
   document.getElementById("fRate").value = e && e.rate ? e.rate : "";
-  document.getElementById("fEmpNo").value = e ? (e.empNo||"") : formatEmpNo((state.empCounters && state.empCounters[pickedCls]) || 1);
+  document.getElementById("fEmpNo").value = e ? (e.empNo||"") : "";
   document.getElementById("fPhone").value = e ? (e.phone||"") : "";
   document.getElementById("btnDeleteEmp").style.display = e ? "" : "none";
+  document.getElementById("btnDeleteEmp").textContent = (e && Object.keys(e.times).length>0) ? T("delEmpMaster") : T("delEmp");
   document.getElementById("btnHideEmp").style.display = e ? "" : "none";
   /* la lista desplegable de la base: solo al AGREGAR */
   const rowEx = document.getElementById("rowExisting");
@@ -1447,24 +1483,35 @@ function openEmpModal(id, presetCls){
   paintClsPick();
   document.getElementById("empOverlay").classList.add("open");
 }
+function nextEmpNo(){
+  /* Siguiente número consecutivo = el más alto que ya existe + 1. Si no hay
+     ninguno, empieza en 1. El formato (3/4/5 dígitos) lo decide la clave maestra. */
+  const digits = state.empNoDigits || 3;
+  let max = 0;
+  state.employees.forEach(e=>{
+    const n = parseInt((e.empNo||"").replace(/\D/g,""), 10);
+    if(!isNaN(n) && n > max) max = n;
+  });
+  return String(max + 1).padStart(digits, "0");
+}
 function paintClsPick(){
   ["P","E","A"].forEach(c=>{
     const b = document.getElementById("pick"+c);
     b.className = (pickedCls===c) ? "sel-"+c : "";
   });
-  /* El número de empleado ahora se pide para los 3 tipos (P/E/A), cada uno con su
-     propia numeración. Para un empleado NUEVO (no editando, no elegido de la base),
-     se sugiere el siguiente número libre de ese tipo automáticamente. */
-  document.getElementById("rowEmpNo").style.display = "";
-  if(!editingEmpId && !selectedExistingId){
-    const f = document.getElementById("fEmpNo");
-    if(f) f.value = formatEmpNo((state.empCounters && state.empCounters[pickedCls]) || 1);
+  /* El salario se ve y se llena SIEMPRE, sea planta, eventual o agencia. */
+  const rowEmpNo = document.getElementById("rowEmpNo");
+  rowEmpNo.style.display = (pickedCls==="P") ? "" : "none";
+  const fEmpNo = document.getElementById("fEmpNo");
+  if(pickedCls==="P" && !editingEmpId && !selectedExistingId && !fEmpNo.value){
+    fEmpNo.value = nextEmpNo();
   }
 }
 function saveEmp(){
   const name = document.getElementById("fName").value.trim();
   if(!name){ toast(T("missingName")); return; }
   const rate = parseFloat(document.getElementById("fRate").value) || 0;
+  if(rate > 0 && rate < 16){ toast(T("minWage")); return; }
   const empNo = document.getElementById("fEmpNo").value.trim();
   const phone = document.getElementById("fPhone").value.trim();
   if(editingEmpId){
@@ -1477,13 +1524,6 @@ function saveEmp(){
   }else{
     state.employees.push({id:"e"+Math.random().toString(36).slice(2,10),
       name, cls:pickedCls, rate, empNo, phone, active:true, times:{}});
-    /* avanza el contador de ese tipo, para que el siguiente empleado nuevo
-       no reciba nunca un número ya usado, aunque este se borre después */
-    const digits = parseInt((empNo||"").replace(/\D/g,""),10);
-    if(!isNaN(digits) && !state.empCounters) state.empCounters = {P:1,E:1,A:1};
-    if(!isNaN(digits) && digits+1 > (state.empCounters[pickedCls]||1)){
-      state.empCounters[pickedCls] = digits+1;
-    }
   }
   closeModal(); persist(); refresh();
 }
@@ -1495,17 +1535,19 @@ function hideEmp(){
 }
 function deleteEmp(){
   const e = state.employees.find(x=>x.id===editingEmpId); if(!e) return;
-  const hasHours = Object.keys(e.times).length > 0;
-  const msg = hasHours
-    ? "OJO: " + e.name + " tiene horas registradas y se borrarán de la BASE junto con la persona. Si solo quieres sacarlo de la lista, usa \"Quitar de la lista\". ¿Borrar de la base para siempre?"
-    : "¿Borrar a " + e.name + " de la base para siempre? Si solo quieres sacarlo de la lista, usa \"Quitar de la lista\".";
-  if(!confirm(msg)) return;
-  if(!confirm("Confirmación final: esta acción no se puede deshacer. ¿Seguro?")) return;
-  state.employees = state.employees.filter(x=>x.id!==editingEmpId);
-  closeModal(); persist(); refresh();
+  const doDelete = ()=>{
+    if(!confirm("¿Borrar a " + e.name + " de la base para siempre? Si solo quieres sacarlo de la lista, usa \"Quitar de la lista\".")) return;
+    if(!confirm("Confirmación final: esta acción no se puede deshacer. ¿Seguro?")) return;
+    state.employees = state.employees.filter(x=>x.id!==editingEmpId);
+    closeModal(); persist(); refresh();
+  };
+  /* Con horas registradas, un gerente con la clave normal NO puede borrar —
+     solo la llave maestra puede, y solo para emergencias reales (ej. alta
+     duplicada) que el dueño reporta directamente. Sin horas, cualquier
+     gerente puede corregir un alta hecha por error sin pedir la llave. */
+  if(Object.keys(e.times).length > 0) askMaster(doDelete); else doDelete();
 }
 function closeModal(){ document.getElementById("empOverlay").classList.remove("open"); editingEmpId=null; }
-
 /* ================= UTILERÍA ================= */
 function escapeHTML(s){ return s.replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 let toastTimer=null, lastDeleted=null;
@@ -1532,9 +1574,8 @@ function undoToast(msg){
   t.classList.add("show");
   clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove("show"), 8000);
 }
-function refresh(){ renderHeader(); renderDayNav(); renderSections();
+function refresh(){ renderHeader(); renderDayNav(); renderSections(); syncDayBarTop();
   if(document.getElementById("view-summary").classList.contains("active")) renderSummary(); }
-
 /* ================= EVENTOS ================= */
 document.getElementById("prevDay").onclick = ()=>{ currentDayIdx = Math.max(0, currentDayIdx-1); refresh(); };
 document.getElementById("nextDay").onclick = ()=>{ currentDayIdx = Math.min(13, currentDayIdx+1); refresh(); };
@@ -1547,10 +1588,16 @@ function shiftPeriod(days, dn){
   currentDayIdx = 0; persist(); syncSettings(); refresh();
 }
 document.getElementById("periodBtn").onclick = ()=>{ switchView("export"); window.scrollTo({top:document.body.scrollHeight, behavior:"smooth"}); };
-
 /* ================= PIN — DATOS PRIVADOS ================= */
 let unlocked = false, pinCb = null, pinMode = "user";
 const MASTER_PIN = "AYMOR26";
+/* Cuenta de EmailJS de Leonor — la clave pública está diseñada para vivir en
+   el código del navegador (así funciona EmailJS sin servidor propio). La
+   protección real es restringir "dominios permitidos" en el panel de EmailJS. */
+const EMAILJS_PUBLIC_KEY = "tBqrcMb3RknILk6jH";
+const EMAILJS_SERVICE_ID = "service_p7yzo9k";
+const EMAILJS_TEMPLATE_ID = "template_7jy1dn7";
+emailjs.init(EMAILJS_PUBLIC_KEY);
 function requirePIN(cb){
   if(unlocked){ cb(); return; }
   pinMode = "user";
@@ -1595,10 +1642,20 @@ function askMaster(cb){
 }
 document.getElementById("btnBizUnlock").onclick = ()=> askMaster(()=>{
   const i = document.getElementById("setBiz");
-  i.readOnly = false; i.focus();
+  i.readOnly = false;
+  setTimeout(()=> i.focus(), 60);
   toast(T("tBizOpen"));
 });
-
+document.getElementById("btnEmailsUnlock").onclick = ()=> askMaster(()=>{
+  const i = document.getElementById("setEmails");
+  i.readOnly = false;
+  setTimeout(()=> i.focus(), 60);
+  toast(T("tEmailsOpen"));
+});
+document.getElementById("btnEmpFmtUnlock").onclick = ()=> askMaster(()=>{
+  document.getElementById("setEmpFmt").disabled = false;
+  toast(T("tEmpFmtOpen"));
+});
 document.querySelectorAll(".tabbar button[data-view]").forEach(b=>{
   b.onclick = ()=>{
     const v = b.dataset.view;
@@ -1606,6 +1663,63 @@ document.querySelectorAll(".tabbar button[data-view]").forEach(b=>{
     else switchView(v);
   };
 });
+/* ============ VACACIONES: reservar cualquier fecha del año, sin mover
+   la quincena que se está capturando. Mientras el día no haya pasado,
+   cualquier gerente con clave normal lo puede cambiar o quitar. ============ */
+function syncVacForm(){
+  const sel = document.getElementById("vacEmp");
+  const prev = sel.value;
+  sel.innerHTML = "";
+  state.employees.filter(e=>e.active!==false).slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(e=>{
+    const o = document.createElement("option"); o.value = e.id; o.textContent = e.name; sel.appendChild(o);
+  });
+  if(prev && state.employees.some(e=>e.id===prev)) sel.value = prev;
+  const di = document.getElementById("vacDate");
+  const todayIso = toISO(new Date());
+  if(!di.value) di.value = todayIso;
+  di.min = todayIso;
+  updateVacHint();
+}
+function updateVacHint(){
+  const eid = document.getElementById("vacEmp").value;
+  const iso = document.getElementById("vacDate").value;
+  const hint = document.getElementById("vacStatusHint");
+  const e = state.employees.find(x=>x.id===eid);
+  if(!e || !iso){ hint.textContent = ""; return; }
+  const t = e.times[iso];
+  if(t && t.status) hint.textContent = T("vacAlready").replace("{s}", T("st"+t.status));
+  else if(t && (t.in || t.out)) hint.textContent = T("vacHasHours");
+  else hint.textContent = T("vacFree");
+}
+document.getElementById("vacEmp").onchange = updateVacHint;
+document.getElementById("vacDate").onchange = updateVacHint;
+document.getElementById("btnVacSave").onclick = ()=>{
+  const eid = document.getElementById("vacEmp").value;
+  const iso = document.getElementById("vacDate").value;
+  const e = state.employees.find(x=>x.id===eid);
+  if(!e || !iso) return;
+  const t = e.times[iso];
+  /* Si ese día ya tiene horas trabajadas, no se puede convertir en
+     vacaciones -- el empleado sí trabajó ese día. Lo único que se puede
+     hacer es recortar el horario desde Captura, no borrar el día. */
+  if(t && (t.in || t.out)){ toast(T("vacHasHoursBlock")); return; }
+  e.times[iso] = {status:"VAC"};
+  persist(); updateVacHint(); refresh();
+  toast(T("vacSaved").replace("{n}", e.name));
+};
+document.getElementById("btnVacClear").onclick = ()=>{
+  const eid = document.getElementById("vacEmp").value;
+  const iso = document.getElementById("vacDate").value;
+  const e = state.employees.find(x=>x.id===eid);
+  if(!e || !iso) return;
+  const t = e.times[iso];
+  /* Esto solo quita un estado (vacaciones, etc.), nunca horas trabajadas
+     -- si ese día tiene horas reales, se corrige desde Captura. */
+  if(t && (t.in || t.out)){ toast(T("vacHasHoursBlock")); return; }
+  if(t) delete e.times[iso];
+  persist(); updateVacHint(); refresh();
+  toast(T("vacCleared").replace("{n}", e.name));
+};
 /* Botón Privado: Resumen y Enviar no existen a la vista hasta poner el PIN,
    y se vuelven a esconder con un toque. */
 const privBtn = document.getElementById("privBtn");
@@ -1625,71 +1739,33 @@ function switchView(name){
   document.getElementById("view-"+name).classList.add("active");
   document.querySelectorAll(".tabbar button").forEach(x=>x.classList.toggle("active", x.dataset.view===name));
   if(name==="summary") renderSummary();
-  if(name==="export") syncSettings();
+  if(name==="export"){ syncSettings(); syncVacForm(); }
   window.scrollTo(0,0);
 }
-document.getElementById("btnCSV").onclick = csvENET;
-document.getElementById("btnXLS").onclick = excelResumen;
-document.getElementById("btnGrid").onclick = excelCuadricula;
+document.getElementById("btnEmailSend").onclick = sendReportByEmail;
+document.getElementById("btnTemplate").onclick = downloadImportTemplate;
+document.getElementById("btnImportXLS").onclick = ()=> document.getElementById("fileImportXLS").click();
+document.getElementById("fileImportXLS").onchange = ev=>{ if(ev.target.files[0]) importFromExcel(ev.target.files[0]); ev.target.value=""; };
 document.getElementById("btnBackup").onclick = backup;
-document.getElementById("btnRestore").onclick = ()=> document.getElementById("fileRestore").click();
+document.getElementById("btnRestore").onclick = ()=> askMaster(()=> document.getElementById("fileRestore").click());
 document.getElementById("fileRestore").onchange = ev=>{ if(ev.target.files[0]) restoreFile(ev.target.files[0]); ev.target.value=""; };
-// ==========================================
-// CONFIGURACIÓN DE TU CUENTA DE EMAILJS
-// Las 3 claves reales YA NO están aquí — viven en el archivo
-// emailjs.config.js (mismo folder), que NO se sube a GitHub.
-// Si ese archivo falta, esta línea de abajo falla a propósito
-// en vez de mandar un correo sin que nadie sepa a dónde.
-// ==========================================
-if(typeof EMAILJS_PUBLIC_KEY === "undefined"){
-  throw new Error("Falta emailjs.config.js — sin ese archivo la app no puede mandar correos.");
-}
-
-// Inicializar la herramienta de EmailJS
-emailjs.init(EMAILJS_PUBLIC_KEY);
-
-document.getElementById("btnEnviarEmail").onclick = async () => {
-  const boton = document.getElementById("btnEnviarEmail");
-  try {
-    boton.innerText = T("emailSending");
-    boton.disabled = true;
-
-    // Arma el reporte COMPLETO (por día, semana, quincena, y gran total) — el mismo del botón Excel
-    const reporteHTML = buildResumenHTML();
-    const ds = periodDates();
-    const nombreArchivo = bizSlug() + "_Q" + state.periodNum + "_resumen_" + ds[0] + ".xls";
-    const base64Content = "data:application/vnd.ms-excel;base64," + btoa(unescape(encodeURIComponent("\ufeff" + reporteHTML)));
-
-    const parametrosPlantilla = {
-      business_name: state.bizName || "DEEN",
-      report_title: "Q" + state.periodNum,
-      message: T("emailMsgTest"),
-      attachment_name: nombreArchivo,
-      attachment_data: base64Content
-    };
-
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, parametrosPlantilla);
-    alert(T("emailSuccess"));
-
-  } catch (error) {
-    console.error(error);
-    alert(T("emailError") + (error && error.text ? error.text : T("emailErrorGeneric")));
-  } finally {
-    boton.innerHTML = T("emailBtn");
-    boton.disabled = false;
-  }
-};
-// ==========================================
-
+document.getElementById("btnWipeAll").onclick = ()=> askMaster(wipeAll);
 function syncSettings(){
   document.getElementById("setStart").value = state.periodStart;
   document.getElementById("setPeriodNum").value = state.periodNum;
   document.getElementById("setBudget").value = state.budgetHours || 0;
+  document.getElementById("setWO").value = state.workOrder || "";
   document.getElementById("setPin").value = state.pin || "2026";
   document.getElementById("setLang").value = state.lang || "es";
   const bi = document.getElementById("setBiz");
   bi.value = state.bizName || "Turnero";
   bi.readOnly = true;
+  const ei = document.getElementById("setEmails");
+  ei.value = (state.reportEmails||[]).join(", ");
+  ei.readOnly = true;
+  const efi = document.getElementById("setEmpFmt");
+  efi.value = String(state.empNoDigits || 3);
+  efi.disabled = true;
 }
 document.getElementById("btnSaveSettings").onclick = ()=>{
   const raw = document.getElementById("setStart").value;
@@ -1700,17 +1776,24 @@ document.getElementById("btnSaveSettings").onclick = ()=>{
   }
   state.periodNum = Math.max(1, parseInt(document.getElementById("setPeriodNum").value)||1);
   state.budgetHours = Math.max(0, parseFloat(document.getElementById("setBudget").value)||0);
+  state.workOrder = document.getElementById("setWO").value.trim();
   const newPin = document.getElementById("setPin").value.trim();
   if(newPin) state.pin = newPin;
   state.lang = document.getElementById("setLang").value || "es";
   const biz = document.getElementById("setBiz").value.trim();
   if(biz) state.bizName = biz;
+  const emailsRaw = document.getElementById("setEmails").value.trim();
+  if(!document.getElementById("setEmails").readOnly){
+    const list = emailsRaw.split(",").map(s=>s.trim()).filter(s=>s.includes("@")).slice(0,2);
+    state.reportEmails = list;
+  }
+  const empFmtEl = document.getElementById("setEmpFmt");
+  if(!empFmtEl.disabled) state.empNoDigits = parseInt(empFmtEl.value, 10) || 3;
   applyLang();
   currentDayIdx = 0; persist(); syncSettings(); refresh();
   toast(T("tSaved"));
   switchView("capture");
 };
-
 ["pickP","pickE","pickA"].forEach(id=>{
   document.getElementById(id).onclick = ()=>{ pickedCls = document.getElementById(id).dataset.cls; paintClsPick(); };
 });
@@ -1719,7 +1802,6 @@ document.getElementById("btnHideEmp").onclick = hideEmp;
 document.getElementById("btnCancelEmp").onclick = closeModal;
 document.getElementById("btnDeleteEmp").onclick = deleteEmp;
 document.getElementById("empOverlay").addEventListener("click", ev=>{ if(ev.target.id==="empOverlay") closeModal(); });
-
 /* ================= ARRANQUE ================= */
 (async function init(){
   await loadSaved();
@@ -1736,3 +1818,4 @@ document.getElementById("empOverlay").addEventListener("click", ev=>{ if(ev.targ
 </script>
 </body>
 </html>
+Mostrando turnero_index.txt
