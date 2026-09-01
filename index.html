@@ -15,8 +15,8 @@ de
 <title>Turnero · Control de horas</title>
 <style>
   :root{
-    --forest:#2F4739; --forest-deep:#22352B; --cream:#F6F2E7; --card:#FFFFFF;
-    --gold:#C9A05C; --brown:#6B4F3B; --ink:#26302A; --muted:#7A8078;
+    --forest:#1C3A5E; --forest-deep:#13283F; --cream:#F0F3F6; --card:#FFFFFF;
+    --gold:#D9A84E; --brown:#6B4F3B; --ink:#1C2530; --muted:#6B7280;
     --planta:#3E7A4E; --planta-bg:#EAF3EC;
     --eventual:#C77B2E; --eventual-bg:#F9EFE2;
     --agencia:#3A6EA5; --agencia-bg:#E8EFF7;
@@ -28,7 +28,11 @@ de
   html,body{margin:0; padding:0; background:var(--cream); color:var(--ink);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     font-size:16px;}
-  body{padding-bottom:88px;}
+  /* En pantallas anchas (computadora) la app se queda compacta y centrada,
+     como una tarjeta, en vez de estirarse de lado a lado. En celular
+     (ancho menor a 560px) no cambia nada, ocupa toda la pantalla igual. */
+  body{padding-bottom:88px; max-width:560px; margin:0 auto; box-shadow:0 0 0 1px rgba(0,0,0,.04);}
+  @media (min-width:560px){ html{background:#E3E7EC;} }
   .num{font-variant-numeric:tabular-nums; font-feature-settings:"tnum";}
   /* ---------- Header ---------- */
   header{background:var(--forest); color:#F3EFE4; padding:14px 16px 12px; position:sticky; top:0; z-index:40;
@@ -100,7 +104,8 @@ de
   .add-btn{width:100%; border:1.5px dashed #C9C2B0; background:none; color:var(--muted); border-radius:12px;
     padding:10px; font-size:14px; margin-bottom:4px;}
   /* ---------- Bottom bar ---------- */
-  .tabbar{position:fixed; bottom:0; left:0; right:0; display:flex; background:var(--card);
+  .tabbar{position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:560px;
+    display:flex; background:var(--card);
     border-top:1px solid #E2DCCB; z-index:50; padding-bottom:env(safe-area-inset-bottom);}
   .tabbar button{flex:1; border:none; background:none; padding:10px 4px 12px; font-size:12px; color:var(--muted);}
   .tabbar button .ic{display:block; font-size:19px; margin-bottom:2px;}
@@ -310,7 +315,7 @@ de
     <button class="btn ghost" id="pinCancel" style="margin-top:8px" data-i18n="cancel">Cancelar</button>
   </div>
 </div>
-<div id="sessionWarn" style="display:none; position:fixed; top:0; left:0; right:0; z-index:200;
+<div id="sessionWarn" style="display:none; position:fixed; top:0; left:50%; transform:translateX(-50%); width:100%; max-width:560px; z-index:200;
   background:#B3402E; color:#fff; font-size:13px; font-weight:700; text-align:center;
   padding:8px 12px;">⚠️ AQUÍ NO SE GUARDA SOLO — antes de salir: 🔒 Privado → Enviar → Descargar respaldo</div>
 <div class="toast" id="toast"></div>
@@ -1205,7 +1210,7 @@ function buildResumenHTMLFallback(){
   });
   /* Detalle diario para que Ricardo pueda verificar renglón por renglón */
   h += "<h3>" + T("detTitle") + "</h3><table border='1' cellspacing='0' cellpadding='3'>" +
-       "<tr style='background:#2F4739;color:#FFFFFF'><th>Nombre</th>";
+       "<tr style='background:#1C3A5E;color:#FFFFFF'><th>Nombre</th>";
   ds.forEach(d=>{ h += "<th>" + fmtDateW(d) + "</th>"; });
   h += "</tr>";
   state.employees.filter(e=>empPeriod(e).total>0).forEach(e=>{
