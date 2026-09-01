@@ -9,6 +9,7 @@ de
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Turnero · Control de horas</title>
@@ -214,8 +215,7 @@ de
   <div class="exp-card">
     <h3 data-i18n="e2t">Excel</h3>
     <p data-i18n="e2p">.</p>
-    <button class="btn gold" id="btnXLS" data-i18n="e2b">Excel</button>
-    <button class="btn ghost" id="btnShare" data-i18n="e2s">WhatsApp</button>
+    <button class="btn gold" id="btnEmailSend" data-i18n="e2b">Enviar por correo</button>
   </div>
   <div class="exp-card">
     <h3 data-i18n="e2it">Importar horas desde Excel</h3>
@@ -236,6 +236,8 @@ de
     <h3 data-i18n="e4t">Ajustes</h3>
     <div class="frow"><label data-i18n="sBiz">Nombre del negocio</label><input id="setBiz" autocomplete="off" readonly>
       <button class="btn ghost" id="btnBizUnlock" style="margin-top:6px" data-i18n="sBizBtn">🔐</button></div>
+    <div class="frow"><label data-i18n="sEmails">Correos autorizados (máx. 2, clave maestra)</label><input id="setEmails" autocomplete="off" readonly placeholder="correo1@ejemplo.com, correo2@ejemplo.com">
+      <button class="btn ghost" id="btnEmailsUnlock" style="margin-top:6px" data-i18n="sEmailsBtn">🔐 Cambiar correos (clave maestra)</button></div>
     <div class="frow"><label data-i18n="sStart">Inicio</label><input type="date" id="setStart"></div>
     <div class="frow"><label data-i18n="sNum">Número</label><input type="number" id="setPeriodNum" min="1" inputmode="numeric"></div>
     <div class="frow"><label data-i18n="sBudget">Presupuesto</label><input type="number" id="setBudget" min="0" step="1" inputmode="numeric"></div>
@@ -346,10 +348,9 @@ const I18N = {
     gHours:"Horas totales de la quincena",
     gAgency:"· de agencia (solo control)",
     gPay:"Pago bruto planta + eventuales",
-    e2t:"Excel de la quincena",
-    e2p:"Excel con fórmulas vivas: totales por persona separados por tipo y detalle diario. Cualquier corrección recalcula todo.",
-    e2b:"Descargar Excel con fórmulas",
-    e2s:"Texto rápido por Discord",
+    e2t:"Enviar reporte al contador",
+    e2p:"Manda el Excel de la quincena (con fórmulas vivas: totales por persona por tipo y detalle diario) directo a los correos autorizados.",
+    e2b:"Enviar por correo",
     e2it:"Importar horas desde Excel",
     e2ip:"Sube un Excel con las horas ya escritas y la app las acomoda sola, sin capturarlas una por una. Descarga primero la plantilla si no sabes cómo va el formato.",
     e2itpl:"Descargar plantilla",
@@ -365,16 +366,23 @@ const I18N = {
     sPin:"PIN de datos privados",
     sBiz:"Nombre del negocio (solo Turnero, con clave maestra)",
     sBizBtn:"🔐 Cambiar nombre (clave maestra)",
+    sEmails:"Correos autorizados (máx. 2, clave maestra)",
+    sEmailsBtn:"🔐 Cambiar correos (clave maestra)",
     wipeAllBtn:"🔐 Borrar todo (clave maestra)",
     wipeConfirm1:"Esto borra TODOS los datos de esta app (empleados, horas, historial) y no se puede deshacer. ¿Seguro?",
     wipeDone:"Datos borrados. La app quedó como recién instalada.",
     sSave:"Guardar ajustes",
     tSaved:"Ajustes guardados.",
-    tXLS:"Excel descargado.",
     tBk:"Respaldo descargado. Guárdalo en Drive.",
     tRest:"Respaldo restaurado.",
     tBadFile:"Ese archivo no es un respaldo válido de esta app.",
-    tNoNet:"Sin internet no puedo armar el Excel: revisa tu conexión e inténtalo otra vez.",
+    tNoNet:"Sin internet no puedo armar el Excel con fórmulas — mandé una versión simple en su lugar.",
+    tNoEmails:"Primero pon los correos autorizados en Ajustes (con la clave maestra).",
+    tSending:"⏳ Enviando…",
+    tEmailMsg:"Adjunto va el reporte de horas de esta quincena.",
+    tEmailOk:"Correo enviado a: {l}",
+    tEmailErr:"No se pudo enviar el correo. Revisa tu internet e inténtalo otra vez.",
+    tEmailsOpen:"Correos desbloqueados: cámbialos y toca Guardar ajustes.",
     tBizOpen:"Nombre desbloqueado: cámbialo y toca Guardar ajustes.",
     tSunday:"La quincena empieza en domingo: la ajusté al domingo {d}.",
     periodWord:"Quincena",
@@ -421,10 +429,9 @@ const I18N = {
     gHours:"Total hours this pay period",
     gAgency:"· agency (tracking only)",
     gPay:"Gross pay permanent + casual",
-    e2t:"Pay period Excel",
-    e2p:"Excel with live formulas: totals per person by type, plus the daily detail. Any correction recalculates everything.",
-    e2b:"Download Excel with formulas",
-    e2s:"Quick Discord text",
+    e2t:"Send report to the accountant",
+    e2p:"Sends the pay period Excel (live formulas: totals per person by type, plus the daily detail) straight to the authorized emails.",
+    e2b:"Send by email",
     e2it:"Import hours from Excel",
     e2ip:"Upload an Excel file with the hours already written and the app fills them in on its own — no need to type each day. Download the template first if you're not sure of the format.",
     e2itpl:"Download template",
@@ -440,16 +447,23 @@ const I18N = {
     sPin:"Private data PIN",
     sBiz:"Business name (Turnero only, master key)",
     sBizBtn:"🔐 Change name (master key)",
+    sEmails:"Authorized emails (max. 2, master key)",
+    sEmailsBtn:"🔐 Change emails (master key)",
     wipeAllBtn:"🔐 Erase everything (master key)",
     wipeConfirm1:"This erases ALL data in this app (employees, hours, history) and cannot be undone. Are you sure?",
     wipeDone:"Data erased. The app is back to a fresh install.",
     sSave:"Save settings",
     tSaved:"Settings saved.",
-    tXLS:"Excel downloaded.",
     tBk:"Backup downloaded. Keep it in Drive.",
     tRest:"Backup restored.",
     tBadFile:"That file is not a valid backup of this app.",
-    tNoNet:"No internet: could not build the Excel — check your connection and try again.",
+    tNoNet:"No internet: could not build the Excel with formulas — sent a simple version instead.",
+    tNoEmails:"Set the authorized emails in Settings first (master key).",
+    tSending:"⏳ Sending…",
+    tEmailMsg:"Attached is the hours report for this pay period.",
+    tEmailOk:"Email sent to: {l}",
+    tEmailErr:"Could not send the email. Check your internet and try again.",
+    tEmailsOpen:"Emails unlocked: change them and tap Save settings.",
     tBizOpen:"Name unlocked: change it and tap Save settings.",
     tSunday:"Pay periods start on Sunday: adjusted to Sunday {d}.",
     periodWord:"Pay period",
@@ -522,10 +536,9 @@ const I18N = {
     gHours:"Heures totales de la quinzaine",
     gAgency:"· agence (suivi seulement)",
     gPay:"Paie brute permanents + occasionnels",
-    e2t:"Excel de la quinzaine",
-    e2p:"Excel avec formules vivantes : totaux par personne selon le type, plus le détail quotidien. Toute correction recalcule tout.",
-    e2b:"Télécharger l'Excel avec formules",
-    e2s:"Texte rapide Discord",
+    e2t:"Envoyer le rapport au comptable",
+    e2p:"Envoie l'Excel de la quinzaine (formules vivantes : totaux par personne selon le type, plus le détail quotidien) directement aux courriels autorisés.",
+    e2b:"Envoyer par courriel",
     e2it:"Importer les heures depuis Excel",
     e2ip:"Téléversez un fichier Excel avec les heures déjà inscrites et l'application les remplit toute seule — pas besoin de tout retaper. Téléchargez d'abord le modèle si vous n'êtes pas sûr du format.",
     e2itpl:"Télécharger le modèle",
@@ -541,16 +554,23 @@ const I18N = {
     sPin:"NIP des données privées",
     sBiz:"Nom de l'entreprise (Turnero seulement, clé maîtresse)",
     sBizBtn:"🔐 Changer le nom (clé maîtresse)",
+    sEmails:"Courriels autorisés (max. 2, clé maîtresse)",
+    sEmailsBtn:"🔐 Changer les courriels (clé maîtresse)",
     wipeAllBtn:"🔐 Tout effacer (clé maîtresse)",
     wipeConfirm1:"Ceci efface TOUTES les données de cette application (employés, heures, historique) et ne peut pas être annulé. Êtes-vous sûr?",
     wipeDone:"Données effacées. L'application est comme neuve.",
     sSave:"Enregistrer les réglages",
     tSaved:"Réglages enregistrés.",
-    tXLS:"Excel téléchargé.",
+    tNoEmails:"Mets d'abord les courriels autorisés dans Réglages (clé maîtresse).",
+    tSending:"⏳ Envoi…",
+    tEmailMsg:"Ci-joint le rapport d'heures de cette quinzaine.",
+    tEmailOk:"Courriel envoyé à : {l}",
+    tEmailErr:"Impossible d'envoyer le courriel. Vérifiez votre connexion et réessayez.",
+    tEmailsOpen:"Courriels déverrouillés : changez-les puis Enregistrer les réglages.",
     tBk:"Sauvegarde téléchargée. Gardez-la sur Drive.",
     tRest:"Sauvegarde restaurée.",
     tBadFile:"Ce fichier n'est pas une sauvegarde valide de cette application.",
-    tNoNet:"Sans internet : impossible de créer l'Excel — vérifiez votre connexion et réessayez.",
+    tNoNet:"Sans internet, impossible de créer l'Excel avec formules — version simple envoyée à la place.",
     tBizOpen:"Nom déverrouillé : changez-le puis Enregistrer les réglages.",
     tSunday:"La quinzaine commence le dimanche : ajustée au dimanche {d}.",
     periodWord:"Quinzaine",
@@ -597,10 +617,9 @@ const I18N = {
     gHours:"Kabuuang oras ng pay period",
     gAgency:"· ahensya (oras lamang)",
     gPay:"Gross pay: regular + pansamantala",
-    e2t:"Excel ng pay period",
-    e2p:"Excel na may live formulas: kabuuan bawat tao ayon sa uri, at araw-araw na detalye. Awtomatikong nagre-recalculate.",
-    e2b:"I-download ang Excel na may formulas",
-    e2s:"Mabilis na Discord text",
+    e2t:"Ipadala ang ulat sa accountant",
+    e2p:"Ipinapadala ang Excel ng pay period (may live formulas: kabuuan bawat tao ayon sa uri, at araw-araw na detalye) diretso sa mga awtorisadong email.",
+    e2b:"Ipadala sa email",
     e2it:"I-import ang oras mula sa Excel",
     e2ip:"I-upload ang Excel file na may nakasulat nang oras at awtomatikong ilalagay ito ng app — hindi na kailangang i-type isa-isa. I-download muna ang template kung hindi sigurado sa format.",
     e2itpl:"I-download ang template",
@@ -616,12 +635,19 @@ const I18N = {
     sPin:"PIN ng pribadong datos",
     sBiz:"Pangalan ng negosyo (Turnero lamang, master key)",
     sBizBtn:"🔐 Palitan ang pangalan (master key)",
+    sEmails:"Awtorisadong email (max. 2, master key)",
+    sEmailsBtn:"🔐 Palitan ang email (master key)",
     wipeAllBtn:"🔐 Burahin lahat (master key)",
     wipeConfirm1:"Buburahin nito ANG LAHAT ng datos sa app na ito (empleyado, oras, kasaysayan) at hindi na maibabalik. Sigurado ka ba?",
     wipeDone:"Nabura ang datos. Parang bagong install ang app.",
     sSave:"I-save ang mga setting",
     tSaved:"Na-save ang settings.",
-    tXLS:"Na-download ang Excel.",
+    tNoEmails:"Ilagay muna ang mga awtorisadong email sa Settings (gamit ang master key).",
+    tSending:"⏳ Ipinapadala…",
+    tEmailMsg:"Nakalakip ang ulat ng oras para sa pay period na ito.",
+    tEmailOk:"Naipadala ang email sa: {l}",
+    tEmailErr:"Hindi naipadala ang email. Tingnan ang internet at subukan ulit.",
+    tEmailsOpen:"Bukas na ang email: palitan at pindutin ang I-save.",
     tBk:"Na-download ang backup. Itago sa Drive.",
     tRest:"Na-restore ang backup.",
     tBadFile:"Hindi valid na backup ng app ang file na iyan.",
@@ -677,6 +703,7 @@ function defaultState(){
     pin: "2026",
     lang: "en",
     bizName: "Turnero",
+    reportEmails: [],
     /* BASE DE EMPLEADOS: SIETE en pantalla; el resto queda guardado en la base
        (nada se borra solo) y regresa desde la lista desplegable de "+ Agregar empleado"
        con su último salario, teléfono y tipo. */
@@ -1068,9 +1095,7 @@ function ensureXLSX(){
     document.head.appendChild(s);
   });
 }
-async function excelResumen(){
-  const ok = await ensureXLSX();
-  if(!ok){ xlsResumen(); toast(T("tNoNet")); return; }
+async function buildWorkbookBase64(){
   const ds = periodDates(); const yr = parseISO(ds[13]).getFullYear();
   const wk = weekPair();
   const r2 = n => Math.round(n*100)/100;
@@ -1120,11 +1145,15 @@ async function excelResumen(){
   const ws2 = XLSX.utils.aoa_to_sheet(det);
   ws2["!cols"] = [{wch:24}, ...ds.map(()=>({wch:12})), {wch:10}];
   XLSX.utils.book_append_sheet(wb, ws2, T("detTitle"));
-  XLSX.writeFile(wb, bizSlug() + "_Q" + state.periodNum + "_" + ds[0] + ".xlsx");
-  toast(T("tXLS"));
+  return {
+    base64: XLSX.write(wb, {type:"base64", bookType:"xlsx"}),
+    filename: bizSlug() + "_Q" + state.periodNum + "_" + ds[0] + ".xlsx",
+    mime: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  };
 }
-function xlsResumen(){
-  /* Archivo .xls (tabla HTML) que Excel y Google Sheets abren como hoja de cálculo con formato. */
+function buildResumenHTMLFallback(){
+  /* Sin internet no se puede cargar SheetJS — este HTML (tabla) es el respaldo,
+     Excel y Google Sheets también lo abren, solo que sin fórmulas en vivo. */
   const ds = periodDates();
   const CLS_HEX = {P:"#3E7A4E", E:"#C77B2E", A:"#3A6EA5", S:"#8A8578"};
   const yr = parseISO(ds[13]).getFullYear();
@@ -1166,8 +1195,38 @@ function xlsResumen(){
     h += "</tr>";
   });
   h += "</table><p>Pago bruto = antes de retenciones (esas las calcula el sistema de nómina). Comida: 0.5 h por cada 5 h de turno. Generado con la app de horas · Turnero.</p></body></html>";
-  download(bizSlug() + "_Q" + state.periodNum + "_resumen_" + ds[0] + ".xls", "﻿" + h, "application/vnd.ms-excel");
-  toast("Excel descargado. Mándaselo a Ricardo por WhatsApp o súbelo a Drive.");
+  return {
+    base64: btoa(unescape(encodeURIComponent("﻿" + h))),
+    filename: bizSlug() + "_Q" + state.periodNum + "_resumen_" + ds[0] + ".xls",
+    mime: "application/vnd.ms-excel"
+  };
+}
+async function sendReportByEmail(){
+  const emails = (state.reportEmails||[]).filter(Boolean);
+  if(!emails.length){ toast(T("tNoEmails")); return; }
+  const btn = document.getElementById("btnEmailSend");
+  btn.disabled = true;
+  const prevLabel = btn.textContent;
+  btn.textContent = T("tSending");
+  try{
+    const ok = await ensureXLSX();
+    const file = ok ? await buildWorkbookBase64() : buildResumenHTMLFallback();
+    if(!ok) toast(T("tNoNet"));
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email: emails.join(","),
+      business_name: state.bizName || "Turnero",
+      report_title: "Q" + state.periodNum,
+      message: T("tEmailMsg"),
+      attachment_name: file.filename,
+      attachment_data: "data:" + file.mime + ";base64," + file.base64
+    });
+    toast(T("tEmailOk").replace("{l}", emails.join(", ")));
+  }catch(err){
+    toast(T("tEmailErr"));
+  }finally{
+    btn.disabled = false;
+    btn.textContent = prevLabel;
+  }
 }
 /* ============ IMPORTAR HORAS DESDE EXCEL ============
    Formato esperado (primera hoja): Nombre | Fecha (AAAA-MM-DD) | Entrada (HH:MM) | Salida (HH:MM) | Tipo (P/E/A, opcional)
@@ -1244,31 +1303,6 @@ async function importFromExcel(file){
     msg += " " + skipped.length + " renglón(es) con error: " + skipped.slice(0,5).join(", ") + (skipped.length>5 ? "…" : "");
   }
   toast(msg);
-}
-function summaryText(){
-  const ds = periodDates();
-  let txt = (state.bizName||"DEEN") + " — " + T("periodWord") + " Q" + state.periodNum + " (" + fmtDateW(ds[0]) + " – " + fmtDateW(ds[13]) + ")\n";
-  CLS_ORDER.forEach(cls=>{
-    const list = state.employees.filter(e=>e.cls===cls && empPeriod(e).total>0);
-    if(!list.length) return;
-    txt += "\n" + T("cls_"+cls).toUpperCase() + "\n";
-    list.forEach(e=>{
-      const p = empPeriod(e);
-      txt += "• " + e.name + ": " + fh(p.total) + " h" +
-        (p.pay ? " = " + fmoney(p.pay) + " bruto" : "") + "\n";
-    });
-  });
-  const g = grandTotals();
-  txt += "\nTOTAL: " + fh(g.hours) + " h · " + T("agShort") + ": " + fh(g.agHours) + " h · " + T("grossShort") + ": " + fmoney(g.pay) + "\n(Turnero)";
-  return txt;
-}
-async function shareSummary(){
-  const txt = summaryText();
-  if(navigator.share){
-    try{ await navigator.share({text: txt}); return; }catch(e){ /* cancelado */ }
-  }
-  try{ await navigator.clipboard.writeText(txt); toast("Resumen copiado. Pégalo en WhatsApp."); }
-  catch(e){ download(bizSlug() + "_resumen_Q" + state.periodNum + ".txt", txt); }
 }
 function backup(){
   download(bizSlug() + "_respaldo_" + toISO(new Date()) + ".json", JSON.stringify(state, null, 1), "application/json");
@@ -1428,6 +1462,13 @@ document.getElementById("periodBtn").onclick = ()=>{ switchView("export"); windo
 /* ================= PIN — DATOS PRIVADOS ================= */
 let unlocked = false, pinCb = null, pinMode = "user";
 const MASTER_PIN = "AYMOR26";
+/* Cuenta de EmailJS de Leonor — la clave pública está diseñada para vivir en
+   el código del navegador (así funciona EmailJS sin servidor propio). La
+   protección real es restringir "dominios permitidos" en el panel de EmailJS. */
+const EMAILJS_PUBLIC_KEY = "tBqrcMb3RknILk6jH";
+const EMAILJS_SERVICE_ID = "service_p7yzo9k";
+const EMAILJS_TEMPLATE_ID = "template_7jy1dn7";
+emailjs.init(EMAILJS_PUBLIC_KEY);
 function requirePIN(cb){
   if(unlocked){ cb(); return; }
   pinMode = "user";
@@ -1476,6 +1517,12 @@ document.getElementById("btnBizUnlock").onclick = ()=> askMaster(()=>{
   setTimeout(()=> i.focus(), 60);
   toast(T("tBizOpen"));
 });
+document.getElementById("btnEmailsUnlock").onclick = ()=> askMaster(()=>{
+  const i = document.getElementById("setEmails");
+  i.readOnly = false;
+  setTimeout(()=> i.focus(), 60);
+  toast(T("tEmailsOpen"));
+});
 document.querySelectorAll(".tabbar button[data-view]").forEach(b=>{
   b.onclick = ()=>{
     const v = b.dataset.view;
@@ -1505,8 +1552,7 @@ function switchView(name){
   if(name==="export") syncSettings();
   window.scrollTo(0,0);
 }
-document.getElementById("btnXLS").onclick = excelResumen;
-document.getElementById("btnShare").onclick = shareSummary;
+document.getElementById("btnEmailSend").onclick = sendReportByEmail;
 document.getElementById("btnTemplate").onclick = downloadImportTemplate;
 document.getElementById("btnImportXLS").onclick = ()=> document.getElementById("fileImportXLS").click();
 document.getElementById("fileImportXLS").onchange = ev=>{ if(ev.target.files[0]) importFromExcel(ev.target.files[0]); ev.target.value=""; };
@@ -1523,6 +1569,9 @@ function syncSettings(){
   const bi = document.getElementById("setBiz");
   bi.value = state.bizName || "Turnero";
   bi.readOnly = true;
+  const ei = document.getElementById("setEmails");
+  ei.value = (state.reportEmails||[]).join(", ");
+  ei.readOnly = true;
 }
 document.getElementById("btnSaveSettings").onclick = ()=>{
   const raw = document.getElementById("setStart").value;
@@ -1538,6 +1587,11 @@ document.getElementById("btnSaveSettings").onclick = ()=>{
   state.lang = document.getElementById("setLang").value || "es";
   const biz = document.getElementById("setBiz").value.trim();
   if(biz) state.bizName = biz;
+  const emailsRaw = document.getElementById("setEmails").value.trim();
+  if(!document.getElementById("setEmails").readOnly){
+    const list = emailsRaw.split(",").map(s=>s.trim()).filter(s=>s.includes("@")).slice(0,2);
+    state.reportEmails = list;
+  }
   applyLang();
   currentDayIdx = 0; persist(); syncSettings(); refresh();
   toast(T("tSaved"));
