@@ -274,6 +274,7 @@ de
     <div class="frow"><label data-i18n="sStart">Inicio</label><input type="date" id="setStart"></div>
     <div class="frow"><label data-i18n="sNum">Número</label><input type="number" id="setPeriodNum" min="1" inputmode="numeric"></div>
     <div class="frow"><label data-i18n="sBudget">Presupuesto</label><input type="number" id="setBudget" min="0" step="1" inputmode="numeric"></div>
+    <div class="frow"><label data-i18n="sWO">Work Order (WO) — cliente, dirección o número de contrato</label><input id="setWO" autocomplete="off"></div>
     <div class="frow"><label data-i18n="sPin">PIN</label><input id="setPin" inputmode="numeric" maxlength="8" autocomplete="off"></div>
     <div class="frow"><label data-i18n="langName">Idioma / Language / Wika</label>
       <select id="setLang">
@@ -403,6 +404,7 @@ const I18N = {
     sStart:"Inicio de la quincena (domingo)",
     sNum:"Número de periodo",
     sBudget:"Presupuesto de horas (0 = sin presupuesto)",
+    sWO:"Work Order (WO) — cliente, dirección o número de contrato",
     sPin:"PIN de datos privados",
     sBiz:"Nombre del negocio (solo Turnero, con clave maestra)",
     sBizBtn:"🔐 Cambiar nombre (clave maestra)",
@@ -494,6 +496,7 @@ const I18N = {
     sStart:"Pay period start (Sunday)",
     sNum:"Period number",
     sBudget:"Hours budget (0 = none)",
+    sWO:"Work Order (WO) — client name, address, or contract number",
     sPin:"Private data PIN",
     sBiz:"Business name (Turnero only, master key)",
     sBizBtn:"🔐 Change name (master key)",
@@ -611,6 +614,7 @@ const I18N = {
     sStart:"Début de la quinzaine (dimanche)",
     sNum:"Numéro de période",
     sBudget:"Budget d'heures (0 = aucun)",
+    sWO:"Work Order (WO) — nom du client, adresse ou numéro de contrat",
     sPin:"NIP des données privées",
     sBiz:"Nom de l'entreprise (Turnero seulement, clé maîtresse)",
     sBizBtn:"🔐 Changer le nom (clé maîtresse)",
@@ -702,6 +706,7 @@ const I18N = {
     sStart:"Simula ng pay period (Linggo)",
     sNum:"Numero ng period",
     sBudget:"Badyet ng oras (0 = wala)",
+    sWO:"Work Order (WO) — pangalan ng kliyente, address, o numero ng kontrata",
     sPin:"PIN ng pribadong datos",
     sBiz:"Pangalan ng negosyo (Turnero lamang, master key)",
     sBizBtn:"🔐 Palitan ang pangalan (master key)",
@@ -773,6 +778,7 @@ function defaultState(){
     periodStart: "2026-08-09",
     periodNum: 16,
     budgetHours: 0,
+    workOrder: "",
     pin: "2026",
     lang: "en",
     bizName: "Turnero",
@@ -937,14 +943,15 @@ function renderHeader(){
   if(!unlocked) return;
   const g = grandTotals();
   const wrap = document.getElementById("budgetWrap");
+  const woSuffix = state.workOrder ? " · WO: " + state.workOrder : "";
   if(!state.budgetHours){
-    document.getElementById("budgetLabel").textContent = T("budgetAll");
+    document.getElementById("budgetLabel").textContent = T("budgetAll") + woSuffix;
     document.getElementById("budgetNums").textContent = fh(g.hours) + " h";
     const fill = document.getElementById("budgetFill");
     fill.style.width = "100%"; fill.className = "budget-fill";
   }else{
     const pct = g.hours / state.budgetHours * 100;
-    document.getElementById("budgetLabel").textContent = T("budget");
+    document.getElementById("budgetLabel").textContent = T("budget") + woSuffix;
     document.getElementById("budgetNums").textContent = fh(g.hours) + " / " + fh(state.budgetHours) + " h";
     const fill = document.getElementById("budgetFill");
     fill.style.width = Math.min(100, pct) + "%";
@@ -1747,6 +1754,7 @@ function syncSettings(){
   document.getElementById("setStart").value = state.periodStart;
   document.getElementById("setPeriodNum").value = state.periodNum;
   document.getElementById("setBudget").value = state.budgetHours || 0;
+  document.getElementById("setWO").value = state.workOrder || "";
   document.getElementById("setPin").value = state.pin || "2026";
   document.getElementById("setLang").value = state.lang || "es";
   const bi = document.getElementById("setBiz");
@@ -1768,6 +1776,7 @@ document.getElementById("btnSaveSettings").onclick = ()=>{
   }
   state.periodNum = Math.max(1, parseInt(document.getElementById("setPeriodNum").value)||1);
   state.budgetHours = Math.max(0, parseFloat(document.getElementById("setBudget").value)||0);
+  state.workOrder = document.getElementById("setWO").value.trim();
   const newPin = document.getElementById("setPin").value.trim();
   if(newPin) state.pin = newPin;
   state.lang = document.getElementById("setLang").value || "es";
