@@ -95,6 +95,12 @@ de
   .tfield input[type=time]{border:1px solid #DDD6C6; border-radius:10px; padding:9px 8px; font-size:16px;
     background:#FDFCF8; color:var(--ink); width:100%; font-variant-numeric:tabular-nums;}
   .tfield input[type=time]:focus{outline:2px solid var(--gold); border-color:var(--gold);}
+  /* Tarjetas vacías de ejemplo: solo aparecen cuando no hay ningún empleado
+     todavía, para que se vea cómo va quedando la lista. Sin nombre ni horas
+     de mentira — nada de esto se guarda, es puro espacio en blanco. */
+  .emp-ghost{border-left-style:dashed; opacity:.55; pointer-events:none;}
+  .emp-ghost .emp-name{height:15.5px; border-bottom:1.5px dashed #C9C4B4; margin-right:60px;}
+  .emp-ghost .tfield input[type=time]{background:transparent;}
   .shift-badge{min-width:74px; text-align:center; font-size:12px; padding:6px 4px; border-radius:10px;
     background:#F1EDE0; color:var(--ink); align-self:flex-end;}
   .shift-badge.on{background:var(--planta-bg); color:var(--planta); font-weight:650;}
@@ -943,6 +949,9 @@ function renderSections(){
     (b.today - a.today) || (b.per - a.per) || (b.last > a.last ? 1 : b.last < a.last ? -1 : 0) ||
     a.e.name.localeCompare(b.e.name)
   );
+  if(list.length===0){
+    for(let i=0;i<5;i++) sec.appendChild(ghostEmpCard());
+  }
   let divided = false;
   list.forEach(x=>{
     if(!divided && !x.today && !x.per){
@@ -985,6 +994,21 @@ function applyStatus(k){
   persist();
   document.getElementById("stOverlay").classList.remove("open");
   refresh();
+}
+function ghostEmpCard(){
+  /* Tarjeta de ejemplo, vacía: nada aquí se guarda ni se puede tocar. */
+  const card = document.createElement("div"); card.className = "emp emp-ghost";
+  const top = document.createElement("div"); top.className = "emp-top";
+  const nm = document.createElement("div"); nm.className = "emp-name";
+  top.appendChild(nm); card.appendChild(top);
+  const row = document.createElement("div"); row.className = "emp-times";
+  row.appendChild(timeField(T("tin"), "", ()=>{}));
+  row.appendChild(timeField(T("tout"), "", ()=>{}));
+  const badge = document.createElement("div"); badge.className = "shift-badge num"; badge.textContent = "— h";
+  row.appendChild(badge);
+  card.appendChild(row);
+  card.querySelectorAll("input").forEach(i=> i.disabled = true);
+  return card;
 }
 function empCard(e, iso){
   const card = document.createElement("div"); card.className = "emp"; /* neutra: el tipo no se ve aquí */
