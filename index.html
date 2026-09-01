@@ -371,7 +371,7 @@ const I18N = {
     vacT:"Planear vacaciones", vacP:"Aparta un día de vacaciones para un empleado en cualquier fecha del año. Mientras no se haya tomado, cualquier gerente lo puede cambiar o quitar.",
     vacEmp:"Empleado", vacDate:"Fecha", vacSave:"Guardar vacación", vacClear:"Quitar vacación de ese día",
     vacFree:"Ese día está libre — se puede apartar.", vacHasHours:"OJO: ese día ya tiene horas capturadas.",
-    vacAlready:"Ese día ya tiene: {s}.", vacOverwriteHours:"Ese día ya tiene horas capturadas. ¿Reemplazar con vacaciones?",
+    vacAlready:"Ese día ya tiene: {s}.", vacHasHoursBlock:"Ese día ya se trabajó — no se puede volver vacaciones. Corrige el horario desde Captura si hace falta.",
     vacSaved:"Vacación guardada para {n}.", vacCleared:"Se quitó la vacación de {n} en ese día.",
     cls_P:"Empleados de planta",
     cls_E:"Empleados a prueba / temporales",
@@ -462,7 +462,7 @@ const I18N = {
     vacT:"Plan vacation", vacP:"Set aside a vacation day for an employee, any date in the year. As long as it hasn't happened yet, any manager can change or remove it.",
     vacEmp:"Employee", vacDate:"Date", vacSave:"Save vacation", vacClear:"Remove vacation for that day",
     vacFree:"That day is free — it can be booked.", vacHasHours:"Heads up: that day already has hours logged.",
-    vacAlready:"That day already has: {s}.", vacOverwriteHours:"That day already has hours logged. Replace with vacation?",
+    vacAlready:"That day already has: {s}.", vacHasHoursBlock:"That day was already worked — it can't become vacation. Correct the times in Time entry if needed.",
     vacSaved:"Vacation saved for {n}.", vacCleared:"Removed {n}'s vacation for that day.",
     cls_P:"Permanent employees",
     cls_E:"Casual / trial employees",
@@ -574,7 +574,7 @@ const I18N = {
     vacT:"Planifier des vacances", vacP:"Réservez un jour de vacances pour un employé, n'importe quelle date de l'année. Tant que ce n'est pas encore pris, n'importe quel gérant peut le changer ou le retirer.",
     vacEmp:"Employé", vacDate:"Date", vacSave:"Enregistrer les vacances", vacClear:"Retirer les vacances de ce jour",
     vacFree:"Ce jour est libre — on peut le réserver.", vacHasHours:"Attention : ce jour a déjà des heures enregistrées.",
-    vacAlready:"Ce jour a déjà : {s}.", vacOverwriteHours:"Ce jour a déjà des heures enregistrées. Remplacer par des vacances ?",
+    vacAlready:"Ce jour a déjà : {s}.", vacHasHoursBlock:"Ce jour a déjà été travaillé — impossible de le transformer en vacances. Corrigez l'horaire depuis Saisie si besoin.",
     vacSaved:"Vacances enregistrées pour {n}.", vacCleared:"Vacances retirées pour {n} ce jour-là.",
     confirmDel:"Supprimer ?",
     deletedDay:"Les heures de {n} ont été supprimées.",
@@ -670,7 +670,7 @@ const I18N = {
     vacT:"Magplano ng bakasyon", vacP:"Maglaan ng araw ng bakasyon para sa isang empleyado, kahit anong petsa sa taon. Hangga't hindi pa natatapos, kahit sinong gerente ang puwedeng magbago o mag-alis nito.",
     vacEmp:"Empleyado", vacDate:"Petsa", vacSave:"I-save ang bakasyon", vacClear:"Alisin ang bakasyon sa araw na iyon",
     vacFree:"Bukas ang araw na iyon — puwede nang ilaan.", vacHasHours:"Paalala: may naitalang oras na sa araw na iyon.",
-    vacAlready:"May meron na sa araw na iyon: {s}.", vacOverwriteHours:"May naitalang oras na sa araw na iyon. Palitan ng bakasyon?",
+    vacAlready:"May meron na sa araw na iyon: {s}.", vacHasHoursBlock:"May trabaho na sa araw na iyon — hindi puwedeng gawing bakasyon. Ayusin na lang ang oras sa Captura kung kailangan.",
     vacSaved:"Na-save ang bakasyon ni {n}.", vacCleared:"Naalis ang bakasyon ni {n} sa araw na iyon.",
     cls_P:"Mga regular na empleyado",
     cls_E:"Mga pansamantalang empleyado",
@@ -1692,7 +1692,10 @@ document.getElementById("btnVacSave").onclick = ()=>{
   const e = state.employees.find(x=>x.id===eid);
   if(!e || !iso) return;
   const t = e.times[iso];
-  if(t && (t.in || t.out) && !confirm(T("vacOverwriteHours"))) return;
+  /* Si ese día ya tiene horas trabajadas, no se puede convertir en
+     vacaciones -- el empleado sí trabajó ese día. Lo único que se puede
+     hacer es recortar el horario desde Captura, no borrar el día. */
+  if(t && (t.in || t.out)){ toast(T("vacHasHoursBlock")); return; }
   e.times[iso] = {status:"VAC"};
   persist(); updateVacHint(); refresh();
   toast(T("vacSaved").replace("{n}", e.name));
@@ -1702,7 +1705,11 @@ document.getElementById("btnVacClear").onclick = ()=>{
   const iso = document.getElementById("vacDate").value;
   const e = state.employees.find(x=>x.id===eid);
   if(!e || !iso) return;
-  if(e.times[iso]) delete e.times[iso];
+  const t = e.times[iso];
+  /* Esto solo quita un estado (vacaciones, etc.), nunca horas trabajadas
+     -- si ese día tiene horas reales, se corrige desde Captura. */
+  if(t && (t.in || t.out)){ toast(T("vacHasHoursBlock")); return; }
+  if(t) delete e.times[iso];
   persist(); updateVacHint(); refresh();
   toast(T("vacCleared").replace("{n}", e.name));
 };
