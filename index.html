@@ -354,6 +354,7 @@ const I18N = {
     phone:"Teléfono", save:"Guardar",
     hideEmp:"Quitar de la lista (queda guardado en la base)", delEmp:"Borrar de la base para siempre…",
     missingName:"Falta el nombre.",
+    minWage:"El salario por hora no puede ser menor a $16.00.",
     removedToast:"{n} salió de la lista. Sigue en la base y regresa desde + Agregar empleado.",
     langName:"Idioma / Language / Wika",
     confirmDel:"¿Borrar?", deletedDay:"Se borró el horario de {n}.", undo:"DESHACER", back:"Regresar", noRecent:"Sin turno reciente", stTitle:"Estado del día", stVAC:"Vacaciones", stSICK:"Incapacidad", stLEAVE:"Permiso", stABS:"Falta justificada", stNOSHOW:"No se presentó", stNote:"Nota (opcional)", stClear:"Quitar estado", stBtn:"Estado",
@@ -438,6 +439,7 @@ const I18N = {
     phone:"Phone", save:"Save",
     hideEmp:"Remove from the list (stays saved in the database)", delEmp:"Delete from the database forever…",
     missingName:"The name is missing.",
+    minWage:"The hourly pay can't be less than $16.00.",
     removedToast:"{n} was removed from the list. Still in the database — bring them back with + Add employee.",
     langName:"Language",
     confirmDel:"Delete?", deletedDay:"{n}'s times were deleted.", undo:"UNDO", back:"Back", noRecent:"No recent shifts", stTitle:"Day status", stVAC:"Vacation", stSICK:"Sick leave", stLEAVE:"Leave", stABS:"Justified absence", stNOSHOW:"No-show", stNote:"Note (optional)", stClear:"Clear status", stBtn:"Status",
@@ -543,6 +545,7 @@ const I18N = {
     hideEmp:"Retirer de la liste (reste dans la base)",
     delEmp:"Supprimer de la base pour toujours…",
     missingName:"Le nom manque.",
+    minWage:"Le salaire horaire ne peut pas être inférieur à 16,00 $.",
     removedToast:"{n} a été retiré de la liste. Toujours dans la base — le ramener avec + Ajouter un employé.",
     langName:"Langue",
     stTitle:"Statut du jour", stVAC:"Vacances", stSICK:"Maladie", stLEAVE:"Congé", stABS:"Absence justifiée", stNOSHOW:"Absent sans avis", stNote:"Note (facultative)", stClear:"Retirer le statut", stBtn:"Statut",
@@ -632,6 +635,7 @@ const I18N = {
     phone:"Telepono", save:"I-save",
     hideEmp:"Tanggalin sa listahan (mananatili sa database)", delEmp:"Burahin sa database nang tuluyan…",
     missingName:"Walang pangalan.",
+    minWage:"Hindi puwedeng mas mababa sa $16.00 kada oras ang sahod.",
     removedToast:"Tinanggal si {n} sa listahan. Nasa database pa rin — ibalik gamit ang + Magdagdag ng empleyado.",
     langName:"Wika",
     confirmDel:"Burahin?", deletedDay:"Nabura ang oras ni {n}.", undo:"IBALIK", back:"Bumalik", noRecent:"Walang kamakailang shift", stTitle:"Katayuan ng araw", stVAC:"Bakasyon", stSICK:"May sakit", stLEAVE:"Leave", stABS:"May-dahilang liban", stNOSHOW:"Hindi sumipot", stNote:"Tala (opsyonal)", stClear:"Alisin ang katayuan", stBtn:"Katayuan",
@@ -1466,6 +1470,7 @@ function saveEmp(){
   const name = document.getElementById("fName").value.trim();
   if(!name){ toast(T("missingName")); return; }
   const rate = parseFloat(document.getElementById("fRate").value) || 0;
+  if(rate > 0 && rate < 16){ toast(T("minWage")); return; }
   const empNo = document.getElementById("fEmpNo").value.trim();
   const phone = document.getElementById("fPhone").value.trim();
   if(editingEmpId){
