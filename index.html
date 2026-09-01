@@ -1500,7 +1500,8 @@ function askMaster(cb){
 }
 document.getElementById("btnBizUnlock").onclick = ()=> askMaster(()=>{
   const i = document.getElementById("setBiz");
-  i.readOnly = false; i.focus();
+  i.readOnly = false;
+  setTimeout(()=> i.focus(), 60);
   toast(T("tBizOpen"));
 });
 document.querySelectorAll(".tabbar button[data-view]").forEach(b=>{
