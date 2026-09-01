@@ -1026,8 +1026,9 @@ function empCard(e, iso){
   const top = document.createElement("div"); top.className = "emp-top";
   const nm = document.createElement("div"); nm.className = "emp-name";
   /* PRIVACIDAD: solo el nombre y el horario de ESTE día. Las horas acumuladas de la
-     semana o la quincena viven en el Resumen, detrás del PIN. */
-  nm.innerHTML = escapeHTML(e.name);
+     semana o la quincena viven en el Resumen, detrás del PIN. El sueldo por hora
+     solo se ve junto al nombre cuando la pantalla ya está desbloqueada (PIN). */
+  nm.innerHTML = escapeHTML(e.name) + (unlocked && e.rate ? "<small>$" + Number(e.rate).toFixed(2) + "/h</small>" : "");
   nm.onclick = ()=> requirePIN(()=> openEmpModal(e.id));
   top.appendChild(nm);
   card.appendChild(top);
