@@ -1379,32 +1379,7 @@ function xlsResumen(){
   const ds = periodDates();
   const h = buildResumenHTML();
   download(bizSlug() + "_Q" + state.periodNum + "_resumen_" + ds[0] + ".xls", "\ufeff" + h, "application/vnd.ms-excel");
-  toast("Excel descargado. Mándaselo a Ricardo por WhatsApp o súbelo a Drive.");
-}
-function summaryText(){
-  const ds = periodDates();
-  let txt = (state.bizName||"DEEN") + " — " + T("periodWord") + " Q" + state.periodNum + " (" + fmtDateW(ds[0]) + " – " + fmtDateW(ds[13]) + ")\n";
-  CLS_ORDER.forEach(cls=>{
-    const list = state.employees.filter(e=>e.cls===cls && empPeriod(e).total>0);
-    if(!list.length) return;
-    txt += "\n" + T("cls_"+cls).toUpperCase() + "\n";
-    list.forEach(e=>{
-      const p = empPeriod(e);
-      txt += "• " + e.name + ": " + fh(p.total) + " h" +
-        (p.pay ? " = " + fmoney(p.pay) + " bruto" : "") + "\n";
-    });
-  });
-  const g = grandTotals();
-  txt += "\nTOTAL: " + fh(g.hours) + " h · " + T("agShort") + ": " + fh(g.agHours) + " h · " + T("grossShort") + ": " + fmoney(g.pay) + "\n(Turnero)";
-  return txt;
-}
-async function shareSummary(){
-  const txt = summaryText();
-  if(navigator.share){
-    try{ await navigator.share({text: txt}); return; }catch(e){ /* cancelado */ }
-  }
-  try{ await navigator.clipboard.writeText(txt); toast("Resumen copiado. Pégalo en WhatsApp."); }
-  catch(e){ download(bizSlug() + "_resumen_Q" + state.periodNum + ".txt", txt); }
+  toast("Excel descargado. Súbelo a Drive o mándalo al contador.");
 }
 function backup(){
   download(bizSlug() + "_respaldo_" + toISO(new Date()) + ".json", JSON.stringify(state, null, 1), "application/json");
