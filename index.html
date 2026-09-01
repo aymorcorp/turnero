@@ -242,6 +242,15 @@ de
     <input type="file" id="fileImportXLS" accept=".xlsx,.xls" style="display:none">
   </div>
   <div class="exp-card">
+    <h3 data-i18n="vacT">Planear vacaciones</h3>
+    <p data-i18n="vacP">Aparta un día de vacaciones para un empleado en cualquier fecha del año. Mientras no se haya tomado, cualquier gerente lo puede cambiar o quitar.</p>
+    <div class="frow"><label data-i18n="vacEmp">Empleado</label><select id="vacEmp"></select></div>
+    <div class="frow"><label data-i18n="vacDate">Fecha</label><input type="date" id="vacDate"></div>
+    <p class="hint" id="vacStatusHint"></p>
+    <button class="btn gold" id="btnVacSave" data-i18n="vacSave">Guardar vacación</button>
+    <button class="btn ghost" id="btnVacClear" style="margin-top:8px" data-i18n="vacClear">Quitar vacación de ese día</button>
+  </div>
+  <div class="exp-card">
     <h3 data-i18n="e3t">Respaldo</h3>
     <p data-i18n="e3p">.</p>
     <button class="btn ghost" id="btnBackup" data-i18n="e3b">Backup</button>
@@ -359,6 +368,11 @@ const I18N = {
     removedToast:"{n} salió de la lista. Sigue en la base y regresa desde + Agregar empleado.",
     langName:"Idioma / Language / Wika",
     confirmDel:"¿Borrar?", deletedDay:"Se borró el horario de {n}.", undo:"DESHACER", back:"Regresar", noRecent:"Sin turno reciente", stTitle:"Estado del día", stVAC:"Vacaciones", stSICK:"Incapacidad", stLEAVE:"Permiso", stABS:"Falta justificada", stNOSHOW:"No se presentó", stNote:"Nota (opcional)", stClear:"Quitar estado", stBtn:"Estado",
+    vacT:"Planear vacaciones", vacP:"Aparta un día de vacaciones para un empleado en cualquier fecha del año. Mientras no se haya tomado, cualquier gerente lo puede cambiar o quitar.",
+    vacEmp:"Empleado", vacDate:"Fecha", vacSave:"Guardar vacación", vacClear:"Quitar vacación de ese día",
+    vacFree:"Ese día está libre — se puede apartar.", vacHasHours:"OJO: ese día ya tiene horas capturadas.",
+    vacAlready:"Ese día ya tiene: {s}.", vacOverwriteHours:"Ese día ya tiene horas capturadas. ¿Reemplazar con vacaciones?",
+    vacSaved:"Vacación guardada para {n}.", vacCleared:"Se quitó la vacación de {n} en ese día.",
     cls_P:"Empleados de planta",
     cls_E:"Empleados a prueba / temporales",
     cls_A:"Empleados de la agencia (solo control de horas)",
@@ -445,6 +459,11 @@ const I18N = {
     removedToast:"{n} was removed from the list. Still in the database — bring them back with + Add employee.",
     langName:"Language",
     confirmDel:"Delete?", deletedDay:"{n}'s times were deleted.", undo:"UNDO", back:"Back", noRecent:"No recent shifts", stTitle:"Day status", stVAC:"Vacation", stSICK:"Sick leave", stLEAVE:"Leave", stABS:"Justified absence", stNOSHOW:"No-show", stNote:"Note (optional)", stClear:"Clear status", stBtn:"Status",
+    vacT:"Plan vacation", vacP:"Set aside a vacation day for an employee, any date in the year. As long as it hasn't happened yet, any manager can change or remove it.",
+    vacEmp:"Employee", vacDate:"Date", vacSave:"Save vacation", vacClear:"Remove vacation for that day",
+    vacFree:"That day is free — it can be booked.", vacHasHours:"Heads up: that day already has hours logged.",
+    vacAlready:"That day already has: {s}.", vacOverwriteHours:"That day already has hours logged. Replace with vacation?",
+    vacSaved:"Vacation saved for {n}.", vacCleared:"Removed {n}'s vacation for that day.",
     cls_P:"Permanent employees",
     cls_E:"Casual / trial employees",
     cls_A:"Agency workers (hours tracking only)",
@@ -552,6 +571,11 @@ const I18N = {
     removedToast:"{n} a été retiré de la liste. Toujours dans la base — le ramener avec + Ajouter un employé.",
     langName:"Langue",
     stTitle:"Statut du jour", stVAC:"Vacances", stSICK:"Maladie", stLEAVE:"Congé", stABS:"Absence justifiée", stNOSHOW:"Absent sans avis", stNote:"Note (facultative)", stClear:"Retirer le statut", stBtn:"Statut",
+    vacT:"Planifier des vacances", vacP:"Réservez un jour de vacances pour un employé, n'importe quelle date de l'année. Tant que ce n'est pas encore pris, n'importe quel gérant peut le changer ou le retirer.",
+    vacEmp:"Employé", vacDate:"Date", vacSave:"Enregistrer les vacances", vacClear:"Retirer les vacances de ce jour",
+    vacFree:"Ce jour est libre — on peut le réserver.", vacHasHours:"Attention : ce jour a déjà des heures enregistrées.",
+    vacAlready:"Ce jour a déjà : {s}.", vacOverwriteHours:"Ce jour a déjà des heures enregistrées. Remplacer par des vacances ?",
+    vacSaved:"Vacances enregistrées pour {n}.", vacCleared:"Vacances retirées pour {n} ce jour-là.",
     confirmDel:"Supprimer ?",
     deletedDay:"Les heures de {n} ont été supprimées.",
     undo:"ANNULER",
@@ -643,6 +667,11 @@ const I18N = {
     removedToast:"Tinanggal si {n} sa listahan. Nasa database pa rin — ibalik gamit ang + Magdagdag ng empleyado.",
     langName:"Wika",
     confirmDel:"Burahin?", deletedDay:"Nabura ang oras ni {n}.", undo:"IBALIK", back:"Bumalik", noRecent:"Walang kamakailang shift", stTitle:"Katayuan ng araw", stVAC:"Bakasyon", stSICK:"May sakit", stLEAVE:"Leave", stABS:"May-dahilang liban", stNOSHOW:"Hindi sumipot", stNote:"Tala (opsyonal)", stClear:"Alisin ang katayuan", stBtn:"Katayuan",
+    vacT:"Magplano ng bakasyon", vacP:"Maglaan ng araw ng bakasyon para sa isang empleyado, kahit anong petsa sa taon. Hangga't hindi pa natatapos, kahit sinong gerente ang puwedeng magbago o mag-alis nito.",
+    vacEmp:"Empleyado", vacDate:"Petsa", vacSave:"I-save ang bakasyon", vacClear:"Alisin ang bakasyon sa araw na iyon",
+    vacFree:"Bukas ang araw na iyon — puwede nang ilaan.", vacHasHours:"Paalala: may naitalang oras na sa araw na iyon.",
+    vacAlready:"May meron na sa araw na iyon: {s}.", vacOverwriteHours:"May naitalang oras na sa araw na iyon. Palitan ng bakasyon?",
+    vacSaved:"Na-save ang bakasyon ni {n}.", vacCleared:"Naalis ang bakasyon ni {n} sa araw na iyon.",
     cls_P:"Mga regular na empleyado",
     cls_E:"Mga pansamantalang empleyado",
     cls_A:"Mga tauhan ng ahensya (oras lamang)",
@@ -1627,6 +1656,56 @@ document.querySelectorAll(".tabbar button[data-view]").forEach(b=>{
     else switchView(v);
   };
 });
+/* ============ VACACIONES: reservar cualquier fecha del año, sin mover
+   la quincena que se está capturando. Mientras el día no haya pasado,
+   cualquier gerente con clave normal lo puede cambiar o quitar. ============ */
+function syncVacForm(){
+  const sel = document.getElementById("vacEmp");
+  const prev = sel.value;
+  sel.innerHTML = "";
+  state.employees.filter(e=>e.active!==false).slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(e=>{
+    const o = document.createElement("option"); o.value = e.id; o.textContent = e.name; sel.appendChild(o);
+  });
+  if(prev && state.employees.some(e=>e.id===prev)) sel.value = prev;
+  const di = document.getElementById("vacDate");
+  const todayIso = toISO(new Date());
+  if(!di.value) di.value = todayIso;
+  di.min = todayIso;
+  updateVacHint();
+}
+function updateVacHint(){
+  const eid = document.getElementById("vacEmp").value;
+  const iso = document.getElementById("vacDate").value;
+  const hint = document.getElementById("vacStatusHint");
+  const e = state.employees.find(x=>x.id===eid);
+  if(!e || !iso){ hint.textContent = ""; return; }
+  const t = e.times[iso];
+  if(t && t.status) hint.textContent = T("vacAlready").replace("{s}", T("st"+t.status));
+  else if(t && (t.in || t.out)) hint.textContent = T("vacHasHours");
+  else hint.textContent = T("vacFree");
+}
+document.getElementById("vacEmp").onchange = updateVacHint;
+document.getElementById("vacDate").onchange = updateVacHint;
+document.getElementById("btnVacSave").onclick = ()=>{
+  const eid = document.getElementById("vacEmp").value;
+  const iso = document.getElementById("vacDate").value;
+  const e = state.employees.find(x=>x.id===eid);
+  if(!e || !iso) return;
+  const t = e.times[iso];
+  if(t && (t.in || t.out) && !confirm(T("vacOverwriteHours"))) return;
+  e.times[iso] = {status:"VAC"};
+  persist(); updateVacHint(); refresh();
+  toast(T("vacSaved").replace("{n}", e.name));
+};
+document.getElementById("btnVacClear").onclick = ()=>{
+  const eid = document.getElementById("vacEmp").value;
+  const iso = document.getElementById("vacDate").value;
+  const e = state.employees.find(x=>x.id===eid);
+  if(!e || !iso) return;
+  if(e.times[iso]) delete e.times[iso];
+  persist(); updateVacHint(); refresh();
+  toast(T("vacCleared").replace("{n}", e.name));
+};
 /* Botón Privado: Resumen y Enviar no existen a la vista hasta poner el PIN,
    y se vuelven a esconder con un toque. */
 const privBtn = document.getElementById("privBtn");
@@ -1646,7 +1725,7 @@ function switchView(name){
   document.getElementById("view-"+name).classList.add("active");
   document.querySelectorAll(".tabbar button").forEach(x=>x.classList.toggle("active", x.dataset.view===name));
   if(name==="summary") renderSummary();
-  if(name==="export") syncSettings();
+  if(name==="export"){ syncSettings(); syncVacForm(); }
   window.scrollTo(0,0);
 }
 document.getElementById("btnEmailSend").onclick = sendReportByEmail;
