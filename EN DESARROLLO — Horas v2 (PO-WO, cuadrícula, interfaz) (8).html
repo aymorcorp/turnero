@@ -31,7 +31,6 @@
     box-shadow:0 2px 10px rgba(34,53,43,.25);}
   .brand{display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center;}
   .brand h1{margin:0; font-size:27px; font-weight:800; letter-spacing:.03em;}
-  .brand h1 span{color:var(--gold); font-weight:500;}
   .brand-right{font-size:19px; font-weight:800; letter-spacing:.14em; color:var(--gold);}
   .period-line{display:flex; align-items:center; justify-content:space-between; margin-top:8px; gap:8px;}
   .period-btn{background:var(--forest-deep); border:1px solid rgba(201,160,92,.5); color:#F3EFE4;
@@ -39,9 +38,8 @@
   .icon-btn{background:var(--forest-deep); border:1px solid rgba(255,255,255,.15); color:#F3EFE4;
     border-radius:10px; width:40px; height:36px; font-size:16px; font-weight:700;}
   /* budget bar */
-  .budget{margin-top:10px;}
-  .budget-top{display:flex; justify-content:space-between; font-size:12px; color:#DCE3D8; margin-bottom:4px;}
-  .budget-track{height:10px; border-radius:6px; background:rgba(255,255,255,.18); overflow:hidden;}
+  .budget-top{display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); margin-bottom:4px; font-weight:650;}
+  .budget-track{height:10px; border-radius:6px; background:#EAE5D8; overflow:hidden;}
   .budget-fill{height:100%; border-radius:6px; background:var(--gold); width:0%; transition:width .4s ease;}
   .budget-fill.ok{background:#7FB98B;} .budget-fill.warn{background:#E0A75E;} .budget-fill.over{background:#E2745F;}
   /* ---------- Day navigator ----------
@@ -79,7 +77,7 @@
   .emp{background:var(--card); border-radius:var(--radius); margin-bottom:0; padding:9px 10px;
     border-left:5px solid var(--gold); box-shadow:0 1px 3px rgba(38,48,42,.07); min-width:0;}
   .emp.P{border-left-color:var(--planta);} .emp.E{border-left-color:var(--eventual);} .emp.A{border-left-color:var(--agencia);}
-  .emp.S{border-left-color:var(--sinclas); border-left-style:dashed; background:#FCFAF3;}
+  .emp.S{border-left-color:var(--sinclas); background:#FCFAF3;}
   .emp-top{display:flex; align-items:center; gap:8px;}
   .emp-name{flex:1; font-weight:650; font-size:14.5px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .emp-name small{display:block; font-weight:400; font-size:11px; color:var(--muted);}
@@ -100,7 +98,7 @@
      nada de esto se guarda hasta que el gerente lo edite de verdad.
      Contraste más marcado que antes -- si no, cuesta trabajo distinguirlas
      de las tarjetas reales de un vistazo rápido. */
-  .emp-ghost{border-left-style:dashed; border-left-color:#C2A46B; background:#F6F3EA; box-shadow:none;}
+  .emp-ghost{border-left:none; padding-left:14px; background:#F6F3EA; box-shadow:none;}
   .emp-ghost .emp-name{color:var(--muted); font-weight:700;}
   .emp-ghost .tfield input[type=time]{background:transparent; border-style:dashed;}
   .emp-ghost .lunch-box{opacity:.85;}
@@ -201,13 +199,6 @@
     <button class="period-btn" id="periodBtn">—</button>
     <button class="icon-btn" id="nextPeriod">›</button>
   </div>
-  <div class="budget" id="budgetWrap">
-    <div class="budget-top">
-      <span id="budgetLabel">Presupuesto de horas</span>
-      <span class="num" id="budgetNums">0 / 0 h</span>
-    </div>
-    <div class="budget-track"><div class="budget-fill" id="budgetFill"></div></div>
-  </div>
 </header>
 <!-- ============ VISTA: CAPTURA ============ -->
 <div class="view active" id="view-capture">
@@ -230,6 +221,13 @@
 <!-- ============ VISTA: ENVIAR ============ -->
 <div class="view" id="view-export">
   <button class="backbar" onclick="window.__goBack()">← <span data-i18n="back">Regresar</span></button>
+  <div class="exp-card budget" id="budgetWrap">
+    <div class="budget-top">
+      <span id="budgetLabel">Presupuesto de horas</span>
+      <span class="num" id="budgetNums">0 / 0 h</span>
+    </div>
+    <div class="budget-track"><div class="budget-fill" id="budgetFill"></div></div>
+  </div>
   <div class="exp-card">
     <h3 data-i18n="e2t">Excel</h3>
     <p data-i18n="e2p">.</p>
@@ -248,10 +246,11 @@
     <h3 data-i18n="vacT">Planear vacaciones</h3>
     <p data-i18n="vacP">Aparta un día de vacaciones para un empleado en cualquier fecha del año. Mientras no se haya tomado, cualquier gerente lo puede cambiar o quitar.</p>
     <div class="frow"><label data-i18n="vacEmp">Empleado</label><select id="vacEmp"></select></div>
-    <div class="frow"><label data-i18n="vacDate">Fecha</label><input type="date" id="vacDate"></div>
+    <div class="frow"><label data-i18n="vacStart">Desde</label><input type="date" id="vacStart"></div>
+    <div class="frow"><label data-i18n="vacEnd">Hasta (regreso)</label><input type="date" id="vacEnd"></div>
     <p class="hint" id="vacStatusHint"></p>
     <button class="btn gold" id="btnVacSave" data-i18n="vacSave">Guardar vacación</button>
-    <button class="btn ghost" id="btnVacClear" style="margin-top:8px" data-i18n="vacClear">Quitar vacación de ese día</button>
+    <button class="btn ghost" id="btnVacClear" style="margin-top:8px" data-i18n="vacClear">Quitar vacaciones de esas fechas</button>
   </div>
   <div class="exp-card">
     <h3 data-i18n="e3t">Respaldo</h3>
@@ -281,7 +280,7 @@
   </div>
   <div class="exp-card">
     <h3 data-i18n="e4tMaster">🔐 Ajustes protegidos (llave maestra)</h3>
-    <p class="hint" style="margin:0 0 12px" data-i18n="e4tMasterP">Estos solo los puede cambiar quien tenga la llave maestra de Leonor.</p>
+    <p class="hint" style="margin:0 0 12px" data-i18n="e4tMasterP">Estos solo los puede cambiar quien tenga la llave maestra.</p>
     <div class="frow"><label data-i18n="sBiz">Nombre del negocio</label><input id="setBiz" autocomplete="off" readonly>
       <button class="btn ghost" id="btnBizUnlock" style="margin-top:6px" data-i18n="sBizBtn">🔐</button></div>
     <div class="frow"><label data-i18n="sEmails">Correos autorizados (máx. 2, clave maestra)</label><input id="setEmails" autocomplete="off" readonly placeholder="correo1@ejemplo.com, correo2@ejemplo.com">
@@ -313,7 +312,7 @@
     <div class="frow"><label data-i18n="type">Tipo</label>
       <div class="class-pick">
         <button id="pickP" data-cls="P" data-i18n="clsP">Planta</button>
-        <button id="pickE" data-cls="E" data-i18n="clsE">Eventual</button>
+        <button id="pickE" data-cls="E" data-i18n="clsE">Contrato</button>
         <button id="pickA" data-cls="A" data-i18n="clsA">Agencia</button>
       </div>
     </div>
@@ -369,7 +368,7 @@ const I18N = {
     editEmp:"Editar empleado", addEmpTitle:"Agregar empleado",
     pickBase:"Escoger de la base (aquí están todos, aunque estén quitados de la lista)",
     newEmpOpt:"— Empleado nuevo (escribe el nombre abajo) —", alreadyIn:" · ya está en la lista",
-    name:"Nombre", type:"Tipo", clsP:"Planta", clsE:"Eventual", clsA:"Agencia",
+    name:"Nombre", type:"Tipo", clsP:"Planta", clsE:"Contrato", clsA:"Agencia",
     rate:"Salario por hora ($)", empNo:"No. de empleado en el sistema de nómina (exacto, ej. 001)",
     phone:"Teléfono", save:"Guardar",
     hideEmp:"Quitar de la lista (queda guardado en la base)", delEmp:"Borrar de la base para siempre…",
@@ -379,13 +378,15 @@ const I18N = {
     removedToast:"{n} salió de la lista. Sigue en la base y regresa desde + Agregar empleado.",
     langName:"Idioma / Language / Wika",
     confirmDel:"¿Borrar?", deletedDay:"Se borró el horario de {n}.", undo:"DESHACER", back:"Regresar", noRecent:"Sin turno reciente", stTitle:"Estado del día", stVAC:"Vacaciones", stSICK:"Incapacidad", stLEAVE:"Permiso", stABS:"Falta justificada", stNOSHOW:"No se presentó", stNote:"Nota (opcional)", stClear:"Quitar estado", stBtn:"Estado",
-    vacT:"Planear vacaciones", vacP:"Aparta un día de vacaciones para un empleado en cualquier fecha del año. Mientras no se haya tomado, cualquier gerente lo puede cambiar o quitar.",
-    vacEmp:"Empleado", vacDate:"Fecha", vacSave:"Guardar vacación", vacClear:"Quitar vacación de ese día",
-    vacFree:"Ese día está libre — se puede apartar.", vacHasHours:"OJO: ese día ya tiene horas capturadas.",
-    vacAlready:"Ese día ya tiene: {s}.", vacHasHoursBlock:"Ese día ya se trabajó — no se puede volver vacaciones. Corrige el horario desde Captura si hace falta.",
-    vacSaved:"Vacación guardada para {n}.", vacCleared:"Se quitó la vacación de {n} en ese día.",
+    vacT:"Planear vacaciones", vacP:"Aparta uno o varios días de vacaciones para un empleado, del rango de fechas que quieras. Mientras no se haya tomado, cualquier gerente lo puede cambiar o quitar.",
+    vacEmp:"Empleado", vacStart:"Desde", vacEnd:"Hasta (regreso)", vacSave:"Guardar vacación", vacClear:"Quitar vacaciones de esas fechas",
+    vacHasHoursBlock:"Ese día ya se trabajó — no se puede volver vacaciones. Corrige el horario desde Captura si hace falta.",
+    vacRangeBad:"La fecha de regreso no puede ser antes que la fecha de inicio.",
+    vacSavedN:"Vacación guardada para {n}: {d} día(s).", vacClearedN:"Se quitó la vacación de {n}: {d} día(s).",
+    vacSkippedN:" {k} día(s) no se tocaron porque ya tenían horas capturadas.",
+    vacNothing:"Ningún día en ese rango tenía vacaciones que quitar.",
     cls_P:"Empleados de planta",
-    cls_E:"Empleados a prueba / temporales",
+    cls_E:"Empleados de contrato",
     cls_A:"Empleados de la agencia (solo control de horas)",
     thName:"Nombre",
     thTotal:"Total",
@@ -412,7 +413,7 @@ const I18N = {
     e3r:"Restaurar desde archivo",
     e4t:"Ajustes",
     e4tMgr:"Ajustes del gerente", e4tMgrP:"Estos los puede cambiar cualquier gerente con la clave normal — sin llave maestra.",
-    e4tMaster:"🔐 Ajustes protegidos (llave maestra)", e4tMasterP:"Estos solo los puede cambiar quien tenga la llave maestra de Leonor.",
+    e4tMaster:"🔐 Ajustes protegidos (llave maestra)", e4tMasterP:"Estos solo los puede cambiar quien tenga la llave maestra.",
     sStart:"Inicio de la quincena (domingo)",
     sStartHint:"El número de quincena (Q) ya no se escribe a mano — se calcula solo de la fecha de inicio, así nunca queda desfasado.",
     sBudget:"Presupuesto de horas (0 = sin presupuesto)",
@@ -434,7 +435,7 @@ const I18N = {
     tBadFile:"Ese archivo no es un respaldo válido de esta app.",
     tNoNet:"Sin internet no puedo armar el Excel con fórmulas — mandé una versión simple en su lugar.",
     tNoEmails:"Primero pon los correos autorizados en Ajustes (con la clave maestra).",
-    sendToPrefix:"Se manda a: ", sendToNone:"Todavía no hay correos autorizados — solo Leonor los puede poner en Ajustes.",
+    sendToPrefix:"Se manda a: ", sendToNone:"Todavía no hay correos autorizados — se configuran desde Ajustes protegidos, con la llave maestra.",
     importNeedsEmail:"Solo se puede usar una vez que existan los correos autorizados en Ajustes.",
     tSending:"⏳ Enviando…",
     tEmailMsg:"Adjunto va el reporte de horas de esta quincena.",
@@ -465,7 +466,7 @@ const I18N = {
     editEmp:"Edit employee", addEmpTitle:"Add employee",
     pickBase:"Pick from the database (everyone is here, even those removed from the list)",
     newEmpOpt:"— New employee (type the name below) —", alreadyIn:" · already on the list",
-    name:"Name", type:"Type", clsP:"Permanent", clsE:"Casual / trial", clsA:"Agency",
+    name:"Name", type:"Type", clsP:"Permanent", clsE:"Contract", clsA:"Agency",
     rate:"Pay per hour ($)", empNo:"Employee No. in the payroll system (exact, e.g. 001)",
     phone:"Phone", save:"Save",
     hideEmp:"Remove from the list (stays saved in the database)", delEmp:"Delete from the database forever…",
@@ -475,13 +476,15 @@ const I18N = {
     removedToast:"{n} was removed from the list. Still in the database — bring them back with + Add employee.",
     langName:"Language",
     confirmDel:"Delete?", deletedDay:"{n}'s times were deleted.", undo:"UNDO", back:"Back", noRecent:"No recent shifts", stTitle:"Day status", stVAC:"Vacation", stSICK:"Sick leave", stLEAVE:"Leave", stABS:"Justified absence", stNOSHOW:"No-show", stNote:"Note (optional)", stClear:"Clear status", stBtn:"Status",
-    vacT:"Plan vacation", vacP:"Set aside a vacation day for an employee, any date in the year. As long as it hasn't happened yet, any manager can change or remove it.",
-    vacEmp:"Employee", vacDate:"Date", vacSave:"Save vacation", vacClear:"Remove vacation for that day",
-    vacFree:"That day is free — it can be booked.", vacHasHours:"Heads up: that day already has hours logged.",
-    vacAlready:"That day already has: {s}.", vacHasHoursBlock:"That day was already worked — it can't become vacation. Correct the times in Time entry if needed.",
-    vacSaved:"Vacation saved for {n}.", vacCleared:"Removed {n}'s vacation for that day.",
+    vacT:"Plan vacation", vacP:"Set aside one or more vacation days for an employee, any date range you want. As long as it hasn't happened yet, any manager can change or remove it.",
+    vacEmp:"Employee", vacStart:"From", vacEnd:"To (return date)", vacSave:"Save vacation", vacClear:"Remove vacation for those dates",
+    vacHasHoursBlock:"That day was already worked — it can't become vacation. Correct the times in Time entry if needed.",
+    vacRangeBad:"The return date can't be before the start date.",
+    vacSavedN:"Vacation saved for {n}: {d} day(s).", vacClearedN:"Removed {n}'s vacation: {d} day(s).",
+    vacSkippedN:" {k} day(s) left untouched — already had hours logged.",
+    vacNothing:"No day in that range had vacation to remove.",
     cls_P:"Permanent employees",
-    cls_E:"Casual / trial employees",
+    cls_E:"Contract employees",
     cls_A:"Agency workers (hours tracking only)",
     thName:"Name",
     thTotal:"Total",
@@ -508,7 +511,7 @@ const I18N = {
     e3r:"Restore from file",
     e4t:"Settings",
     e4tMgr:"Manager settings", e4tMgrP:"Any manager with the normal PIN can change these — no master key needed.",
-    e4tMaster:"🔐 Protected settings (master key)", e4tMasterP:"Only whoever has Leonor's master key can change these.",
+    e4tMaster:"🔐 Protected settings (master key)", e4tMasterP:"Only whoever has the master key can change these.",
     sStart:"Pay period start (Sunday)",
     sStartHint:"The pay period number (Q) is no longer typed by hand — it's calculated from the start date, so it can never drift.",
     sBudget:"Hours budget (0 = none)",
@@ -530,7 +533,7 @@ const I18N = {
     tBadFile:"That file is not a valid backup of this app.",
     tNoNet:"No internet: could not build the Excel with formulas — sent a simple version instead.",
     tNoEmails:"Set the authorized emails in Settings first (master key).",
-    sendToPrefix:"Sent to: ", sendToNone:"No authorized emails yet — only Leonor can set them in Settings.",
+    sendToPrefix:"Sent to: ", sendToNone:"No authorized emails yet — set them in Protected Settings with the master key.",
     importNeedsEmail:"Only available once the authorized emails exist in Settings.",
     tSending:"⏳ Sending…",
     tEmailMsg:"Attached is the hours report for this pay period.",
@@ -578,7 +581,7 @@ const I18N = {
     name:"Nom",
     type:"Type",
     clsP:"Permanent",
-    clsE:"Occasionnel / essai",
+    clsE:"Contrat",
     clsA:"Agence",
     rate:"Salaire horaire ($)",
     empNo:"No d'employé dans le système de paie (exact, ex. 001)",
@@ -592,18 +595,20 @@ const I18N = {
     removedToast:"{n} a été retiré de la liste. Toujours dans la base — le ramener avec + Ajouter un employé.",
     langName:"Langue",
     stTitle:"Statut du jour", stVAC:"Vacances", stSICK:"Maladie", stLEAVE:"Congé", stABS:"Absence justifiée", stNOSHOW:"Absent sans avis", stNote:"Note (facultative)", stClear:"Retirer le statut", stBtn:"Statut",
-    vacT:"Planifier des vacances", vacP:"Réservez un jour de vacances pour un employé, n'importe quelle date de l'année. Tant que ce n'est pas encore pris, n'importe quel gérant peut le changer ou le retirer.",
-    vacEmp:"Employé", vacDate:"Date", vacSave:"Enregistrer les vacances", vacClear:"Retirer les vacances de ce jour",
-    vacFree:"Ce jour est libre — on peut le réserver.", vacHasHours:"Attention : ce jour a déjà des heures enregistrées.",
-    vacAlready:"Ce jour a déjà : {s}.", vacHasHoursBlock:"Ce jour a déjà été travaillé — impossible de le transformer en vacances. Corrigez l'horaire depuis Saisie si besoin.",
-    vacSaved:"Vacances enregistrées pour {n}.", vacCleared:"Vacances retirées pour {n} ce jour-là.",
+    vacT:"Planifier des vacances", vacP:"Réservez un ou plusieurs jours de vacances pour un employé, sur la période de votre choix. Tant que ce n'est pas encore pris, n'importe quel gérant peut le changer ou le retirer.",
+    vacEmp:"Employé", vacStart:"Du", vacEnd:"Au (date de retour)", vacSave:"Enregistrer les vacances", vacClear:"Retirer les vacances de ces dates",
+    vacHasHoursBlock:"Ce jour a déjà été travaillé — impossible de le transformer en vacances. Corrigez l'horaire depuis Saisie si besoin.",
+    vacRangeBad:"La date de retour ne peut pas être avant la date de début.",
+    vacSavedN:"Vacances enregistrées pour {n} : {d} jour(s).", vacClearedN:"Vacances retirées pour {n} : {d} jour(s).",
+    vacSkippedN:" {k} jour(s) non modifiés — des heures étaient déjà enregistrées.",
+    vacNothing:"Aucun jour de cette période n'avait de vacances à retirer.",
     confirmDel:"Supprimer ?",
     deletedDay:"Les heures de {n} ont été supprimées.",
     undo:"ANNULER",
     back:"Retour",
     noRecent:"Aucun quart récent",
     cls_P:"Employés permanents",
-    cls_E:"Employés occasionnels / à l'essai",
+    cls_E:"Employés sous contrat",
     cls_A:"Travailleurs d'agence (suivi des heures seulement)",
     thName:"Nom",
     thTotal:"Total",
@@ -630,7 +635,7 @@ const I18N = {
     e3r:"Restaurer depuis un fichier",
     e4t:"Réglages",
     e4tMgr:"Réglages du gérant", e4tMgrP:"N'importe quel gérant avec le NIP normal peut les changer — pas besoin de la clé maîtresse.",
-    e4tMaster:"🔐 Réglages protégés (clé maîtresse)", e4tMasterP:"Seule la personne qui a la clé maîtresse de Leonor peut les changer.",
+    e4tMaster:"🔐 Réglages protégés (clé maîtresse)", e4tMasterP:"Seule la personne qui a la clé maîtresse peut les changer.",
     sStart:"Début de la quinzaine (dimanche)",
     sStartHint:"Le numéro de quinzaine (Q) ne s'écrit plus à la main — il est calculé à partir de la date de début, donc il ne se désynchronise jamais.",
     sBudget:"Budget d'heures (0 = aucun)",
@@ -648,7 +653,7 @@ const I18N = {
     sSave:"Enregistrer les réglages",
     tSaved:"Réglages enregistrés.",
     tNoEmails:"Mets d'abord les courriels autorisés dans Réglages (clé maîtresse).",
-    sendToPrefix:"Envoyé à : ", sendToNone:"Pas encore de courriels autorisés — seule Leonor peut les définir dans Réglages.",
+    sendToPrefix:"Envoyé à : ", sendToNone:"Pas encore de courriels autorisés — à définir dans Réglages protégés, avec la clé maîtresse.",
     importNeedsEmail:"Disponible seulement une fois que les courriels autorisés existent dans Réglages.",
     tSending:"⏳ Envoi…",
     tEmailMsg:"Ci-joint le rapport d'heures de cette quinzaine.",
@@ -683,7 +688,7 @@ const I18N = {
     editEmp:"I-edit ang empleyado", addEmpTitle:"Magdagdag ng empleyado",
     pickBase:"Pumili mula sa database (nandito lahat, kahit tinanggal na sa listahan)",
     newEmpOpt:"— Bagong empleyado (isulat ang pangalan sa ibaba) —", alreadyIn:" · nasa listahan na",
-    name:"Pangalan", type:"Uri", clsP:"Regular", clsE:"Pansamantala", clsA:"Ahensya",
+    name:"Pangalan", type:"Uri", clsP:"Regular", clsE:"Kontrata", clsA:"Ahensya",
     rate:"Sahod kada oras ($)", empNo:"Employee No. sa payroll system (eksakto, hal. 001)",
     phone:"Telepono", save:"I-save",
     hideEmp:"Tanggalin sa listahan (mananatili sa database)", delEmp:"Burahin sa database nang tuluyan…",
@@ -693,13 +698,15 @@ const I18N = {
     removedToast:"Tinanggal si {n} sa listahan. Nasa database pa rin — ibalik gamit ang + Magdagdag ng empleyado.",
     langName:"Wika",
     confirmDel:"Burahin?", deletedDay:"Nabura ang oras ni {n}.", undo:"IBALIK", back:"Bumalik", noRecent:"Walang kamakailang shift", stTitle:"Katayuan ng araw", stVAC:"Bakasyon", stSICK:"May sakit", stLEAVE:"Leave", stABS:"May-dahilang liban", stNOSHOW:"Hindi sumipot", stNote:"Tala (opsyonal)", stClear:"Alisin ang katayuan", stBtn:"Katayuan",
-    vacT:"Magplano ng bakasyon", vacP:"Maglaan ng araw ng bakasyon para sa isang empleyado, kahit anong petsa sa taon. Hangga't hindi pa natatapos, kahit sinong gerente ang puwedeng magbago o mag-alis nito.",
-    vacEmp:"Empleyado", vacDate:"Petsa", vacSave:"I-save ang bakasyon", vacClear:"Alisin ang bakasyon sa araw na iyon",
-    vacFree:"Bukas ang araw na iyon — puwede nang ilaan.", vacHasHours:"Paalala: may naitalang oras na sa araw na iyon.",
-    vacAlready:"May meron na sa araw na iyon: {s}.", vacHasHoursBlock:"May trabaho na sa araw na iyon — hindi puwedeng gawing bakasyon. Ayusin na lang ang oras sa Captura kung kailangan.",
-    vacSaved:"Na-save ang bakasyon ni {n}.", vacCleared:"Naalis ang bakasyon ni {n} sa araw na iyon.",
+    vacT:"Magplano ng bakasyon", vacP:"Maglaan ng isa o ilang araw ng bakasyon para sa isang empleyado, kahit anong saklaw ng petsa. Hangga't hindi pa natatapos, kahit sinong gerente ang puwedeng magbago o mag-alis nito.",
+    vacEmp:"Empleyado", vacStart:"Mula", vacEnd:"Hanggang (araw ng balik)", vacSave:"I-save ang bakasyon", vacClear:"Alisin ang bakasyon sa mga petsang iyon",
+    vacHasHoursBlock:"May trabaho na sa araw na iyon — hindi puwedeng gawing bakasyon. Ayusin na lang ang oras sa Captura kung kailangan.",
+    vacRangeBad:"Ang petsa ng pagbalik ay hindi puwedeng bago pa ang petsa ng simula.",
+    vacSavedN:"Na-save ang bakasyon ni {n}: {d} araw.", vacClearedN:"Naalis ang bakasyon ni {n}: {d} araw.",
+    vacSkippedN:" {k} araw ang hindi nagalaw — may naitalang oras na.",
+    vacNothing:"Walang araw sa saklaw na iyon na may bakasyong aalisin.",
     cls_P:"Mga regular na empleyado",
-    cls_E:"Mga pansamantalang empleyado",
+    cls_E:"Mga empleyadong kontrata",
     cls_A:"Mga tauhan ng ahensya (oras lamang)",
     thName:"Pangalan",
     thTotal:"Kabuuan",
@@ -726,7 +733,7 @@ const I18N = {
     e3r:"I-restore mula sa file",
     e4t:"Mga setting",
     e4tMgr:"Mga setting ng gerente", e4tMgrP:"Kahit sinong gerente na may normal na PIN ang puwedeng magbago nito — hindi kailangan ng master key.",
-    e4tMaster:"🔐 Protektadong setting (master key)", e4tMasterP:"Ang may hawak lang ng master key ni Leonor ang puwedeng magbago nito.",
+    e4tMaster:"🔐 Protektadong setting (master key)", e4tMasterP:"Ang may hawak lang ng master key ang puwedeng magbago nito.",
     sStart:"Simula ng pay period (Linggo)",
     sStartHint:"Ang numero ng pay period (Q) ay hindi na ikinakamano — awtomatiko itong kinakalkula mula sa petsa ng simula, kaya hindi na ito mapapalitan nang sarili.",
     sBudget:"Badyet ng oras (0 = wala)",
@@ -744,7 +751,7 @@ const I18N = {
     sSave:"I-save ang mga setting",
     tSaved:"Na-save ang settings.",
     tNoEmails:"Ilagay muna ang mga awtorisadong email sa Settings (gamit ang master key).",
-    sendToPrefix:"Ipapadala sa: ", sendToNone:"Wala pang awtorisadong email — si Leonor lang ang puwedeng maglagay nito sa Settings.",
+    sendToPrefix:"Ipapadala sa: ", sendToNone:"Wala pang awtorisadong email — ilagay ito sa Protektadong Setting, gamit ang master key.",
     importNeedsEmail:"Puwede lang gamitin kapag may awtorisadong email na sa Settings.",
     tSending:"⏳ Ipinapadala…",
     tEmailMsg:"Nakalakip ang ulat ng oras para sa pay period na ito.",
@@ -789,7 +796,7 @@ function applyLang(){
   document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = T(el.dataset.i18n); });
 }
 const CLS_ORDER = ["P","E","A"];
-const CLS_NAME = {P:"Planta", E:"Eventual", A:"Agencia"};
+const CLS_NAME = {P:"Planta", E:"Contrato", A:"Agencia"};
 let state = defaultState();
 let currentDayIdx = 0;
 let editingEmpId = null;
@@ -961,10 +968,7 @@ async function loadSaved(){
 function bizSlug(){ return (state.bizName||"DEEN").replace(/[^A-Za-z0-9]+/g,"").slice(0,14) || "APP"; }
 function renderHeader(){
   const bn = (state.bizName || "DEEN").trim();
-  const sp = bn.indexOf(" ");
-  document.getElementById("bizTitle").innerHTML = sp > 0
-    ? escapeHTML(bn.slice(0,sp)) + " <span>" + escapeHTML(bn.slice(sp+1)) + "</span>"
-    : escapeHTML(bn);
+  document.getElementById("bizTitle").textContent = bn;
   document.getElementById("periodBtn").textContent = fmtRange();
   /* El total de horas y el presupuesto son información acumulada:
      solo se ven con el candado Privado abierto. */
@@ -988,8 +992,8 @@ function renderHeader(){
   }
   wrap.style.display = "";
 }
-/* La altura del header cambia (aparece/desaparece la barra de presupuesto),
-   así que la franja de fecha se pega justo debajo, recalculando cada vez. */
+/* La franja de fecha se pega justo debajo del header, recalculando su
+   altura por si cambia (ej. al rotar el teléfono). */
 function syncDayBarTop(){
   const h = document.querySelector("header");
   const bar = document.getElementById("dayBar");
@@ -1708,6 +1712,12 @@ function syncSendImportHints(){
 /* ============ VACACIONES: reservar cualquier fecha del año, sin mover
    la quincena que se está capturando. Mientras el día no haya pasado,
    cualquier gerente con clave normal lo puede cambiar o quitar. ============ */
+function datesBetween(startIso, endIso){
+  const out = [];
+  const start = parseISO(startIso), end = parseISO(endIso);
+  for(let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) out.push(toISO(d));
+  return out;
+}
 function syncVacForm(){
   const sel = document.getElementById("vacEmp");
   const prev = sel.value;
@@ -1716,51 +1726,56 @@ function syncVacForm(){
     const o = document.createElement("option"); o.value = e.id; o.textContent = e.name; sel.appendChild(o);
   });
   if(prev && state.employees.some(e=>e.id===prev)) sel.value = prev;
-  const di = document.getElementById("vacDate");
   const todayIso = toISO(new Date());
-  if(!di.value) di.value = todayIso;
-  di.min = todayIso;
-  updateVacHint();
+  const ds = document.getElementById("vacStart"), de = document.getElementById("vacEnd");
+  if(!ds.value) ds.value = todayIso;
+  if(!de.value) de.value = todayIso;
+  ds.min = todayIso; de.min = todayIso;
+  document.getElementById("vacStatusHint").textContent = "";
 }
-function updateVacHint(){
-  const eid = document.getElementById("vacEmp").value;
-  const iso = document.getElementById("vacDate").value;
-  const hint = document.getElementById("vacStatusHint");
-  const e = state.employees.find(x=>x.id===eid);
-  if(!e || !iso){ hint.textContent = ""; return; }
-  const t = e.times[iso];
-  if(t && t.status) hint.textContent = T("vacAlready").replace("{s}", T("st"+t.status));
-  else if(t && (t.in || t.out)) hint.textContent = T("vacHasHours");
-  else hint.textContent = T("vacFree");
-}
-document.getElementById("vacEmp").onchange = updateVacHint;
-document.getElementById("vacDate").onchange = updateVacHint;
 document.getElementById("btnVacSave").onclick = ()=>{
   const eid = document.getElementById("vacEmp").value;
-  const iso = document.getElementById("vacDate").value;
+  const startIso = document.getElementById("vacStart").value;
+  const endIso = document.getElementById("vacEnd").value;
   const e = state.employees.find(x=>x.id===eid);
-  if(!e || !iso) return;
-  const t = e.times[iso];
-  /* Si ese día ya tiene horas trabajadas, no se puede convertir en
-     vacaciones -- el empleado sí trabajó ese día. Lo único que se puede
-     hacer es recortar el horario desde Captura, no borrar el día. */
-  if(t && (t.in || t.out)){ toast(T("vacHasHoursBlock")); return; }
-  e.times[iso] = {status:"VAC"};
-  persist(); updateVacHint(); refresh();
-  toast(T("vacSaved").replace("{n}", e.name));
+  if(!e || !startIso || !endIso) return;
+  if(endIso < startIso){ toast(T("vacRangeBad")); return; }
+  let saved = 0, skipped = 0;
+  datesBetween(startIso, endIso).forEach(iso=>{
+    const t = e.times[iso];
+    /* Un día con horas reales nunca se vuelve vacación -- el empleado sí
+       trabajó ese día. Esos días se saltan, no se bloquea todo el rango. */
+    if(t && (t.in || t.out)){ skipped++; return; }
+    e.times[iso] = {status:"VAC"};
+    saved++;
+  });
+  persist(); refresh();
+  let msg = T("vacSavedN").replace("{n}", e.name).replace("{d}", saved);
+  if(skipped) msg += T("vacSkippedN").replace("{k}", skipped);
+  toast(msg);
 };
 document.getElementById("btnVacClear").onclick = ()=>{
   const eid = document.getElementById("vacEmp").value;
-  const iso = document.getElementById("vacDate").value;
+  const startIso = document.getElementById("vacStart").value;
+  const endIso = document.getElementById("vacEnd").value;
   const e = state.employees.find(x=>x.id===eid);
-  if(!e || !iso) return;
-  const t = e.times[iso];
-  /* Esto solo quita un estado (vacaciones, etc.), nunca horas trabajadas
-     -- si ese día tiene horas reales, se corrige desde Captura. */
-  if(t && (t.in || t.out)){ toast(T("vacHasHoursBlock")); return; }
-  if(t) delete e.times[iso];
-  persist(); updateVacHint(); refresh();
-  toast(T("vacCleared").replace("{n}", e.name));
+  if(!e || !startIso || !endIso) return;
+  if(endIso < startIso){ toast(T("vacRangeBad")); return; }
+  let cleared = 0, skipped = 0;
+  datesBetween(startIso, endIso).forEach(iso=>{
+    const t = e.times[iso];
+    if(!t) return;
+    /* Esto solo quita un estado (vacaciones, etc.), nunca horas trabajadas
+       -- si ese día tiene horas reales, se corrige desde Captura. */
+    if(t.in || t.out){ skipped++; return; }
+    delete e.times[iso];
+    cleared++;
+  });
+  persist(); refresh();
+  if(!cleared && !skipped){ toast(T("vacNothing")); return; }
+  let msg = T("vacClearedN").replace("{n}", e.name).replace("{d}", cleared);
+  if(skipped) msg += T("vacSkippedN").replace("{k}", skipped);
+  toast(msg);
 };
 /* Botón Privado: Resumen y Enviar no existen a la vista hasta poner el PIN,
    y se vuelven a esconder con un toque. */
@@ -1781,7 +1796,7 @@ function switchView(name){
   document.getElementById("view-"+name).classList.add("active");
   document.querySelectorAll(".tabbar button").forEach(x=>x.classList.toggle("active", x.dataset.view===name));
   if(name==="summary") renderSummary();
-  if(name==="export"){ syncSettings(); syncVacForm(); syncSendImportHints(); }
+  if(name==="export"){ renderHeader(); syncSettings(); syncVacForm(); syncSendImportHints(); }
   window.scrollTo(0,0);
 }
 document.getElementById("btnEmailSend").onclick = sendReportByEmail;
