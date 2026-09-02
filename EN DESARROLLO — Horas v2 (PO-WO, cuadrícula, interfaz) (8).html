@@ -122,15 +122,16 @@
   .view{display:none;} .view.active{display:block;}
   /* summary */
   .sum-card{background:var(--card); border-radius:var(--radius); margin:12px; padding:14px;
-    box-shadow:0 1px 3px rgba(38,48,42,.07);}
+    border:1px solid #DED6C0; box-shadow:0 1px 4px rgba(38,48,42,.10);}
   .sum-card h3{margin:0 0 8px; font-size:13px; letter-spacing:.12em; text-transform:uppercase;}
   .sum-card.P h3{color:var(--planta);} .sum-card.E h3{color:var(--eventual);} .sum-card.A h3{color:var(--agencia);}
   table{width:100%; border-collapse:collapse; font-size:12.5px;}
-  th{text-align:right; color:var(--muted); font-weight:600; font-size:10.5px; letter-spacing:.06em;
-    text-transform:uppercase; padding:4px 4px; border-bottom:1px solid #EAE5D6;}
+  th{text-align:right; color:var(--muted); font-weight:700; font-size:10.5px; letter-spacing:.06em;
+    text-transform:uppercase; padding:4px 4px; border-bottom:2px solid #D9CFB0;}
   th:first-child, td:first-child{text-align:left;}
-  td{padding:6px 4px; text-align:right; border-bottom:1px solid #F2EEE2;}
-  tr.tot td{font-weight:750; border-top:2px solid #E0DACA; border-bottom:none;}
+  th.name-col, td.name-col{text-align:left; border-left:1px solid #E4DCC5; border-right:1px solid #E4DCC5;}
+  td{padding:6px 4px; text-align:right; border-bottom:1px solid #E4DCC5;}
+  tr.tot td{font-weight:750; border-top:2px solid #C9BD98; border-bottom:none;}
   td.ot{color:var(--alert); font-weight:650;}
   .grand{background:var(--forest); color:#F3EFE4; border-radius:var(--radius); margin:12px; padding:14px;}
   .grand .row{display:flex; justify-content:space-between; padding:5px 0; font-size:14px;}
@@ -139,7 +140,7 @@
   .grand .row.hero b{color:var(--gold); font-size:19px;}
   /* export */
   .exp-card{background:var(--card); border-radius:var(--radius); margin:12px; padding:16px;
-    box-shadow:0 1px 3px rgba(38,48,42,.07);}
+    border:1px solid #DED6C0; box-shadow:0 1px 4px rgba(38,48,42,.10);}
   .exp-card h3{margin:0 0 4px; font-size:15px;}
   .exp-card p{margin:0 0 12px; font-size:12.5px; color:var(--muted); line-height:1.45;}
   .btn{display:block; width:100%; border:none; border-radius:12px; padding:13px; font-size:15px; font-weight:700;}
@@ -400,7 +401,7 @@ const I18N = {
     noteExtra:"El pago es BRUTO: horas totales × tarifa (antes de retenciones — esas las calcula el sistema de nómina).",
     gHours:"Horas totales de la quincena",
     gAgency:"· de agencia (solo control)",
-    gPay:"Pago bruto planta + eventuales",
+    gPay:"Pago bruto planta + contrato",
     e2t:"Enviar reporte al contador",
     e2p:"Manda el Excel de la quincena (con fórmulas vivas: totales por persona por tipo y detalle diario) directo a los correos autorizados.",
     e2b:"Enviar por correo",
@@ -498,7 +499,7 @@ const I18N = {
     noteExtra:"Pay is GROSS: total hours × rate (before deductions — the payroll system calculates those).",
     gHours:"Total hours this pay period",
     gAgency:"· agency (tracking only)",
-    gPay:"Gross pay permanent + casual",
+    gPay:"Gross pay permanent + contract",
     e2t:"Send report to the accountant",
     e2p:"Sends the pay period Excel (live formulas: totals per person by type, plus the daily detail) straight to the authorized emails.",
     e2b:"Send by email",
@@ -622,7 +623,7 @@ const I18N = {
     noteExtra:"La paie est BRUTE : heures totales × taux (avant retenues — calculées par le système de paie).",
     gHours:"Heures totales de la quinzaine",
     gAgency:"· agence (suivi seulement)",
-    gPay:"Paie brute permanents + occasionnels",
+    gPay:"Paie brute permanents + contrat",
     e2t:"Envoyer le rapport au comptable",
     e2p:"Envoie l'Excel de la quinzaine (formules vivantes : totaux par personne selon le type, plus le détail quotidien) directement aux courriels autorisés.",
     e2b:"Envoyer par courriel",
@@ -720,7 +721,7 @@ const I18N = {
     noteExtra:"GROSS ang bayad: kabuuang oras × rate (bago ang mga kaltas — kalkulo ng payroll system).",
     gHours:"Kabuuang oras ng pay period",
     gAgency:"· ahensya (oras lamang)",
-    gPay:"Gross pay: regular + pansamantala",
+    gPay:"Gross pay: regular + kontrata",
     e2t:"Ipadala ang ulat sa accountant",
     e2p:"Ipinapadala ang Excel ng pay period (may live formulas: kabuuan bawat tao ayon sa uri, at araw-araw na detalye) diretso sa mga awtorisadong email.",
     e2b:"Ipadala sa email",
@@ -896,13 +897,16 @@ function empPeriod(empObj){
   return {w1,w2,total,lunch,pay};
 }
 function grandTotals(){
-  let hours=0, pay=0, agHours=0;
+  /* Los 3 rubros que se mandan al payroll, por separado -- Planta,
+     Contrato y Agencia nunca se deben mezclar en un solo total. */
+  const g = {P:{hours:0,pay:0}, E:{hours:0,pay:0}, A:{hours:0,pay:0}};
   state.employees.forEach(e=>{
     const p = empPeriod(e);
-    hours += p.total;
-    if(e.cls==="A") agHours += p.total; else pay += p.pay;
+    g[e.cls].hours += p.total;
+    g[e.cls].pay += p.pay;
   });
-  return {hours, pay, agHours};
+  const hours = g.P.hours + g.E.hours + g.A.hours;
+  return {hours, agHours:g.A.hours, pay:g.P.pay+g.E.pay, P:g.P, E:g.E, A:g.A};
 }
 /* ================= FORMATO ================= */
 function fh(n){ // horas
@@ -1203,30 +1207,48 @@ function renderSummary(){
     if(!list.length) return;
     const showPay = (cls==="P" || cls==="E");
     const card = document.createElement("div"); card.className = "sum-card " + cls;
-    let rows = "", tW1=0,tW2=0,tT=0,tL=0,tPay=0;
+    let rows = "", tW1=0,tW2=0,tT=0,tL=0,tW1Pay=0,tW2Pay=0;
     list.forEach(e=>{
       const p = empPeriod(e);
-      tW1+=p.w1; tW2+=p.w2; tT+=p.total; tL+=p.lunch; tPay+=p.pay;
-      rows += "<tr><td>" + escapeHTML(e.name) + "</td>" +
-        "<td class='num'>" + fh(p.w1) + "</td><td class='num'>" + fh(p.w2) + "</td>" +
-        "<td class='num'>" + fh(p.total) + "</td>" +
-        (showPay ? "<td class='num'>" + (p.pay?fmoney(p.pay):"—") + "</td>" : "") + "</tr>";
+      tW1+=p.w1; tW2+=p.w2; tT+=p.total; tL+=p.lunch;
+      if(showPay){
+        /* Semana 1 y semana 2 por separado, con el nombre en medio -- así
+           se pidió: horas+dinero de la semana 1, nombre, horas+dinero de
+           la semana 2, y el total al final. */
+        const w1Pay = p.w1*(e.rate||0), w2Pay = p.w2*(e.rate||0);
+        tW1Pay += w1Pay; tW2Pay += w2Pay;
+        rows += "<tr><td class='num'>" + fh(p.w1) + "</td><td class='num'>" + (w1Pay?fmoney(w1Pay):"—") + "</td>" +
+          "<td class='name-col'>" + escapeHTML(e.name) + "</td>" +
+          "<td class='num'>" + fh(p.w2) + "</td><td class='num'>" + (w2Pay?fmoney(w2Pay):"—") + "</td>" +
+          "<td class='num'>" + fh(p.total) + "</td></tr>";
+      }else{
+        rows += "<tr><td>" + escapeHTML(e.name) + "</td>" +
+          "<td class='num'>" + fh(p.w1) + "</td><td class='num'>" + fh(p.w2) + "</td>" +
+          "<td class='num'>" + fh(p.total) + "</td></tr>";
+      }
     });
+    const head = showPay
+      ? "<th>" + T("wkAbbr") + wk[0] + " (h)</th><th>" + T("wkAbbr") + wk[0] + " ($)</th>" +
+        "<th class='name-col'>" + T("thName") + "</th>" +
+        "<th>" + T("wkAbbr") + wk[1] + " (h)</th><th>" + T("wkAbbr") + wk[1] + " ($)</th><th>" + T("thTotal") + "</th>"
+      : "<th>" + T("thName") + "</th><th>" + T("wkAbbr") + wk[0] + "</th><th>" + T("wkAbbr") + wk[1] + "</th><th>" + T("thTotal") + "</th>";
+    const totRow = showPay
+      ? "<tr class='tot'><td class='num'>" + fh(tW1) + "</td><td class='num'>" + fmoney(tW1Pay) + "</td>" +
+        "<td class='name-col'>" + T("rowTotal") + "</td>" +
+        "<td class='num'>" + fh(tW2) + "</td><td class='num'>" + fmoney(tW2Pay) + "</td><td class='num'>" + fh(tT) + "</td></tr>"
+      : "<tr class='tot'><td>" + T("rowTotal") + "</td><td class='num'>" + fh(tW1) + "</td><td class='num'>" + fh(tW2) + "</td><td class='num'>" + fh(tT) + "</td></tr>";
     card.innerHTML = "<h3>" + T("cls_"+cls) + "</h3>" +
-      "<table><thead><tr><th>" + T("thName") + "</th><th>" + T("wkAbbr") + wk[0] + "</th><th>" + T("wkAbbr") + wk[1] + "</th><th>" + T("thTotal") + "</th>" +
-      (showPay ? "<th>" + T("thPay") + "</th>" : "") + "</tr></thead><tbody>" + rows +
-      "<tr class='tot'><td>" + T("rowTotal") + "</td><td class='num'>" + fh(tW1) + "</td><td class='num'>" + fh(tW2) + "</td>" +
-      "<td class='num'>" + fh(tT) + "</td>" +
-      (showPay ? "<td class='num'>" + fmoney(tPay) + "</td>" : "") + "</tr></tbody></table>" +
+      "<table><thead><tr>" + head + "</tr></thead><tbody>" + rows + totRow + "</tbody></table>" +
       "<p class='sec-note' style='margin:8px 0 0'>" + T("noteLunch") + " " + fh(tL) + " h. " + (cls==="A" ? T("noteAgency") : T("noteExtra")) + "</p>";
     host.appendChild(card);
   });
   const g = grandTotals();
   const grand = document.createElement("div"); grand.className = "grand num";
   grand.innerHTML =
-    "<div class='row'><span>" + T("gHours") + "</span><b>" + fh(g.hours) + " h</b></div>" +
-    "<div class='row'><span>" + T("gAgency") + "</span><b>" + fh(g.agHours) + " h</b></div>" +
-    "<div class='row hero'><span>" + T("gPay") + "</span><b>" + fmoney(g.pay) + "</b></div>";
+    "<div class='row'><span>" + T("cls_P") + "</span><b>" + fh(g.P.hours) + " h · " + fmoney(g.P.pay) + "</b></div>" +
+    "<div class='row'><span>" + T("cls_E") + "</span><b>" + fh(g.E.hours) + " h · " + fmoney(g.E.pay) + "</b></div>" +
+    "<div class='row'><span>" + T("cls_A") + "</span><b>" + fh(g.A.hours) + " h</b></div>" +
+    "<div class='row hero'><span>" + T("gPay") + "</span><b>" + fmoney(g.P.pay+g.E.pay) + "</b></div>";
   host.appendChild(grand);
 }
 /* ================= EXPORTAR ================= */
