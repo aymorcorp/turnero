@@ -410,8 +410,8 @@ const I18N = {
     e2itpl:"Descargar plantilla",
     e2ibtn:"Importar archivo",
     e3t:"Respaldo completo",
-    e3p:"Guarda TODO en un archivo. Súbelo a Drive o pásalo a otro teléfono y ábrelo con Restaurar.",
-    e3b:"Descargar respaldo",
+    e3p:"Guarda TODO en un archivo (sueldos, teléfonos, todo) — requiere llave maestra. Súbelo a Drive o pásalo a otro teléfono y ábrelo con Restaurar.",
+    e3b:"🔐 Descargar respaldo (llave maestra)",
     e3r:"Restaurar desde archivo",
     e4t:"Ajustes",
     e4tMgr:"Ajustes del gerente", e4tMgrP:"Estos los puede cambiar cualquier gerente con la clave normal — sin llave maestra.",
@@ -508,8 +508,8 @@ const I18N = {
     e2itpl:"Download template",
     e2ibtn:"Import file",
     e3t:"Full backup",
-    e3p:"Saves EVERYTHING to one file. Upload it to Drive or move it to another phone and open it with Restore.",
-    e3b:"Download backup",
+    e3p:"Saves EVERYTHING to one file (pay rates, phone numbers, all of it) — requires the master key. Upload it to Drive or move it to another phone and open it with Restore.",
+    e3b:"🔐 Download backup (master key)",
     e3r:"Restore from file",
     e4t:"Settings",
     e4tMgr:"Manager settings", e4tMgrP:"Any manager with the normal PIN can change these — no master key needed.",
@@ -632,8 +632,8 @@ const I18N = {
     e2itpl:"Télécharger le modèle",
     e2ibtn:"Importer le fichier",
     e3t:"Sauvegarde complète",
-    e3p:"Enregistre TOUT dans un fichier. Téléversez-le sur Drive ou transférez-le à un autre téléphone et ouvrez-le avec Restaurer.",
-    e3b:"Télécharger la sauvegarde",
+    e3p:"Enregistre TOUT dans un fichier (salaires, téléphones, tout) — nécessite la clé maîtresse. Téléversez-le sur Drive ou transférez-le à un autre téléphone et ouvrez-le avec Restaurer.",
+    e3b:"🔐 Télécharger la sauvegarde (clé maîtresse)",
     e3r:"Restaurer depuis un fichier",
     e4t:"Réglages",
     e4tMgr:"Réglages du gérant", e4tMgrP:"N'importe quel gérant avec le NIP normal peut les changer — pas besoin de la clé maîtresse.",
@@ -730,8 +730,8 @@ const I18N = {
     e2itpl:"I-download ang template",
     e2ibtn:"I-import ang file",
     e3t:"Buong backup",
-    e3p:"Sine-save LAHAT sa isang file. I-upload sa Drive o ilipat sa ibang telepono at buksan gamit ang Restore.",
-    e3b:"I-download ang backup",
+    e3p:"Sine-save LAHAT sa isang file (sahod, telepono, lahat) — kailangan ang master key. I-upload sa Drive o ilipat sa ibang telepono at buksan gamit ang Restore.",
+    e3b:"🔐 I-download ang backup (master key)",
     e3r:"I-restore mula sa file",
     e4t:"Mga setting",
     e4tMgr:"Mga setting ng gerente", e4tMgrP:"Kahit sinong gerente na may normal na PIN ang puwedeng magbago nito — hindi kailangan ng master key.",
@@ -1838,7 +1838,7 @@ document.getElementById("btnImportXLS").onclick = ()=>{
   document.getElementById("fileImportXLS").click();
 };
 document.getElementById("fileImportXLS").onchange = ev=>{ if(ev.target.files[0]) importFromExcel(ev.target.files[0]); ev.target.value=""; };
-document.getElementById("btnBackup").onclick = backup;
+document.getElementById("btnBackup").onclick = ()=> askMaster(backup);
 document.getElementById("btnRestore").onclick = ()=> askMaster(()=> document.getElementById("fileRestore").click());
 document.getElementById("fileRestore").onchange = ev=>{ if(ev.target.files[0]) restoreFile(ev.target.files[0]); ev.target.value=""; };
 document.getElementById("btnWipeAll").onclick = ()=> askMaster(wipeAll);
