@@ -81,6 +81,7 @@
   .emp-top{display:flex; align-items:center; gap:8px;}
   .emp-name{flex:1; font-weight:650; font-size:14.5px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .emp-name small{display:block; font-weight:400; font-size:11px; color:var(--muted);}
+  .emp-no{flex:0 0 auto; font-size:10px; font-weight:700; color:var(--muted); background:#F1EDE0; border-radius:8px; padding:3px 6px;}
   .emp-times{display:flex; gap:6px; margin-top:8px;}
   .emp-meta{display:flex; gap:6px; margin-top:6px; align-items:center; justify-content:space-between;}
   .tfield{flex:1 1 0; min-width:0; display:flex; flex-direction:column;}
@@ -1032,7 +1033,9 @@ function renderSections(){
     a.e.name.localeCompare(b.e.name)
   );
   if(list.length===0){
-    for(let i=1;i<=5;i++) sec.appendChild(ghostEmpCard(i));
+    /* 6, no 5 -- así llenan las 2 columnas completas sin dejar un hueco
+       vacío en la última fila. */
+    for(let i=1;i<=6;i++) sec.appendChild(ghostEmpCard(i));
   }
   let divided = false;
   list.forEach(x=>{
@@ -1110,6 +1113,10 @@ function empCard(e, iso){
   nm.innerHTML = escapeHTML(e.name) + (unlocked && e.rate ? "<small>$" + Number(e.rate).toFixed(2) + "/h</small>" : "");
   nm.onclick = ()=> requirePIN(()=> openEmpModal(e.id));
   top.appendChild(nm);
+  if(e.empNo){
+    const noBadge = document.createElement("div"); noBadge.className = "emp-no num"; noBadge.textContent = "#" + e.empNo;
+    top.appendChild(noBadge);
+  }
   card.appendChild(top);
   const row = document.createElement("div"); row.className = "emp-times";
   const meta = document.createElement("div"); meta.className = "emp-meta";
