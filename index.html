@@ -383,6 +383,8 @@ const I18N = {
     vacT:"Planear vacaciones", vacP:"Aparta uno o varios días de vacaciones para un empleado, del rango de fechas que quieras. Mientras no se haya tomado, cualquier gerente lo puede cambiar o quitar.",
     vacEmp:"Empleado", vacStart:"Desde", vacEnd:"Hasta (regreso)", vacSave:"Guardar vacación", vacClear:"Quitar vacaciones de esas fechas",
     vacHasHoursBlock:"Ese día ya se trabajó — no se puede volver vacaciones. Corrige el horario desde Captura si hace falta.",
+    vacAlreadyRange:"Ya tiene vacaciones planeadas del {a} al {b}. Cambia las fechas y guarda para editarlas.",
+    vacEditedN:"Vacación editada para {n}: {d} día(s).",
     vacRangeBad:"La fecha de regreso no puede ser antes que la fecha de inicio.",
     vacSavedN:"Vacación guardada para {n}: {d} día(s).", vacClearedN:"Se quitó la vacación de {n}: {d} día(s).",
     vacSkippedN:" {k} día(s) no se tocaron porque ya tenían horas capturadas.",
@@ -481,6 +483,8 @@ const I18N = {
     vacT:"Plan vacation", vacP:"Set aside one or more vacation days for an employee, any date range you want. As long as it hasn't happened yet, any manager can change or remove it.",
     vacEmp:"Employee", vacStart:"From", vacEnd:"To (return date)", vacSave:"Save vacation", vacClear:"Remove vacation for those dates",
     vacHasHoursBlock:"That day was already worked — it can't become vacation. Correct the times in Time entry if needed.",
+    vacAlreadyRange:"Already has vacation planned from {a} to {b}. Change the dates and save to edit it.",
+    vacEditedN:"Vacation edited for {n}: {d} day(s).",
     vacRangeBad:"The return date can't be before the start date.",
     vacSavedN:"Vacation saved for {n}: {d} day(s).", vacClearedN:"Removed {n}'s vacation: {d} day(s).",
     vacSkippedN:" {k} day(s) left untouched — already had hours logged.",
@@ -600,6 +604,8 @@ const I18N = {
     vacT:"Planifier des vacances", vacP:"Réservez un ou plusieurs jours de vacances pour un employé, sur la période de votre choix. Tant que ce n'est pas encore pris, n'importe quel gérant peut le changer ou le retirer.",
     vacEmp:"Employé", vacStart:"Du", vacEnd:"Au (date de retour)", vacSave:"Enregistrer les vacances", vacClear:"Retirer les vacances de ces dates",
     vacHasHoursBlock:"Ce jour a déjà été travaillé — impossible de le transformer en vacances. Corrigez l'horaire depuis Saisie si besoin.",
+    vacAlreadyRange:"A déjà des vacances prévues du {a} au {b}. Changez les dates et enregistrez pour les modifier.",
+    vacEditedN:"Vacances modifiées pour {n} : {d} jour(s).",
     vacRangeBad:"La date de retour ne peut pas être avant la date de début.",
     vacSavedN:"Vacances enregistrées pour {n} : {d} jour(s).", vacClearedN:"Vacances retirées pour {n} : {d} jour(s).",
     vacSkippedN:" {k} jour(s) non modifiés — des heures étaient déjà enregistrées.",
@@ -703,6 +709,8 @@ const I18N = {
     vacT:"Magplano ng bakasyon", vacP:"Maglaan ng isa o ilang araw ng bakasyon para sa isang empleyado, kahit anong saklaw ng petsa. Hangga't hindi pa natatapos, kahit sinong gerente ang puwedeng magbago o mag-alis nito.",
     vacEmp:"Empleyado", vacStart:"Mula", vacEnd:"Hanggang (araw ng balik)", vacSave:"I-save ang bakasyon", vacClear:"Alisin ang bakasyon sa mga petsang iyon",
     vacHasHoursBlock:"May trabaho na sa araw na iyon — hindi puwedeng gawing bakasyon. Ayusin na lang ang oras sa Captura kung kailangan.",
+    vacAlreadyRange:"May naka-planong bakasyon na mula {a} hanggang {b}. Palitan ang petsa at i-save para baguhin ito.",
+    vacEditedN:"Na-edit ang bakasyon ni {n}: {d} araw.",
     vacRangeBad:"Ang petsa ng pagbalik ay hindi puwedeng bago pa ang petsa ng simula.",
     vacSavedN:"Na-save ang bakasyon ni {n}: {d} araw.", vacClearedN:"Naalis ang bakasyon ni {n}: {d} araw.",
     vacSkippedN:" {k} araw ang hindi nagalaw — may naitalang oras na.",
@@ -1747,6 +1755,40 @@ function datesBetween(startIso, endIso){
   for(let d = new Date(start); d <= end; d.setDate(d.getDate()+1)) out.push(toISO(d));
   return out;
 }
+/* Detecta el bloque de vacaciones futuras ya guardado de un empleado (el
+   más próximo), para precargar Desde/Hasta y que "Guardar" funcione como
+   editar -- no solo como agregar uno nuevo encima. */
+function findUpcomingVacation(e){
+  const todayIso = toISO(new Date());
+  const vacDates = Object.keys(e.times)
+    .filter(iso => e.times[iso].status==="VAC" && iso >= todayIso)
+    .sort();
+  if(!vacDates.length) return null;
+  let start = vacDates[0], end = vacDates[0];
+  for(let i=1;i<vacDates.length;i++){
+    const next = parseISO(end); next.setDate(next.getDate()+1);
+    if(toISO(next) === vacDates[i]) end = vacDates[i]; else break;
+  }
+  return {start, end};
+}
+let vacLoadedRange = null;
+function loadVacForEmployee(){
+  const eid = document.getElementById("vacEmp").value;
+  const e = state.employees.find(x=>x.id===eid);
+  const todayIso = toISO(new Date());
+  const ds = document.getElementById("vacStart"), de = document.getElementById("vacEnd");
+  const existing = e ? findUpcomingVacation(e) : null;
+  vacLoadedRange = existing;
+  const hint = document.getElementById("vacStatusHint");
+  if(existing){
+    ds.value = existing.start; de.value = existing.end;
+    hint.textContent = T("vacAlreadyRange").replace("{a}", fmtDate(existing.start)).replace("{b}", fmtDate(existing.end));
+  }else{
+    if(!ds.value) ds.value = todayIso;
+    if(!de.value) de.value = todayIso;
+    hint.textContent = "";
+  }
+}
 function syncVacForm(){
   const sel = document.getElementById("vacEmp");
   const prev = sel.value;
@@ -1756,12 +1798,11 @@ function syncVacForm(){
   });
   if(prev && state.employees.some(e=>e.id===prev)) sel.value = prev;
   const todayIso = toISO(new Date());
-  const ds = document.getElementById("vacStart"), de = document.getElementById("vacEnd");
-  if(!ds.value) ds.value = todayIso;
-  if(!de.value) de.value = todayIso;
-  ds.min = todayIso; de.min = todayIso;
-  document.getElementById("vacStatusHint").textContent = "";
+  document.getElementById("vacStart").min = todayIso;
+  document.getElementById("vacEnd").min = todayIso;
+  loadVacForEmployee();
 }
+document.getElementById("vacEmp").onchange = loadVacForEmployee;
 document.getElementById("btnVacSave").onclick = ()=>{
   const eid = document.getElementById("vacEmp").value;
   const startIso = document.getElementById("vacStart").value;
@@ -1769,7 +1810,17 @@ document.getElementById("btnVacSave").onclick = ()=>{
   const e = state.employees.find(x=>x.id===eid);
   if(!e || !startIso || !endIso) return;
   if(endIso < startIso){ toast(T("vacRangeBad")); return; }
-  let saved = 0, skipped = 0;
+  /* Si ya tenía vacaciones futuras guardadas, esto edita: los días viejos
+     que quedaron FUERA del nuevo rango se liberan (solo si siguen sin
+     horas reales); los del nuevo rango se marcan como siempre. */
+  let saved = 0, skipped = 0, freed = 0;
+  if(vacLoadedRange){
+    datesBetween(vacLoadedRange.start, vacLoadedRange.end).forEach(iso=>{
+      if(iso >= startIso && iso <= endIso) return;
+      const t = e.times[iso];
+      if(t && t.status==="VAC"){ delete e.times[iso]; freed++; }
+    });
+  }
   datesBetween(startIso, endIso).forEach(iso=>{
     const t = e.times[iso];
     /* Un día con horas reales nunca se vuelve vacación -- el empleado sí
@@ -1779,9 +1830,10 @@ document.getElementById("btnVacSave").onclick = ()=>{
     saved++;
   });
   persist(); refresh();
-  let msg = T("vacSavedN").replace("{n}", e.name).replace("{d}", saved);
+  let msg = (freed ? T("vacEditedN") : T("vacSavedN")).replace("{n}", e.name).replace("{d}", saved);
   if(skipped) msg += T("vacSkippedN").replace("{k}", skipped);
   toast(msg);
+  loadVacForEmployee();
 };
 document.getElementById("btnVacClear").onclick = ()=>{
   const eid = document.getElementById("vacEmp").value;
@@ -1805,6 +1857,7 @@ document.getElementById("btnVacClear").onclick = ()=>{
   let msg = T("vacClearedN").replace("{n}", e.name).replace("{d}", cleared);
   if(skipped) msg += T("vacSkippedN").replace("{k}", skipped);
   toast(msg);
+  loadVacForEmployee();
 };
 /* Botón Privado: Resumen y Enviar no existen a la vista hasta poner el PIN,
    y se vuelven a esconder con un toque. */
