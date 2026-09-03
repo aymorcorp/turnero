@@ -93,6 +93,9 @@
     border:1.5px dashed #D9CFB0; border-radius:8px; background:#FBF8EF; color:var(--eventual);
     font-size:10px; font-weight:700; line-height:1.2;}
   .lunch-box small{display:block; font-weight:400; font-size:8.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
+  .geo-box{flex:0 0 auto; font-size:12px; padding:5px 4px; border-radius:8px; background:#F1EDE0; color:var(--muted);}
+  .geo-box.ok{background:var(--planta-bg); color:var(--planta);}
+  .geo-box.warn{background:#FBEFEA; color:var(--alert);}
   /* Tarjetas vacías de ejemplo: solo aparecen cuando no hay ningún empleado
      todavía, para que se vea cómo va quedando la lista. El nombre trae el
      número de renglón (1 a 5) como guía visual; no es un empleado real,
@@ -269,6 +272,11 @@
       <p class="hint" style="margin:6px 0 0" data-i18n="sStartHint">El número de quincena (Q) ya no se escribe a mano — se calcula solo de la fecha de inicio, así nunca queda desfasado.</p></div>
     <div class="frow"><label data-i18n="sBudget">Presupuesto</label><input type="number" id="setBudget" min="0" step="1" inputmode="numeric"></div>
     <div class="frow"><label data-i18n="sWO">Work Order (WO) — cliente, dirección o número de contrato</label><input id="setWO" autocomplete="off"></div>
+    <div class="frow"><label data-i18n="sGeo">Ubicación del negocio (opcional — confirma que el ponche se hizo cerca)</label>
+      <p class="hint" id="geoStatusHint" style="margin:0 0 8px"></p>
+      <button type="button" class="btn ghost" id="btnGeoSet" data-i18n="sGeoBtn">📍 Usar mi ubicación actual</button>
+      <button type="button" class="btn ghost" id="btnGeoClear" style="margin-top:8px" data-i18n="sGeoClear">Quitar ubicación</button>
+    </div>
     <div class="frow"><label data-i18n="sPin">PIN</label><input id="setPin" inputmode="numeric" maxlength="8" autocomplete="off"></div>
     <div class="frow"><label data-i18n="langName">Idioma / Language / Wika</label>
       <div class="lang-pick" id="langPick">
@@ -422,6 +430,13 @@ const I18N = {
     sStartHint:"El número de quincena (Q) ya no se escribe a mano — se calcula solo de la fecha de inicio, así nunca queda desfasado.",
     sBudget:"Presupuesto de horas (0 = sin presupuesto)",
     sWO:"Work Order (WO) — cliente, dirección o número de contrato",
+    sGeo:"Ubicación del negocio (opcional — confirma que el ponche se hizo cerca)",
+    sGeoBtn:"📍 Usar mi ubicación actual", sGeoClear:"Quitar ubicación",
+    geoSet:"Ubicación guardada. Se acepta hasta {r} metros de distancia.", geoUnset:"Sin ubicación guardada — el ponche no revisa distancia.",
+    geoNoBrowser:"Este navegador no tiene ubicación disponible.", geoLocating:"Ubicando…",
+    geoSaved:"Ubicación del negocio guardada.", geoDenied:"No se pudo obtener la ubicación — revisa el permiso del navegador.",
+    geoCleared:"Se quitó la ubicación del negocio.",
+    geoPending:"Ubicación pendiente de confirmar.", geoOk:"Cerca del negocio.", geoFar:"A {m} m del negocio.",
     sPin:"PIN del gerente (para ver sueldos y reportes en la app)",
     sBiz:"Nombre del negocio (solo Turnero, con clave maestra)",
     sBizBtn:"🔐 Cambiar nombre (clave maestra)",
@@ -522,6 +537,13 @@ const I18N = {
     sStartHint:"The pay period number (Q) is no longer typed by hand — it's calculated from the start date, so it can never drift.",
     sBudget:"Hours budget (0 = none)",
     sWO:"Work Order (WO) — client name, address, or contract number",
+    sGeo:"Business location (optional — confirms the punch happened nearby)",
+    sGeoBtn:"📍 Use my current location", sGeoClear:"Remove location",
+    geoSet:"Location saved. Up to {r} meters away is accepted.", geoUnset:"No location saved — punches don't check distance.",
+    geoNoBrowser:"This browser has no location available.", geoLocating:"Locating…",
+    geoSaved:"Business location saved.", geoDenied:"Couldn't get the location — check the browser permission.",
+    geoCleared:"Business location removed.",
+    geoPending:"Location pending confirmation.", geoOk:"Near the business.", geoFar:"{m} m from the business.",
     sPin:"Manager PIN (to view pay rates and reports in the app)",
     sBiz:"Business name (Turnero only, master key)",
     sBizBtn:"🔐 Change name (master key)",
@@ -648,6 +670,13 @@ const I18N = {
     sStartHint:"Le numéro de quinzaine (Q) ne s'écrit plus à la main — il est calculé à partir de la date de début, donc il ne se désynchronise jamais.",
     sBudget:"Budget d'heures (0 = aucun)",
     sWO:"Work Order (WO) — nom du client, adresse ou numéro de contrat",
+    sGeo:"Emplacement du commerce (facultatif — confirme que le pointage a eu lieu à proximité)",
+    sGeoBtn:"📍 Utiliser ma position actuelle", sGeoClear:"Retirer l'emplacement",
+    geoSet:"Emplacement enregistré. Jusqu'à {r} mètres est accepté.", geoUnset:"Aucun emplacement enregistré — le pointage ne vérifie pas la distance.",
+    geoNoBrowser:"Ce navigateur n'a pas de localisation disponible.", geoLocating:"Localisation…",
+    geoSaved:"Emplacement du commerce enregistré.", geoDenied:"Impossible d'obtenir l'emplacement — vérifiez la permission du navigateur.",
+    geoCleared:"Emplacement du commerce retiré.",
+    geoPending:"Emplacement en attente de confirmation.", geoOk:"Près du commerce.", geoFar:"À {m} m du commerce.",
     sPin:"NIP du gérant (pour voir les salaires et les rapports dans l'appli)",
     sBiz:"Nom de l'entreprise (Turnero seulement, clé maîtresse)",
     sBizBtn:"🔐 Changer le nom (clé maîtresse)",
@@ -748,6 +777,13 @@ const I18N = {
     sStartHint:"Ang numero ng pay period (Q) ay hindi na ikinakamano — awtomatiko itong kinakalkula mula sa petsa ng simula, kaya hindi na ito mapapalitan nang sarili.",
     sBudget:"Badyet ng oras (0 = wala)",
     sWO:"Work Order (WO) — pangalan ng kliyente, address, o numero ng kontrata",
+    sGeo:"Lokasyon ng negosyo (opsyonal — kinukumpirma na malapit lang ang pagpitik)",
+    sGeoBtn:"📍 Gamitin ang kasalukuyang lokasyon ko", sGeoClear:"Alisin ang lokasyon",
+    geoSet:"Na-save ang lokasyon. Hanggang {r} metro ang tinatanggap.", geoUnset:"Walang naka-save na lokasyon — hindi tinitingnan ng pagpitik ang distansya.",
+    geoNoBrowser:"Walang available na lokasyon sa browser na ito.", geoLocating:"Hinahanap ang lokasyon…",
+    geoSaved:"Na-save ang lokasyon ng negosyo.", geoDenied:"Hindi nakuha ang lokasyon — tingnan ang pahintulot ng browser.",
+    geoCleared:"Naalis ang lokasyon ng negosyo.",
+    geoPending:"Naghihintay pa ng kumpirmasyon ang lokasyon.", geoOk:"Malapit sa negosyo.", geoFar:"{m} m mula sa negosyo.",
     sPin:"PIN ng gerente (para makita ang sahod at mga report sa app)",
     sBiz:"Pangalan ng negosyo (Turnero lamang, master key)",
     sBizBtn:"🔐 Palitan ang pangalan (master key)",
@@ -821,6 +857,7 @@ function defaultState(){
     periodStart: "2026-08-09",
     budgetHours: 0,
     workOrder: "",
+    bizLat: null, bizLng: null, geoRadius: 150,
     pin: "2026",
     lang: "en",
     bizName: "Turnero",
@@ -886,6 +923,34 @@ function rawShiftHours(tin, tout){
 /* Comida: media hora NO pagada por cada 5 horas de turno. 8h→0.5 · 10h→1.0 · 4h→0 */
 function lunchFor(raw){ return Math.floor(raw/5 + 1e-9) * 0.5; }
 function paidFor(raw){ const l = lunchFor(raw); return Math.max(0, raw - l); }
+/* Distancia en metros entre dos puntos GPS (fórmula de Haversine) --
+   sirve para confirmar que el ponche se hizo cerca del negocio. */
+function distMeters(lat1, lng1, lat2, lng2){
+  const R = 6371000;
+  const toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2-lat1), dLng = toRad(lng2-lng1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+/* Pide la ubicación actual del navegador (con permiso) y la compara contra
+   la ubicación guardada del negocio. Si no hay ubicación guardada, o el
+   navegador no da permiso, regresa null -- el ponche se guarda igual,
+   esto es un dato adicional, nunca un bloqueo. */
+function geoCheckPunch(){
+  return new Promise(resolve=>{
+    if(state.bizLat==null || state.bizLng==null || !navigator.geolocation){ resolve(null); return; }
+    const timer = setTimeout(()=> resolve(null), 8000);
+    navigator.geolocation.getCurrentPosition(
+      pos=>{
+        clearTimeout(timer);
+        const dist = Math.round(distMeters(state.bizLat, state.bizLng, pos.coords.latitude, pos.coords.longitude));
+        resolve({dist, ok: dist <= (state.geoRadius||150)});
+      },
+      ()=>{ clearTimeout(timer); resolve(null); },
+      {enableHighAccuracy:true, timeout:7000, maximumAge:60000}
+    );
+  });
+}
 function dayCalc(empObj, iso){
   const t = empObj.times[iso];
   if(!t || !t.in || !t.out) return {raw:0, lunch:0, paid:0, has:false};
@@ -1140,6 +1205,23 @@ function empCard(e, iso){
   badge.className = "shift-badge num" + (c.has ? " on" : "");
   badge.innerHTML = c.has ? fh(c.paid) + " h" : "— h";
   paintLunch(c);
+  /* Ubicación del ponche: solo aparece si el negocio configuró una ubicación
+     de referencia en Ajustes. Nunca bloquea guardar la hora -- es un dato
+     extra que se agrega después, aunque el navegador tarde o niegue el
+     permiso. */
+  const geoBox = document.createElement("div"); geoBox.className = "geo-box";
+  function paintGeo(){
+    if(state.bizLat==null || state.bizLng==null){ geoBox.style.display = "none"; return; }
+    const tt = e.times[iso] || {};
+    const pts = [tt.inGeo, tt.outGeo].filter(Boolean);
+    geoBox.style.display = "";
+    if(!pts.length){ geoBox.className = "geo-box"; geoBox.textContent = "📍"; geoBox.title = T("geoPending"); return; }
+    const allOk = pts.every(g=>g.ok);
+    geoBox.className = "geo-box " + (allOk ? "ok" : "warn");
+    geoBox.textContent = allOk ? "📍✓" : "📍⚠";
+    geoBox.title = pts.map(g=> g.ok ? T("geoOk") : T("geoFar").replace("{m}", g.dist)).join(" / ");
+  }
+  paintGeo();
   /* Al cambiar la hora NO se redibuja la pantalla (eso cerraba la ruedita de iPhone):
      solo se actualizan los números de esta tarjeta y los totales de arriba. */
   function paintCalc(){
@@ -1149,11 +1231,15 @@ function empCard(e, iso){
     paintLunch(c2);
     renderHeader(); renderDayNav();
   }
-  function setT(which, val){
+  async function setT(which, val){
     if(!e.times[iso]) e.times[iso] = {};
     if(val) e.times[iso][which] = val; else delete e.times[iso][which];
     if(!e.times[iso].in && !e.times[iso].out) delete e.times[iso];
-    persist(); paintCalc();
+    persist(); paintCalc(); paintGeo();
+    if(val && e.times[iso] && state.bizLat!=null){
+      const g = await geoCheckPunch();
+      if(g && e.times[iso]){ e.times[iso][which+"Geo"] = g; persist(); paintGeo(); }
+    }
   }
   if(t.status){
     /* Día con estado: pastilla en lugar de horarios (la app etiqueta; la nómina decide el pago) */
@@ -1169,6 +1255,7 @@ function empCard(e, iso){
     row.appendChild(timeField(T("tin"), t.in || "", v=>setT("in", v)));
     row.appendChild(timeField(T("tout"), t.out || "", v=>setT("out", v)));
     meta.appendChild(lb);
+    meta.appendChild(geoBox);
     meta.appendChild(badge);
     if(unlocked && !t.in && !t.out){
       const sb = document.createElement("button"); sb.className = "st-btn";
@@ -1917,10 +2004,37 @@ function syncSettings(){
   const efi = document.getElementById("setEmpFmt");
   efi.value = String(state.empNoDigits || 3);
   efi.disabled = true;
+  paintGeoStatus();
 }
 document.querySelectorAll("#langPick button").forEach(b=>{
   b.onclick = ()=>{ selectedLang = b.dataset.lang; paintLangPick(); };
 });
+function paintGeoStatus(){
+  const hint = document.getElementById("geoStatusHint");
+  hint.textContent = (state.bizLat!=null && state.bizLng!=null)
+    ? T("geoSet").replace("{r}", state.geoRadius||150)
+    : T("geoUnset");
+}
+document.getElementById("btnGeoSet").onclick = ()=>{
+  if(!navigator.geolocation){ toast(T("geoNoBrowser")); return; }
+  const btn = document.getElementById("btnGeoSet");
+  const prev = btn.textContent; btn.textContent = T("geoLocating"); btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      state.bizLat = pos.coords.latitude; state.bizLng = pos.coords.longitude;
+      persist(); paintGeoStatus(); refresh();
+      btn.textContent = prev; btn.disabled = false;
+      toast(T("geoSaved"));
+    },
+    ()=>{ btn.textContent = prev; btn.disabled = false; toast(T("geoDenied")); },
+    {enableHighAccuracy:true, timeout:10000}
+  );
+};
+document.getElementById("btnGeoClear").onclick = ()=>{
+  state.bizLat = null; state.bizLng = null;
+  persist(); paintGeoStatus(); refresh();
+  toast(T("geoCleared"));
+};
 function saveSettings(){
   const raw = document.getElementById("setStart").value;
   if(raw){
