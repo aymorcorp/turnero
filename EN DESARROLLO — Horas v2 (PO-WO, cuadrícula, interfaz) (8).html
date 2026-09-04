@@ -300,6 +300,7 @@
       <button type="button" class="btn ghost" id="btnGeoSet" data-i18n="sGeoBtn">📍 Usar mi ubicación actual</button>
       <button type="button" class="btn ghost" id="btnGeoClear" style="margin-top:8px" data-i18n="sGeoClear">Quitar ubicación</button>
     </div>
+    <div class="frow"><label data-i18n="sEmails">Correos autorizados (máx. 2)</label><input id="setEmails" autocomplete="off" placeholder="correo1@ejemplo.com, correo2@ejemplo.com"></div>
     <div class="frow"><label data-i18n="sPin">PIN</label><input id="setPin" inputmode="numeric" maxlength="8" autocomplete="off"></div>
     <div class="frow"><label data-i18n="langName">Idioma / Language / Wika</label>
       <div class="lang-pick" id="langPick">
@@ -316,8 +317,6 @@
     <p class="hint" style="margin:0 0 12px" data-i18n="e4tMasterP">Estos solo los puede cambiar quien tenga la llave maestra.</p>
     <div class="frow"><label data-i18n="sBiz">Nombre del negocio</label><input id="setBiz" autocomplete="off" readonly>
       <button class="btn ghost" id="btnBizUnlock" style="margin-top:6px" data-i18n="sBizBtn">🔐</button></div>
-    <div class="frow"><label data-i18n="sEmails">Correos autorizados (máx. 2, clave maestra)</label><input id="setEmails" autocomplete="off" readonly placeholder="correo1@ejemplo.com, correo2@ejemplo.com">
-      <button class="btn ghost" id="btnEmailsUnlock" style="margin-top:6px" data-i18n="sEmailsBtn">🔐 Cambiar correos (clave maestra)</button></div>
     <div class="frow"><label data-i18n="sEmpFmt">Formato del número de empleado (clave maestra)</label>
       <select id="setEmpFmt" disabled>
         <option value="3">3 dígitos (001)</option>
@@ -437,7 +436,7 @@ const I18N = {
     gAgency:"· de agencia (solo control)",
     gPay:"Pago bruto planta + contrato",
     e2t:"Enviar reporte al contador",
-    e2p:"Manda el Excel de la quincena (con fórmulas vivas: totales por persona por tipo, más un desglose día por día) directo a los correos autorizados. Se manda cuando tú quieras — normalmente una vez por quincena, no todos los días.",
+    e2p:"Manda el Excel de la quincena (con fórmulas vivas: totales por persona por tipo, más un desglose día por día) directo a los correos autorizados. Se manda según cómo pague tu empresa — una vez por semana o una vez por quincena, no todos los días.",
     e2b:"Enviar por correo",
     e2it:"Importar horas desde Excel",
     e2ip:"Sube un Excel con las horas ya escritas y la app las acomoda sola, sin capturarlas una por una. Descarga primero la plantilla si no sabes cómo va el formato.",
@@ -464,8 +463,7 @@ const I18N = {
     sPin:"PIN del gerente (para ver sueldos y reportes en la app)",
     sBiz:"Nombre del negocio (solo Turnero, con clave maestra)",
     sBizBtn:"🔐 Cambiar nombre (clave maestra)",
-    sEmails:"Correos autorizados (máx. 2, clave maestra)",
-    sEmailsBtn:"🔐 Cambiar correos (clave maestra)",
+    sEmails:"Correos autorizados (máx. 2)",
     sEmpFmt:"Formato del número de empleado (clave maestra)",
     sEmpFmtBtn:"🔐 Cambiar formato (clave maestra)",
     wipeAllBtn:"🔐 Borrar todo (clave maestra)",
@@ -478,13 +476,12 @@ const I18N = {
     tBadFile:"Ese archivo no es un respaldo válido de esta app.",
     tNoNet:"Sin internet no puedo armar el Excel con fórmulas — mandé una versión simple en su lugar.",
     tNoEmails:"Primero pon los correos autorizados en Ajustes (con la clave maestra).",
-    sendToPrefix:"Se manda a: ", sendToNone:"Todavía no hay correos autorizados — se configuran desde Ajustes protegidos, con la llave maestra.",
+    sendToPrefix:"Se manda a: ", sendToNone:"Todavía no hay correos autorizados — se configuran desde Ajustes del gerente.",
     importNeedsEmail:"Solo se puede usar una vez que existan los correos autorizados en Ajustes.",
     tSending:"⏳ Enviando…",
     tEmailMsg:"Adjunto va el reporte de horas de esta quincena.",
     tEmailOk:"Correo enviado a: {l}",
     tEmailErr:"No se pudo enviar el correo. Revisa tu internet e inténtalo otra vez.",
-    tEmailsOpen:"Correos desbloqueados: cámbialos y toca Guardar ajustes.",
     tEmpFmtOpen:"Formato desbloqueado: cámbialo y toca Guardar ajustes.",
     tBizOpen:"Nombre desbloqueado: cámbialo y toca Guardar ajustes.",
     tSunday:"La quincena empieza en domingo: la ajusté al domingo {d}.",
@@ -545,7 +542,7 @@ const I18N = {
     gAgency:"· agency (tracking only)",
     gPay:"Gross pay permanent + contract",
     e2t:"Send report to the accountant",
-    e2p:"Sends the pay period Excel (live formulas: totals per person by type, plus a day-by-day breakdown) straight to the authorized emails. Sent whenever you choose — usually once per pay period, not every day.",
+    e2p:"Sends the pay period Excel (live formulas: totals per person by type, plus a day-by-day breakdown) straight to the authorized emails. Sent according to how your company pays — once a week or once every two weeks, not every day.",
     e2b:"Send by email",
     e2it:"Import hours from Excel",
     e2ip:"Upload an Excel file with the hours already written and the app fills them in on its own — no need to type each day. Download the template first if you're not sure of the format.",
@@ -572,8 +569,7 @@ const I18N = {
     sPin:"Manager PIN (to view pay rates and reports in the app)",
     sBiz:"Business name (Turnero only, master key)",
     sBizBtn:"🔐 Change name (master key)",
-    sEmails:"Authorized emails (max. 2, master key)",
-    sEmailsBtn:"🔐 Change emails (master key)",
+    sEmails:"Authorized emails (max. 2)",
     sEmpFmt:"Employee number format (master key)",
     sEmpFmtBtn:"🔐 Change format (master key)",
     wipeAllBtn:"🔐 Erase everything (master key)",
@@ -586,13 +582,12 @@ const I18N = {
     tBadFile:"That file is not a valid backup of this app.",
     tNoNet:"No internet: could not build the Excel with formulas — sent a simple version instead.",
     tNoEmails:"Set the authorized emails in Settings first (master key).",
-    sendToPrefix:"Sent to: ", sendToNone:"No authorized emails yet — set them in Protected Settings with the master key.",
+    sendToPrefix:"Sent to: ", sendToNone:"No authorized emails yet — set them in Manager settings.",
     importNeedsEmail:"Only available once the authorized emails exist in Settings.",
     tSending:"⏳ Sending…",
     tEmailMsg:"Attached is the hours report for this pay period.",
     tEmailOk:"Email sent to: {l}",
     tEmailErr:"Could not send the email. Check your internet and try again.",
-    tEmailsOpen:"Emails unlocked: change them and tap Save settings.",
     tEmpFmtOpen:"Format unlocked: change it and tap Save settings.",
     tBizOpen:"Name unlocked: change it and tap Save settings.",
     tSunday:"Pay periods start on Sunday: adjusted to Sunday {d}.",
@@ -679,7 +674,7 @@ const I18N = {
     gAgency:"· agence (suivi seulement)",
     gPay:"Paie brute permanents + contrat",
     e2t:"Envoyer le rapport au comptable",
-    e2p:"Envoie l'Excel de la quinzaine (formules vivantes : totaux par personne selon le type, plus un détail jour par jour) directement aux courriels autorisés. Envoyé quand vous voulez — normalement une fois par quinzaine, pas chaque jour.",
+    e2p:"Envoie l'Excel de la quinzaine (formules vivantes : totaux par personne selon le type, plus un détail jour par jour) directement aux courriels autorisés. Envoyé selon le mode de paie de votre entreprise — une fois par semaine ou une fois par quinzaine, pas chaque jour.",
     e2b:"Envoyer par courriel",
     e2it:"Importer les heures depuis Excel",
     e2ip:"Téléversez un fichier Excel avec les heures déjà inscrites et l'application les remplit toute seule — pas besoin de tout retaper. Téléchargez d'abord le modèle si vous n'êtes pas sûr du format.",
@@ -706,8 +701,7 @@ const I18N = {
     sPin:"NIP du gérant (pour voir les salaires et les rapports dans l'appli)",
     sBiz:"Nom de l'entreprise (Turnero seulement, clé maîtresse)",
     sBizBtn:"🔐 Changer le nom (clé maîtresse)",
-    sEmails:"Courriels autorisés (max. 2, clé maîtresse)",
-    sEmailsBtn:"🔐 Changer les courriels (clé maîtresse)",
+    sEmails:"Courriels autorisés (max. 2)",
     sEmpFmt:"Format du numéro d'employé (clé maîtresse)",
     sEmpFmtBtn:"🔐 Changer le format (clé maîtresse)",
     wipeAllBtn:"🔐 Tout effacer (clé maîtresse)",
@@ -716,13 +710,12 @@ const I18N = {
     sSave:"Enregistrer les réglages",
     tSaved:"Réglages enregistrés.",
     tNoEmails:"Mets d'abord les courriels autorisés dans Réglages (clé maîtresse).",
-    sendToPrefix:"Envoyé à : ", sendToNone:"Pas encore de courriels autorisés — à définir dans Réglages protégés, avec la clé maîtresse.",
+    sendToPrefix:"Envoyé à : ", sendToNone:"Pas encore de courriels autorisés — à définir dans Réglages du gérant.",
     importNeedsEmail:"Disponible seulement une fois que les courriels autorisés existent dans Réglages.",
     tSending:"⏳ Envoi…",
     tEmailMsg:"Ci-joint le rapport d'heures de cette quinzaine.",
     tEmailOk:"Courriel envoyé à : {l}",
     tEmailErr:"Impossible d'envoyer le courriel. Vérifiez votre connexion et réessayez.",
-    tEmailsOpen:"Courriels déverrouillés : changez-les puis Enregistrer les réglages.",
     tEmpFmtOpen:"Format déverrouillé : changez-le puis Enregistrer les réglages.",
     tBk:"Sauvegarde téléchargée. Gardez-la sur Drive.",
     tRest:"Sauvegarde restaurée.",
@@ -787,7 +780,7 @@ const I18N = {
     gAgency:"· ahensya (oras lamang)",
     gPay:"Gross pay: regular + kontrata",
     e2t:"Ipadala ang ulat sa accountant",
-    e2p:"Ipinapadala ang Excel ng pay period (may live formulas: kabuuan bawat tao ayon sa uri, at detalyeng araw-araw) diretso sa mga awtorisadong email. Ipinapadala kailan mo gusto — karaniwan minsan bawat pay period, hindi araw-araw.",
+    e2p:"Ipinapadala ang Excel ng pay period (may live formulas: kabuuan bawat tao ayon sa uri, at detalyeng araw-araw) diretso sa mga awtorisadong email. Ipinapadala ayon sa kung paano nagbabayad ang kumpanya mo — minsan bawat linggo o minsan bawat dalawang linggo, hindi araw-araw.",
     e2b:"Ipadala sa email",
     e2it:"I-import ang oras mula sa Excel",
     e2ip:"I-upload ang Excel file na may nakasulat nang oras at awtomatikong ilalagay ito ng app — hindi na kailangang i-type isa-isa. I-download muna ang template kung hindi sigurado sa format.",
@@ -814,8 +807,7 @@ const I18N = {
     sPin:"PIN ng gerente (para makita ang sahod at mga report sa app)",
     sBiz:"Pangalan ng negosyo (Turnero lamang, master key)",
     sBizBtn:"🔐 Palitan ang pangalan (master key)",
-    sEmails:"Awtorisadong email (max. 2, master key)",
-    sEmailsBtn:"🔐 Palitan ang email (master key)",
+    sEmails:"Awtorisadong email (max. 2)",
     sEmpFmt:"Format ng employee number (master key)",
     sEmpFmtBtn:"🔐 Palitan ang format (master key)",
     wipeAllBtn:"🔐 Burahin lahat (master key)",
@@ -824,13 +816,12 @@ const I18N = {
     sSave:"I-save ang mga setting",
     tSaved:"Na-save ang settings.",
     tNoEmails:"Ilagay muna ang mga awtorisadong email sa Settings (gamit ang master key).",
-    sendToPrefix:"Ipapadala sa: ", sendToNone:"Wala pang awtorisadong email — ilagay ito sa Protektadong Setting, gamit ang master key.",
+    sendToPrefix:"Ipapadala sa: ", sendToNone:"Wala pang awtorisadong email — ilagay ito sa Setting ng manager.",
     importNeedsEmail:"Puwede lang gamitin kapag may awtorisadong email na sa Settings.",
     tSending:"⏳ Ipinapadala…",
     tEmailMsg:"Nakalakip ang ulat ng oras para sa pay period na ito.",
     tEmailOk:"Naipadala ang email sa: {l}",
     tEmailErr:"Hindi naipadala ang email. Tingnan ang internet at subukan ulit.",
-    tEmailsOpen:"Bukas na ang email: palitan at pindutin ang I-save.",
     tEmpFmtOpen:"Bukas na ang format: palitan at pindutin ang I-save.",
     tBk:"Na-download ang backup. Itago sa Drive.",
     tRest:"Na-restore ang backup.",
@@ -1849,12 +1840,6 @@ document.getElementById("btnBizUnlock").onclick = ()=> askMaster(()=>{
   setTimeout(()=> i.focus(), 60);
   toast(T("tBizOpen"));
 });
-document.getElementById("btnEmailsUnlock").onclick = ()=> askMaster(()=>{
-  const i = document.getElementById("setEmails");
-  i.readOnly = false;
-  setTimeout(()=> i.focus(), 60);
-  toast(T("tEmailsOpen"));
-});
 document.getElementById("btnEmpFmtUnlock").onclick = ()=> askMaster(()=>{
   document.getElementById("setEmpFmt").disabled = false;
   toast(T("tEmpFmtOpen"));
@@ -2043,9 +2028,7 @@ function syncSettings(){
   const bi = document.getElementById("setBiz");
   bi.value = state.bizName || "Turnero";
   bi.readOnly = true;
-  const ei = document.getElementById("setEmails");
-  ei.value = (state.reportEmails||[]).join(", ");
-  ei.readOnly = true;
+  document.getElementById("setEmails").value = (state.reportEmails||[]).join(", ");
   const efi = document.getElementById("setEmpFmt");
   efi.value = String(state.empNoDigits || 3);
   efi.disabled = true;
@@ -2095,10 +2078,7 @@ function saveSettings(){
   const biz = document.getElementById("setBiz").value.trim();
   if(biz) state.bizName = biz;
   const emailsRaw = document.getElementById("setEmails").value.trim();
-  if(!document.getElementById("setEmails").readOnly){
-    const list = emailsRaw.split(",").map(s=>s.trim()).filter(s=>s.includes("@")).slice(0,2);
-    state.reportEmails = list;
-  }
+  state.reportEmails = emailsRaw.split(",").map(s=>s.trim()).filter(s=>s.includes("@")).slice(0,2);
   const empFmtEl = document.getElementById("setEmpFmt");
   if(!empFmtEl.disabled) state.empNoDigits = parseInt(empFmtEl.value, 10) || 3;
   applyLang();
