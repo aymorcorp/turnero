@@ -143,6 +143,10 @@
   th:first-child, td:first-child{text-align:left;}
   th.name-col, td.name-col{text-align:left; border-left:1px solid #E4DCC5; border-right:1px solid #E4DCC5;}
   td{padding:6px 4px; text-align:right; border-bottom:1px solid #E4DCC5;}
+  /* Renglones de ejemplo (base vacía) -- mismo espíritu que .emp-ghost en
+     Captura: se ven, pero apagados, para que no se confundan con datos reales. */
+  tr.ghost-row td{color:var(--muted); font-style:italic;}
+  .ghost-note{color:var(--muted); font-style:italic;}
   tr.tot td{font-weight:750; border-top:2px solid #C9BD98; border-bottom:none;}
   td.ot{color:var(--alert); font-weight:650;}
   .grand{background:var(--forest); color:#F3EFE4; border-radius:var(--radius); margin:12px; padding:14px;}
@@ -428,11 +432,12 @@ const I18N = {
     noteLunch:"Comida descontada en total:",
     noteAgency:"Estas horas NO entran al payroll: son la constancia frente a la agencia.",
     noteExtra:"El pago es BRUTO: horas totales × tarifa (antes de retenciones — esas las calcula el sistema de nómina).",
+    ghostRowsNote:"Ejemplo — agrega empleados en Captura para ver los datos reales aquí.",
     gHours:"Horas totales de la quincena",
     gAgency:"· de agencia (solo control)",
     gPay:"Pago bruto planta + contrato",
     e2t:"Enviar reporte al contador",
-    e2p:"Manda el Excel de la quincena (con fórmulas vivas: totales por persona por tipo y detalle diario) directo a los correos autorizados.",
+    e2p:"Manda el Excel de la quincena (con fórmulas vivas: totales por persona por tipo, más un desglose día por día) directo a los correos autorizados. Se manda cuando tú quieras — normalmente una vez por quincena, no todos los días.",
     e2b:"Enviar por correo",
     e2it:"Importar horas desde Excel",
     e2ip:"Sube un Excel con las horas ya escritas y la app las acomoda sola, sin capturarlas una por una. Descarga primero la plantilla si no sabes cómo va el formato.",
@@ -535,11 +540,12 @@ const I18N = {
     noteLunch:"Total lunch deducted:",
     noteAgency:"These hours do NOT go to payroll — they are the record for the agency.",
     noteExtra:"Pay is GROSS: total hours × rate (before deductions — the payroll system calculates those).",
+    ghostRowsNote:"Example — add employees in Time entry to see real data here.",
     gHours:"Total hours this pay period",
     gAgency:"· agency (tracking only)",
     gPay:"Gross pay permanent + contract",
     e2t:"Send report to the accountant",
-    e2p:"Sends the pay period Excel (live formulas: totals per person by type, plus the daily detail) straight to the authorized emails.",
+    e2p:"Sends the pay period Excel (live formulas: totals per person by type, plus a day-by-day breakdown) straight to the authorized emails. Sent whenever you choose — usually once per pay period, not every day.",
     e2b:"Send by email",
     e2it:"Import hours from Excel",
     e2ip:"Upload an Excel file with the hours already written and the app fills them in on its own — no need to type each day. Download the template first if you're not sure of the format.",
@@ -668,11 +674,12 @@ const I18N = {
     noteLunch:"Repas déduits au total :",
     noteAgency:"Ces heures ne vont PAS à la paie — c'est la preuve face à l'agence.",
     noteExtra:"La paie est BRUTE : heures totales × taux (avant retenues — calculées par le système de paie).",
+    ghostRowsNote:"Exemple — ajoutez des employés dans Saisie pour voir les vraies données ici.",
     gHours:"Heures totales de la quinzaine",
     gAgency:"· agence (suivi seulement)",
     gPay:"Paie brute permanents + contrat",
     e2t:"Envoyer le rapport au comptable",
-    e2p:"Envoie l'Excel de la quinzaine (formules vivantes : totaux par personne selon le type, plus le détail quotidien) directement aux courriels autorisés.",
+    e2p:"Envoie l'Excel de la quinzaine (formules vivantes : totaux par personne selon le type, plus un détail jour par jour) directement aux courriels autorisés. Envoyé quand vous voulez — normalement une fois par quinzaine, pas chaque jour.",
     e2b:"Envoyer par courriel",
     e2it:"Importer les heures depuis Excel",
     e2ip:"Téléversez un fichier Excel avec les heures déjà inscrites et l'application les remplit toute seule — pas besoin de tout retaper. Téléchargez d'abord le modèle si vous n'êtes pas sûr du format.",
@@ -775,11 +782,12 @@ const I18N = {
     noteLunch:"Kabuuang bawas na tanghalian:",
     noteAgency:"HINDI papasok sa payroll ang mga oras na ito — patunay ito sa ahensya.",
     noteExtra:"GROSS ang bayad: kabuuang oras × rate (bago ang mga kaltas — kalkulo ng payroll system).",
+    ghostRowsNote:"Halimbawa — magdagdag ng empleyado sa Time entry para makita ang tunay na datos dito.",
     gHours:"Kabuuang oras ng pay period",
     gAgency:"· ahensya (oras lamang)",
     gPay:"Gross pay: regular + kontrata",
     e2t:"Ipadala ang ulat sa accountant",
-    e2p:"Ipinapadala ang Excel ng pay period (may live formulas: kabuuan bawat tao ayon sa uri, at araw-araw na detalye) diretso sa mga awtorisadong email.",
+    e2p:"Ipinapadala ang Excel ng pay period (may live formulas: kabuuan bawat tao ayon sa uri, at detalyeng araw-araw) diretso sa mga awtorisadong email. Ipinapadala kailan mo gusto — karaniwan minsan bawat pay period, hindi araw-araw.",
     e2b:"Ipadala sa email",
     e2it:"I-import ang oras mula sa Excel",
     e2ip:"I-upload ang Excel file na may nakasulat nang oras at awtomatikong ilalagay ito ng app — hindi na kailangang i-type isa-isa. I-download muna ang template kung hindi sigurado sa format.",
@@ -1319,12 +1327,24 @@ function timeField(label, value, onChange){
 function renderSummary(){
   const host = document.getElementById("summaryBody"); host.innerHTML = "";
   const wk = weekPair();
+  /* Sin empleados todavía no hay nada que mostrar en Resumen -- pero eso
+     deja la pantalla en blanco y no se ven las columnas. Con la base
+     vacía se dibujan 5 renglones de ejemplo por tipo, solo para ver el
+     acomodo de las columnas antes de cargar empleados de verdad. */
+  const allEmpty = state.employees.length===0;
   CLS_ORDER.forEach(cls=>{
     const list = state.employees.filter(e=>e.cls===cls);
-    if(!list.length) return;
+    if(!list.length && !allEmpty) return;
     const showPay = (cls==="P" || cls==="E");
     const card = document.createElement("div"); card.className = "sum-card " + cls;
     let rows = "", tW1=0,tW2=0,tT=0,tL=0,tW1Pay=0,tW2Pay=0;
+    if(!list.length){
+      for(let i=0;i<5;i++){
+        rows += showPay
+          ? "<tr class='ghost-row'><td class='num'>—</td><td class='num'>—</td><td class='name-col'>—</td><td class='num'>—</td><td class='num'>—</td><td class='num'>—</td></tr>"
+          : "<tr class='ghost-row'><td>—</td><td class='num'>—</td><td class='num'>—</td><td class='num'>—</td></tr>";
+      }
+    }
     list.forEach(e=>{
       const p = empPeriod(e);
       tW1+=p.w1; tW2+=p.w2; tT+=p.total; tL+=p.lunch;
@@ -1355,8 +1375,10 @@ function renderSummary(){
         "<td class='num'>" + fh(tW2) + "</td><td class='num'>" + fmoney(tW2Pay) + "</td><td class='num'>" + fh(tT) + "</td></tr>"
       : "<tr class='tot'><td>" + T("rowTotal") + "</td><td class='num'>" + fh(tW1) + "</td><td class='num'>" + fh(tW2) + "</td><td class='num'>" + fh(tT) + "</td></tr>";
     card.innerHTML = "<h3>" + T("cls_"+cls) + "</h3>" +
-      "<table><thead><tr>" + head + "</tr></thead><tbody>" + rows + totRow + "</tbody></table>" +
-      "<p class='sec-note' style='margin:8px 0 0'>" + T("noteLunch") + " " + fh(tL) + " h. " + (cls==="A" ? T("noteAgency") : T("noteExtra")) + "</p>";
+      "<table><thead><tr>" + head + "</tr></thead><tbody>" + rows + (list.length?totRow:"") + "</tbody></table>" +
+      (list.length
+        ? "<p class='sec-note' style='margin:8px 0 0'>" + T("noteLunch") + " " + fh(tL) + " h. " + (cls==="A" ? T("noteAgency") : T("noteExtra")) + "</p>"
+        : "<p class='sec-note ghost-note' style='margin:8px 0 0'>" + T("ghostRowsNote") + "</p>");
     host.appendChild(card);
   });
   const g = grandTotals();
@@ -1902,7 +1924,9 @@ function syncVacForm(){
   const prev = sel.value;
   sel.innerHTML = "";
   state.employees.filter(e=>e.active!==false).slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(e=>{
-    const o = document.createElement("option"); o.value = e.id; o.textContent = e.name; sel.appendChild(o);
+    const o = document.createElement("option"); o.value = e.id;
+    o.textContent = (e.empNo ? "#" + e.empNo + " — " : "") + e.name;
+    sel.appendChild(o);
   });
   if(prev && state.employees.some(e=>e.id===prev)) sel.value = prev;
   const todayIso = toISO(new Date());
