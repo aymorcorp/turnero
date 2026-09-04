@@ -46,27 +46,27 @@
      una sola tarjeta compacta de 2 líneas (antes eran 2 tiras separadas,
      una de ellas con los 14 días estirados de lado a lado). */
   .daybar{position:sticky; z-index:35; background:var(--cream); padding:10px 14px 12px;}
-  .daycard{background:var(--card); border:1px solid #E4DFD1; border-radius:var(--radius); padding:10px 12px;}
+  .daycard{background:var(--card); border:1.5px solid #3E6690; border-radius:var(--radius); padding:10px 12px;}
   .daynav{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
-  .daynav button{width:38px; height:38px; border-radius:11px; border:1px solid #DDD6C6; background:var(--cream);
-    font-size:16px; color:var(--forest); font-weight:700; flex:0 0 auto;}
+  .daynav button{width:38px; height:38px; border-radius:11px; border:1.5px solid #3E6690; background:var(--cream);
+    font-size:17px; color:var(--forest); font-weight:800; flex:0 0 auto;}
   .daynav .day-label{flex:1; text-align:center;}
-  .day-label b{display:block; font-size:19px;}
-  .day-label small{color:var(--muted); font-size:13px;}
+  .day-label b{display:block; font-size:20px; font-weight:800; color:var(--forest);}
+  .day-label small{color:#2F5A85; font-size:14px; font-weight:600;}
   .daymid{display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:6px;}
   .weekcol{display:flex; flex-direction:column; gap:5px; min-width:0;}
-  .wk-caption{font-size:10px; font-weight:800; color:var(--muted); text-align:center; margin-bottom:1px;
+  .wk-caption{font-size:11px; font-weight:800; color:#2F5A85; text-align:center; margin-bottom:1px;
     letter-spacing:.04em; text-transform:uppercase;}
   .weekrow{display:flex; align-items:center; gap:3px; justify-content:space-between;}
-  .weekrow i{width:22px; height:22px; flex:0 0 auto; border-radius:50%; background:#EAE5D8; color:var(--muted);
-    display:flex; align-items:center; justify-content:center; font-style:normal; font-size:10.5px; font-weight:700;}
+  .weekrow i{width:23px; height:23px; flex:0 0 auto; border-radius:50%; background:#DCE7F2; color:#2F5A85;
+    display:flex; align-items:center; justify-content:center; font-style:normal; font-size:11.5px; font-weight:800;}
   .weekrow i.has{background:var(--gold); color:#3A2E14;}
   .weekrow i.cur{outline:2px solid var(--forest); outline-offset:1px; background:var(--forest); color:#F3EFE4;}
   .qmid{display:flex; align-items:center; justify-content:center; gap:4px; padding:0 2px;}
-  .qmid button{width:24px; height:24px; flex:0 0 auto; border-radius:7px; border:1px solid #DDD6C6;
-    background:var(--cream); font-size:13px; color:var(--forest); font-weight:700;}
+  .qmid button{width:24px; height:24px; flex:0 0 auto; border-radius:7px; border:1.5px solid #3E6690;
+    background:var(--cream); font-size:14px; color:var(--forest); font-weight:800;}
   .qmid .qnum{background:var(--forest); color:#F3EFE4; border-radius:9px; padding:6px 8px; font-weight:800;
-    font-size:13.5px; min-width:32px; text-align:center; cursor:pointer;}
+    font-size:14.5px; min-width:32px; text-align:center; cursor:pointer;}
   /* ---------- Sections ---------- */
   /* Grid de 2 columnas: cada tarjeta ocupa solo lo que necesita en vez de
      estirarse de lado a lado, así caben el doble de empleados por pantalla
