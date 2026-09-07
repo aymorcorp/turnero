@@ -79,10 +79,10 @@
   /* Ahora con solo 7 por fila, cada círculo puede crecer hasta 44px --
      el mínimo que recomiendan Apple/Google para que el dedo le atine bien
      (antes llegaba a 26px, con 14 apretados en una sola fila). */
-  .weekrow{display:flex; align-items:center; gap:5px;}
-  .weekrow i{flex:1 1 0; min-width:0; max-width:44px; aspect-ratio:1/1; border-radius:50%;
+  .weekrow{display:flex; align-items:center; gap:6px; justify-content:space-between;}
+  .weekrow i{flex:1 1 0; min-width:0; max-width:68px; aspect-ratio:1/1; border-radius:50%;
     background:var(--cream); border:1.5px solid var(--line); color:var(--forest); cursor:pointer;
-    display:flex; align-items:center; justify-content:center; font-style:normal; font-size:13px; font-weight:700;}
+    display:flex; align-items:center; justify-content:center; font-style:normal; font-size:15px; font-weight:700;}
   .weekrow i.has{background:var(--agencia-bg); border-color:var(--agencia); color:var(--agencia); font-weight:800;}
   .weekrow i.cur{background:var(--forest); border-color:var(--forest); color:#F5F1E6; box-shadow:0 2px 6px rgba(22,50,79,.35);}
   .qmid{display:flex; flex-direction:row; align-items:center; justify-content:center; gap:14px; padding:4px 0;}
