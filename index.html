@@ -81,13 +81,13 @@
      (antes llegaba a 26px, con 14 apretados en una sola fila). */
   .weekrow{display:flex; align-items:center; gap:5px;}
   .weekrow i{flex:1 1 0; min-width:0; max-width:44px; aspect-ratio:1/1; border-radius:50%;
-    background:var(--cream); border:1.5px solid var(--line); color:var(--forest);
+    background:var(--cream); border:1.5px solid var(--line); color:var(--forest); cursor:pointer;
     display:flex; align-items:center; justify-content:center; font-style:normal; font-size:13px; font-weight:700;}
   .weekrow i.has{background:var(--agencia-bg); border-color:var(--agencia); color:var(--agencia); font-weight:800;}
   .weekrow i.cur{background:var(--forest); border-color:var(--forest); color:#F5F1E6; box-shadow:0 2px 6px rgba(22,50,79,.35);}
-  .qmid{display:flex; flex-direction:row; align-items:center; justify-content:center; gap:10px; padding:2px 0;}
-  .qmid button{width:26px; height:26px; flex:0 0 auto; border-radius:8px; border:1.5px solid var(--line);
-    background:var(--cream); font-size:12px; color:var(--forest); font-weight:800;}
+  .qmid{display:flex; flex-direction:row; align-items:center; justify-content:center; gap:14px; padding:4px 0;}
+  .qmid button{width:40px; height:40px; flex:0 0 auto; border-radius:11px; border:1.5px solid var(--line);
+    background:var(--cream); font-size:15px; color:var(--forest); font-weight:800;}
   /* ---------- Sections ---------- */
   /* Una tarjeta de empleado por renglón, a todo lo ancho -- más aire,
      texto legible, y nada se amontona ni se sale del fondo en teléfonos
@@ -1140,6 +1140,7 @@ function renderDayNav(){
     const any = state.employees.some(e=>{ const t=e.times[dISO]; return t && t.in && t.out; });
     if(any) i2.classList.add("has");
     if(i===currentDayIdx) i2.classList.add("cur");
+    i2.onclick = ()=>{ currentDayIdx = i; refresh(); };
     (i<7 ? dots1 : dots2).appendChild(i2);
   });
 }
