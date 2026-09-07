@@ -1,0 +1,26 @@
+{
+  "name": "turnero",
+  "version": "1.0.0",
+  "description": "Workforce scheduling and shift management application designed for team labor planning.",
+  "main": "emailjs.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aymorcorp/turnero.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/aymorcorp/turnero/issues"
+  },
+  "homepage": "https://github.com/aymorcorp/turnero#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/cli": "^8.5.1",
+    "@capacitor/core": "^8.5.1"
+  }
+}
