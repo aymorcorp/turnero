@@ -900,7 +900,7 @@ function defaultState(){
     name, cls, rate: rate||0, empNo: empNo||"", phone:"", active: act!==false, times:{}
   });
   return {
-    periodStart: "2026-08-09",
+    periodStart: lastSundayISO(),
     budgetHours: 0,
     workOrder: "",
     bizLat: null, bizLng: null, geoRadius: 150,
