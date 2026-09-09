@@ -1412,11 +1412,21 @@ function renderSummary(){
 }
 /* ================= EXPORTAR ================= */
 function download(filename, text, mime){
-  const blob = new Blob([text], {type: mime || "text/plain;charset=utf-8"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob); a.download = filename;
-  document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 400);
+  downloadBlob(filename, new Blob([text], {type: mime || "text/plain;charset=utf-8"}));
+}
+function downloadBlob(filename, blob){
+  const url = URL.createObjectURL(blob);
+  const isIOS = /iP(hone|od|ad)/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if(isIOS){
+    window.open(url, "_blank");
+    setTimeout(()=> URL.revokeObjectURL(url), 60000);
+  }else{
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 400);
+  }
 }
 /* ============ EXCEL REAL (.xlsx) CON FÓRMULAS ============ */
 function ensureXLSX(){
@@ -1577,7 +1587,9 @@ function downloadImportTemplate(){
     ws["!cols"] = [{wch:22},{wch:20},{wch:16},{wch:16},{wch:20}];
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Horas");
-    XLSX.writeFile(wb, "plantilla_importar_horas.xlsx");
+    const bytes = XLSX.write(wb, {type:"array", bookType:"xlsx"});
+    const blob = new Blob([bytes], {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+    downloadBlob("plantilla_importar_horas.xlsx", blob);
   });
 }
 function excelSerialToISO(v){
