@@ -1826,6 +1826,7 @@ function requirePIN(cb){
   pinMode = "user";
   pinCb = cb;
   document.getElementById("pinInput").value = "";
+  document.getElementById("pinInput").inputMode = "numeric";
   document.getElementById("pinOverlay").classList.add("open");
   setTimeout(()=>document.getElementById("pinInput").focus(), 60);
 }
@@ -1860,6 +1861,7 @@ document.getElementById("pinInput").addEventListener("keydown", ev=>{
 function askMaster(cb){
   pinMode = "master"; pinCb = cb;
   document.getElementById("pinInput").value = "";
+  document.getElementById("pinInput").inputMode = "text";
   document.getElementById("pinOverlay").classList.add("open");
   setTimeout(()=>document.getElementById("pinInput").focus(), 60);
 }
