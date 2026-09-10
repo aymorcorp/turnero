@@ -4,14 +4,14 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Turnero · Control de horas</title>
+<title>Quorum · Control de horas</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-32.png">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <meta name="theme-color" content="#1C3A5E">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Turnero">
+<meta name="apple-mobile-web-app-title" content="Quorum">
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
@@ -238,7 +238,7 @@
 <body>
 <header>
   <div class="brand">
-    <h1 id="bizTitle">Turnero</h1>
+    <h1 id="bizTitle">Quorum</h1>
   </div>
 </header>
 <!-- ============ VISTA: CAPTURA ============ -->
@@ -489,7 +489,7 @@ const I18N = {
     geoCleared:"Se quitó la ubicación del negocio.",
     geoPending:"Ubicación pendiente de confirmar.", geoOk:"Cerca del negocio.", geoFar:"A {m} m del negocio.",
     sPin:"PIN del gerente (para ver sueldos y reportes en la app)",
-    sBiz:"Nombre del negocio (solo Turnero, con clave maestra)",
+    sBiz:"Nombre del negocio (solo Quorum, con clave maestra)",
     sBizBtn:"🔐 Cambiar nombre (clave maestra)",
     sEmails:"Correos autorizados (máx. 2)",
     sEmpFmt:"Formato del número de empleado (clave maestra)",
@@ -595,7 +595,7 @@ const I18N = {
     geoCleared:"Business location removed.",
     geoPending:"Location pending confirmation.", geoOk:"Near the business.", geoFar:"{m} m from the business.",
     sPin:"Manager PIN (to view pay rates and reports in the app)",
-    sBiz:"Business name (Turnero only, master key)",
+    sBiz:"Business name (Quorum only, master key)",
     sBizBtn:"🔐 Change name (master key)",
     sEmails:"Authorized emails (max. 2)",
     sEmpFmt:"Employee number format (master key)",
@@ -727,7 +727,7 @@ const I18N = {
     geoCleared:"Emplacement du commerce retiré.",
     geoPending:"Emplacement en attente de confirmation.", geoOk:"Près du commerce.", geoFar:"À {m} m du commerce.",
     sPin:"NIP du gérant (pour voir les salaires et les rapports dans l'appli)",
-    sBiz:"Nom de l'entreprise (Turnero seulement, clé maîtresse)",
+    sBiz:"Nom de l'entreprise (Quorum seulement, clé maîtresse)",
     sBizBtn:"🔐 Changer le nom (clé maîtresse)",
     sEmails:"Courriels autorisés (max. 2)",
     sEmpFmt:"Format du numéro d'employé (clé maîtresse)",
@@ -833,7 +833,7 @@ const I18N = {
     geoCleared:"Naalis ang lokasyon ng negosyo.",
     geoPending:"Naghihintay pa ng kumpirmasyon ang lokasyon.", geoOk:"Malapit sa negosyo.", geoFar:"{m} m mula sa negosyo.",
     sPin:"PIN ng gerente (para makita ang sahod at mga report sa app)",
-    sBiz:"Pangalan ng negosyo (Turnero lamang, master key)",
+    sBiz:"Pangalan ng negosyo (Quorum lamang, master key)",
     sBizBtn:"🔐 Palitan ang pangalan (master key)",
     sEmails:"Awtorisadong email (max. 2)",
     sEmpFmt:"Format ng employee number (master key)",
@@ -906,7 +906,7 @@ function defaultState(){
     bizLat: null, bizLng: null, geoRadius: 150,
     pin: "2026",
     lang: "en",
-    bizName: "Turnero",
+    bizName: "Quorum",
     reportEmails: [],
     empNoDigits: 3,
     /* BASE DE EMPLEADOS: SIETE en pantalla; el resto queda guardado en la base
@@ -1537,7 +1537,7 @@ function buildResumenHTMLFallback(){
     });
     h += "</tr>";
   });
-  h += "</table><p>Pago bruto = antes de retenciones (esas las calcula el sistema de nómina). Comida: 0.5 h por cada 5 h de turno. Generado con la app de horas · Turnero.</p></body></html>";
+  h += "</table><p>Pago bruto = antes de retenciones (esas las calcula el sistema de nómina). Comida: 0.5 h por cada 5 h de turno. Generado con la app de horas · Quorum.</p></body></html>";
   return {
     base64: btoa(unescape(encodeURIComponent("﻿" + h))),
     filename: bizSlug() + "_Q" + periodNumOf(ds[0]) + "_resumen_" + ds[0] + ".xls",
@@ -1557,7 +1557,7 @@ async function sendReportByEmail(){
     if(!ok) toast(T("tNoNet"));
     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       to_email: emails.join(","),
-      business_name: state.bizName || "Turnero",
+      business_name: state.bizName || "Quorum",
       report_title: "Q" + periodNumOf(periodDates()[0]),
       message: T("tEmailMsg"),
       attachment_name: file.filename,
@@ -2069,7 +2069,7 @@ function syncSettings(){
   selectedLang = state.lang || "es";
   paintLangPick();
   const bi = document.getElementById("setBiz");
-  bi.value = state.bizName || "Turnero";
+  bi.value = state.bizName || "Quorum";
   bi.readOnly = true;
   document.getElementById("setEmails").value = (state.reportEmails||[]).join(", ");
   const efi = document.getElementById("setEmpFmt");

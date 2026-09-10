@@ -1,6 +1,6 @@
 {
-  "name": "Turnero - Control de horas",
-  "short_name": "Turnero",
+  "name": "Quorum - Control de horas",
+  "short_name": "Quorum",
   "description": "Control de horas y reportes de nomina para pequenos negocios",
   "start_url": "./",
   "scope": "./",
